@@ -1,0 +1,33 @@
+[project]
+name = "gaplens-backend"
+version = "0.1.0"
+description = "GapLens AI Classroom backend — FastAPI + Postgres + LangGraph"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.32.1",
+    "pydantic==2.10.3",
+    "pydantic-settings==2.6.1",
+    "sqlalchemy==2.0.36",
+    "psycopg[binary]==3.2.3",
+    "alembic==1.14.0",
+    "python-multipart==0.0.19",
+    # AI / LLM orchestration — provider not decided yet, see plan.md § 0 and app/services/llm/provider.py
+    "langchain==0.3.13",
+    "langchain-core==0.3.28",
+    "langgraph==0.2.60",
+    # ingestion pipeline (BE/AI 1)
+    "opencv-python-headless==4.10.0.84",
+    "pypdf==5.1.0",
+    "numpy==1.26.4",
+    "pillow==11.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==8.3.4",
+    "httpx==0.28.1",
+]
+
+[tool.uv]
+package = false
