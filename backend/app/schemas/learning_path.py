@@ -25,3 +25,19 @@ class ProgressPoint(BaseModel):
 class StudentProgressResponse(BaseModel):
     student_id: str
     timeline: list[ProgressPoint]
+
+
+class TestHistoryItem(BaseModel):
+    test_id: str
+    title: str
+    type: str
+    score: float
+    total: int
+    submitted_at: datetime
+    weak_node_ids: list[str]
+
+
+class TestHistoryResponse(BaseModel):
+    student_id: str
+    items: list[TestHistoryItem]
+    total: int
