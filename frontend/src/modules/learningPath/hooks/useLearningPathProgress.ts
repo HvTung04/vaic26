@@ -7,14 +7,14 @@ import type { TierProgress } from '../types';
 
 const MASTERED_THRESHOLD = 0.75;
 
-export function useLearningPathProgress() {
-  const studentId = useAuth().user?.id ?? '';
+export function useLearningPathProgress(studentIdOverride?: string) {
+  const studentId = studentIdOverride || (useAuth().user?.id ?? '');
   const pathQuery = useQuery({
     queryKey: ['learning-path', studentId],
     queryFn: () => fetchMyLearningPath(studentId),
     enabled: Boolean(studentId),
   });
-  const graphQuery = useMyKnowledgeState();
+  const graphQuery = useMyKnowledgeState(studentIdOverride);
 
   const tiers = useMemo<TierProgress[]>(() => {
     if (!pathQuery.data) return [];

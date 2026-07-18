@@ -1,11 +1,17 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import { DashboardHeader } from '@/layouts/DashboardHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSubmissionDetail } from '@/modules/tests/hooks/useSubmissionDetail';
+
+function formatDuration(seconds: number) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m > 0 ? `${m} phút ${s}s` : `${s}s`;
+}
 
 export default function SubmissionDetail() {
   const { submissionId = '' } = useParams();
@@ -74,6 +80,10 @@ export default function SubmissionDetail() {
                   <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-ink-soft">
                     <span>
                       Trả lời: <span className="font-semibold text-ink">{result.studentAnswer}</span>
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      Thời gian làm: <span className="font-semibold text-ink">{formatDuration(result.timeSpentSeconds)}</span>
                     </span>
                     {!result.isCorrect && (
                       <span>

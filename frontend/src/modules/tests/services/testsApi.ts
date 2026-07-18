@@ -81,6 +81,7 @@ interface ApiSubmission {
     isCorrect: boolean;
     studentAnswer: string | null;
     correctAnswer: string;
+    timeSpentSeconds: number;
     explanation: string | null;
     rootCauseNodeName: string | null;
   }[];
@@ -203,6 +204,7 @@ export async function fetchSubmissionDetail(submissionId: string): Promise<Submi
     isCorrect: r.isCorrect,
     studentAnswer: r.studentAnswer ?? '—',
     correctAnswer: r.correctAnswer,
+    timeSpentSeconds: r.timeSpentSeconds,
     explanation: r.explanation,
     rootCauseNodeName: r.isCorrect ? null : r.rootCauseNodeName,
   }));
