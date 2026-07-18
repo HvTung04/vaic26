@@ -4,8 +4,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { MainLayout } from '@/layouts/MainLayout';
 import { StudentLayout } from '@/layouts/StudentLayout';
 import { PageSkeleton } from '@/components/PageSkeleton';
+import { RequireAuth } from '@/modules/auth/RequireAuth';
 
 const Landing = lazy(() => import('@/pages/Landing'));
+const Login = lazy(() => import('@/pages/Login'));
 const TeacherDashboard = lazy(() => import('@/pages/TeacherDashboard'));
 const CreateTest = lazy(() => import('@/pages/CreateTest'));
 const StudentInsights = lazy(() => import('@/pages/StudentInsights'));
@@ -34,7 +36,14 @@ const router = createBrowserRouter([
     element: withSuspense(<Landing />),
   },
   {
+    path: '/login',
+    element: withSuspense(<Login />),
+  },
+  {
     path: '/dashboard',
+    element: <RequireAuth role="teacher" />,
+    children: [
+      {
     element: <MainLayout />,
     children: [
       { index: true, element: withSuspense(<TeacherDashboard />) },
@@ -52,12 +61,19 @@ const router = createBrowserRouter([
       { path: 'tests/:testId/edit', element: withSuspense(<TestEdit />) },
       { path: 'submissions/:submissionId', element: withSuspense(<SubmissionDetail />) },
       { path: 'settings', element: withSuspense(<Settings />) },
+        ],
+      },
     ],
   },
   {
     path: '/student',
-    element: <StudentLayout />,
-    children: [{ index: true, element: withSuspense(<StudentHub />) }],
+    element: <RequireAuth role="student" />,
+    children: [
+      {
+        element: <StudentLayout />,
+        children: [{ index: true, element: withSuspense(<StudentHub />) }],
+      },
+    ],
   },
   {
     path: '/assessment/:assessmentId',

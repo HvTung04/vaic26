@@ -1,10 +1,11 @@
 import { useStudentTests } from '@/modules/testTaking/hooks/useStudentTests';
 import { useStudentResults } from '@/modules/testTaking/hooks/useStudentResults';
-import { CURRENT_STUDENT } from '../constants';
+import { useAuth } from '@/modules/auth/AuthContext';
 
 const RECENT_RESULTS_WINDOW = 3;
 
 export function useStudentTopBarInfo() {
+  const user = useAuth().user;
   const pendingQuery = useStudentTests('pending');
   const resultsQuery = useStudentResults();
 
@@ -16,8 +17,8 @@ export function useStudentTopBarInfo() {
     : null;
 
   return {
-    name: CURRENT_STUDENT.name,
-    className: CURRENT_STUDENT.className,
+    name: user?.fullName ?? 'Học sinh',
+    className: user ? `Mã học sinh: ${user.username}` : '',
     pendingCount: pendingQuery.data?.length ?? 0,
     avgRecentScore,
     isLoading: pendingQuery.isLoading || resultsQuery.isLoading,

@@ -47,6 +47,11 @@ async def list_class_ids_for_student(db: AsyncSession, student_id: str | uuid.UU
     return [str(cid) for cid in result.scalars().all()]
 
 
+async def list_class_ids_for_teacher(db: AsyncSession, teacher_id: str | uuid.UUID) -> list[str]:
+    result = await db.execute(select(ClassGroup.id).where(ClassGroup.teacher_id == teacher_id))
+    return [str(cid) for cid in result.scalars().all()]
+
+
 async def is_member(db: AsyncSession, class_id: str | uuid.UUID, student_id: str | uuid.UUID) -> bool:
     result = await db.execute(
         select(ClassStudent).where(ClassStudent.class_id == class_id, ClassStudent.student_id == student_id)

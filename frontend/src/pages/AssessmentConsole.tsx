@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useAttemptExecution } from "@/modules/testTaking/hooks/useAttemptExecution";
 import { useSubmitAttempt } from "@/modules/testTaking/hooks/useSubmitAttempt";
 import { useSubmissionResult } from "@/modules/testTaking/hooks/useSubmissionResult";
-import { useTestExecution } from "@/modules/assessment/hooks/useTestExecution";
-import { useMutateSubmitAttempt } from "@/modules/assessment/hooks/queries/useMutateSubmitAttempt";
 import { useExamTimer } from "@/modules/assessment/hooks/useExamTimer";
 import { AssessmentTopBar } from "@/modules/assessment/components/AssessmentTopBar";
 import { QuestionNavigator } from "@/modules/testTaking/components/QuestionNavigator";
@@ -37,8 +35,6 @@ export default function AssessmentConsole() {
   const timer = useExamTimer(DEFAULT_DURATION_MINUTES * 60, !submissionId);
   const submitMutation = useSubmitAttempt(testId);
   const resultQuery = useSubmissionResult(submissionId ?? "");
-  const timer = useExamTimer((assessment?.durationMinutes ?? 0) * 60, !report);
-  const submitMutation = useMutateSubmitAttempt();
 
   const handleSubmit = useCallback(() => {
     if (!attempt || submitMutation.isPending) return;
