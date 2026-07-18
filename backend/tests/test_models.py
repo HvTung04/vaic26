@@ -1,7 +1,7 @@
 """Tests for models + taxonomy (no network)."""
 
-from app.ingestion.models import QuestionDraft, AnswerOption, SourceType, Difficulty
-from app.ingestion.taxonomy import is_valid_node, load_taxonomy_nodes
+from app.schemas.ingestion import QuestionDraft, AnswerOption, SourceType, Difficulty
+from app.repositories.taxonomy_repo import is_valid_node, load_taxonomy_nodes
 
 
 def test_difficulty_enum():

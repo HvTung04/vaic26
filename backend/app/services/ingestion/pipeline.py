@@ -7,11 +7,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from .image_ocr import parse_photo
-from .models import QuestionDraft, AnswerOption, RawExam, SourceType
+from app.schemas.ingestion import QuestionDraft, AnswerOption, RawExam, SourceType
 from .pdf_parser import parse_pdf
 from .splitter import split_exam
 from .tagger import tag_question
-from .bank_client import push_drafts
+from app.repositories.bank_repo import push_drafts
 
 
 def intake_file(path: str | Path) -> list[QuestionDraft]:

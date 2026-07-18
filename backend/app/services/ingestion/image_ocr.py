@@ -9,7 +9,7 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from .models import RawExam, SourceType
+from app.schemas.ingestion import RawExam, SourceType
 from .llm_client import get_client, get_model
 
 _VISION_SYSTEM = (

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import random
 
-from .models import MasteryRecord, RevisionTest
+from app.schemas.kg import MasteryRecord, RevisionTest
 from .mastery import get_weak_nodes
 
 

@@ -6,7 +6,7 @@ LLM also solves each question and always returns correct_answer.
 from __future__ import annotations
 
 from .llm_client import structured_completion
-from .models import RawExam, SplitQuestion, SplitResponse
+from app.schemas.ingestion import RawExam, SplitQuestion, SplitResponse
 
 _SPLIT_SYSTEM = (
     "You are a Vietnamese math teacher. Segment this exam into individual questions.\n"

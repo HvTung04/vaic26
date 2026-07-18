@@ -10,7 +10,7 @@ from pathlib import Path
 
 import httpx
 
-from .models import QuestionDraft
+from app.schemas.ingestion import QuestionDraft
 
 _API_BASE = os.environ.get("GAPLENS_API_BASE", "").rstrip("/")
 

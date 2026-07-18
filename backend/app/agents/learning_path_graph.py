@@ -13,8 +13,8 @@ from typing import TypedDict
 
 from langgraph.graph import END, StateGraph
 
-from app.kg.learning_path import generate_learning_path
-from app.kg.models import Graph, LearningPath, MasteryRecord
+from app.services.kg.learning_path import generate_learning_path
+from app.schemas.kg import Graph, LearningPath, MasteryRecord
 
 
 class LearningPathState(TypedDict):

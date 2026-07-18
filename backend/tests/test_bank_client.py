@@ -3,8 +3,8 @@
 import json
 import os
 
-from app.ingestion.models import QuestionDraft, AnswerOption, SourceType
-from app.ingestion.bank_client import push_drafts
+from app.schemas.ingestion import QuestionDraft, AnswerOption, SourceType
+from app.repositories.bank_repo import push_drafts
 
 
 def test_push_local_fallback(tmp_path, monkeypatch):

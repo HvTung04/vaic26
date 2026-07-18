@@ -3,8 +3,8 @@
 import numpy as np
 import cv2
 
-from app.bubblesheet.detect import detect_answers
-from app.bubblesheet.template import DEFAULT_TEMPLATE
+from app.services.bubblesheet.detect import detect_answers
+from app.services.bubblesheet.template import DEFAULT_TEMPLATE
 
 
 def _make_sheet(filled: dict[int, str]) -> str:
