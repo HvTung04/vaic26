@@ -39,7 +39,7 @@ class QuestionDraft(BaseModel):
     text: str
     options: list[AnswerOption] = Field(default_factory=list)
     correct_answer: Optional[str] = None
-    knowledge_node: Optional[str] = None  # taxonomy node id (enum)
+    knowledge_nodes: list[str] = Field(default_factory=list)  # taxonomy node ids
     difficulty: Optional[Difficulty] = None
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     source_type: SourceType
@@ -58,7 +58,7 @@ class SplitResponse(BaseModel):
 
 
 class TagResponse(BaseModel):
-    knowledge_node: Optional[str] = None
+    knowledge_nodes: list[str] = Field(default_factory=list)
     difficulty: Optional[Difficulty] = None
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     sub_skill: Optional[str] = None

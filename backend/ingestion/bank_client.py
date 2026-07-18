@@ -29,7 +29,7 @@ def _draft_to_payload(d: QuestionDraft) -> dict:
         "text": d.text,
         "options": [{"key": o.key, "text": o.text} for o in d.options],
         "correct_answer": d.correct_answer,
-        "knowledge_node": d.knowledge_node,
+        "knowledge_nodes": d.knowledge_nodes,
         "difficulty": int(d.difficulty) if d.difficulty else None,
         "confidence": d.confidence,
         "source_type": d.source_type.value,
@@ -46,7 +46,12 @@ def push_drafts(drafts: list[QuestionDraft]) -> list[dict]:
     # local fallback
     fb = _local_bank_path()
     fb.parent.mkdir(parents=True, exist_ok=True)
-    existing = json.loads(fb.read_text()) if fb.exists() else []
+    existing: list[dict] = []
+    if fb.exists():
+        try:
+            existing = json.loads(fb.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            fb.unlink(missing_ok=True)
     existing.extend(payloads)
-    fb.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
+    fb.write_text(json.dumps(existing, ensure_ascii=False, indent=2), encoding="utf-8")
     return payloads

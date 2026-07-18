@@ -11,7 +11,7 @@ Question:
   text            text            # question body, LaTeX preserved
   options         jsonb           # [{ "key": "A", "text": "..." }, ...]
   correct_answer  text            # option key, e.g. "B"
-  knowledge_node  text            # FK -> taxonomy node id (enum from taxonomy file)
+  knowledge_nodes jsonb           # ["node-a", "node-b"] (multi, from taxonomy)
   difficulty      smallint        # 1=easy 2=medium 3=hard (per taxonomy scale)
   confidence      real            # 0..1 LLM tag confidence (review aid only)
   source_type     text            # "pdf" | "photo"
@@ -33,11 +33,20 @@ SplitResponse:
 ```
 TaggingRequest  -> question text + options + taxonomy node list (enum)
 TaggingResponse:
-  knowledge_node: str   # MUST be in taxonomy enum, else reject
-  difficulty:     int   # 1|2|3
-  confidence:     float # 0..1
-  sub_skill:      str?  # optional finer skill
-# Off-enum -> retry once -> else flag low confidence for teacher review.
+  knowledge_nodes: list[str]  # MUST all be in taxonomy enum, else reject
+  difficulty:     int         # 1|2|3
+  confidence:     float       # 0..1
+  sub_skill:      str?        # optional finer skill
+# Off-enum nodes -> retry once -> else flag low confidence for teacher review.
+```
+
+## Answer-time weight model (Role 2 owns formula)
+```
+AnswerUpdate:
+  node             text       # one node from question's knowledge_nodes
+  weight           real       # difficulty_weight × unit_proximity
+# unit_proximity = closeness to current teaching unit in knowledge graph.
+# Role 1 only tags nodes + difficulty; weights computed at answer-time by Role 2.
 ```
 
 ## Bank API endpoints (Role 3 owns impl; Role 1 client matches)

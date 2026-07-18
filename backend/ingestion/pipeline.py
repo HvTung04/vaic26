@@ -28,7 +28,7 @@ def intake_file(path: str | Path) -> list[QuestionDraft]:
                 text=s.text,
                 options=[AnswerOption(key=_k(i), text=t) for i, t in enumerate(s.options)],
                 correct_answer=s.correct_answer,
-                knowledge_node=tag.knowledge_node,
+                knowledge_nodes=tag.knowledge_nodes,
                 difficulty=tag.difficulty,
                 confidence=tag.confidence,
                 source_type=raw.source_type,

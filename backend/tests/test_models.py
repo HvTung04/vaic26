@@ -12,6 +12,7 @@ def test_draft_defaults():
     d = QuestionDraft(index=1, text="x?", source_type=SourceType.PDF)
     assert d.status == "draft"
     assert d.confidence == 0.0
+    assert d.knowledge_nodes == []
 
 
 def test_taxonomy_placeholder_valid():

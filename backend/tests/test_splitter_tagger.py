@@ -28,19 +28,28 @@ def test_split_empty_raises(monkeypatch):
 def test_tag_off_enum_flagged(monkeypatch):
     # first call off-enum, retry still off-enum -> low confidence flag
     monkeypatch.setattr(tagger, "structured_completion", lambda **k: {
-        "knowledge_node": "bad-node", "difficulty": 1, "confidence": 0.9
+        "knowledge_nodes": ["bad-node"], "difficulty": 1, "confidence": 0.9
     })
     q = SplitQuestion(index=1, text="q?", options=["A"])
     t = tagger.tag_question(q)
-    assert t.knowledge_node not in tagger.load_taxonomy_nodes()
+    assert len(t.knowledge_nodes) == 0
     assert t.confidence <= 0.4
 
 
 def test_tag_valid_node_passthrough(monkeypatch):
     node = "math-g5-fraction-equivalent"
     monkeypatch.setattr(tagger, "structured_completion", lambda **k: {
-        "knowledge_node": node, "difficulty": 2, "confidence": 0.8
+        "knowledge_nodes": [node], "difficulty": 2, "confidence": 0.8
     })
     t = tagger.tag_question(SplitQuestion(index=1, text="q?", options=["A"]))
-    assert t.knowledge_node == node
+    assert t.knowledge_nodes == [node]
     assert t.difficulty == Difficulty.MEDIUM
+
+
+def test_tag_multi_node(monkeypatch):
+    n1, n2 = "math-g5-fraction-equivalent", "math-g5-fraction-divide"
+    monkeypatch.setattr(tagger, "structured_completion", lambda **k: {
+        "knowledge_nodes": [n1, n2], "difficulty": 2, "confidence": 0.75
+    })
+    t = tagger.tag_question(SplitQuestion(index=1, text="q?", options=["A"]))
+    assert t.knowledge_nodes == [n1, n2]
