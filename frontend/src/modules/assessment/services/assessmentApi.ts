@@ -1,4 +1,5 @@
 import { withMockDelay } from '@/services/mockClient';
+import type { AssessmentDraft, Question } from '../types';
 import { calcAccuracy } from '@/utils/format';
 import type {
   Assessment,
@@ -16,6 +17,16 @@ const ASSESSMENT_TITLES: Record<string, { title: string; subject: string }> = {
 };
 
 const DIFFICULTY_CYCLE: QuestionDifficulty[] = ['Easy', 'Medium', 'Hard'];
+
+/** Knowledge-graph nodes the file-parsing service can auto-label extracted questions against. */
+const KNOWLEDGE_NODES: { id: string; label: string }[] = [
+  { id: 'kg-cell-organelles', label: 'Cell Organelles' },
+  { id: 'kg-photosynthesis', label: 'Photosynthesis' },
+  { id: 'kg-cell-cycle', label: 'Cell Cycle' },
+  { id: 'kg-cell-transport', label: 'Cell Transport' },
+  { id: 'kg-genetics', label: 'Genetics & Heredity' },
+  { id: 'kg-evolution', label: 'Evolution' },
+];
 
 function pointsForDifficulty(difficulty: QuestionDifficulty) {
   if (difficulty === 'Easy') return 10;
@@ -97,10 +108,6 @@ const DRAFT_ASSESSMENT: AssessmentDraft = {
   ],
 };
 
-export async function fetchAssessment(assessmentId: string): Promise<Assessment> {
-  return withMockDelay(buildAssessment(assessmentId));
-}
-
 export async function fetchAssessmentDraft(): Promise<AssessmentDraft> {
   return withMockDelay(structuredClone(DRAFT_ASSESSMENT));
 }
@@ -122,8 +129,49 @@ export async function generateAiQuestions(sourceText: string, subject: string): 
     ],
     correctOption: 'A',
     explanation: 'Generated explanation pending teacher review.',
+    source: 'ai',
   }));
   return withMockDelay(generated, 1400);
+}
+
+export interface ParsedQuestionFileResult {
+  fileName: string;
+  questions: Question[];
+}
+
+/**
+ * Sends an uploaded test file (PDF/DOCX/TXT) to the question-extraction API, which OCRs/parses
+ * the document and auto-labels each extracted question against a knowledge-graph node.
+ * Mocked here: derives a deterministic-but-varied set of "extracted" questions from the file.
+ */
+export async function parseQuestionFile(file: File): Promise<ParsedQuestionFileResult> {
+  const count = hashToRange(`${file.name}-${file.size}-count`, 3, 6);
+  const questions: Question[] = Array.from({ length: count }, (_, i) => {
+    const node = KNOWLEDGE_NODES[hashToRange(`${file.name}-${i}-node`, 0, KNOWLEDGE_NODES.length - 1)];
+    const difficulty = DIFFICULTY_CYCLE[i % DIFFICULTY_CYCLE.length];
+    const correctOption: QuestionOptionKey = (['A', 'B', 'C', 'D'] as const)[
+      hashToRange(`${file.name}-${i}-correct`, 0, 3)
+    ];
+    return {
+      id: `import-${Date.now()}-${i}`,
+      order: 0,
+      prompt: `[Imported from "${file.name}"] Question ${i + 1} — review extracted prompt text.`,
+      options: [
+        { key: 'A', text: '' },
+        { key: 'B', text: '' },
+        { key: 'C', text: '' },
+        { key: 'D', text: '' },
+      ],
+      correctOption,
+      topicTag: node.label,
+      knowledgeNodeId: node.id,
+      difficulty,
+      points: pointsForDifficulty(difficulty),
+      explanation: 'Auto-extracted; verify wording and answer key before publishing.',
+      source: 'import',
+    };
+  });
+  return withMockDelay({ fileName: file.name, questions }, 1600);
 }
 
 export async function saveQuestionDraft(question: Question): Promise<Question> {
@@ -132,54 +180,4 @@ export async function saveQuestionDraft(question: Question): Promise<Question> {
 
 export async function publishAssessment(draftId: string): Promise<{ id: string; status: 'published' }> {
   return withMockDelay({ id: draftId, status: 'published' as const }, 900);
-}
-
-function shuffledRank(): { classRank: number; classSize: number } {
-  const classSize = 32;
-  const classRank = Math.max(1, Math.round(classSize * 0.15));
-  return { classRank, classSize };
-}
-
-export async function submitTestAttempt(
-  assessment: Assessment,
-  submission: TestAttemptSubmission,
-): Promise<ScoreReportData> {
-  const questionResults = assessment.questions.map((question) => {
-    const selectedOption = submission.answers[question.id] ?? null;
-    const telemetry = submission.telemetry.find((t) => t.questionId === question.id);
-    const isCorrect = selectedOption === question.correctOption;
-    return {
-      question,
-      selectedOption,
-      isCorrect,
-      timeSpentSeconds: telemetry?.timeSpentSeconds ?? 0,
-      pointsEarned: isCorrect ? question.points : 0,
-      reviewNeeded: !isCorrect,
-      waverCount: telemetry?.answerChanges.length ?? 0,
-    };
-  });
-
-  const correctCount = questionResults.filter((r) => r.isCorrect).length;
-  const accuracy = calcAccuracy(correctCount, assessment.questions.length);
-  const totalPossiblePoints = assessment.questions.reduce((sum, q) => sum + q.points, 0);
-  const pointsEarned = questionResults.reduce((sum, r) => sum + r.pointsEarned, 0);
-  const finalScorePercent = totalPossiblePoints > 0 ? Math.round((pointsEarned / totalPossiblePoints) * 100) : 0;
-  const { classRank, classSize } = shuffledRank();
-
-  const report: ScoreReportData = {
-    assessmentId: assessment.id,
-    assessmentTitle: assessment.title,
-    accuracy,
-    correctCount,
-    totalQuestions: assessment.questions.length,
-    durationSeconds: submission.totalDurationSeconds,
-    classRank,
-    classSize,
-    pointsEarned,
-    totalPossiblePoints,
-    finalScorePercent,
-    questionResults,
-  };
-
-  return withMockDelay(report, 900);
 }

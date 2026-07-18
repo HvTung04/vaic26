@@ -1,4 +1,4 @@
-export type AlertCategory = 'ability' | 'engagement';
+export type AlertCategory = "ability" | "engagement";
 
 export interface PriorityAlertStudent {
   id: string;
@@ -6,7 +6,7 @@ export interface PriorityAlertStudent {
   avatarUrl?: string;
   category: AlertCategory;
   reason: string;
-  severity: 'critical' | 'watch';
+  severity: "critical" | "watch";
 }
 
 export interface PriorityAlerts {
@@ -15,7 +15,7 @@ export interface PriorityAlerts {
   engagement: PriorityAlertStudent[];
 }
 
-export type GapSeverity = 'critical' | 'watch' | 'onTrack';
+export type GapSeverity = "critical" | "watch" | "onTrack";
 
 export interface KnowledgeGapTopic {
   id: string;
@@ -50,13 +50,13 @@ export interface PerformancePoint {
   classAverage: number;
 }
 
-export type PathStatus = 'draft' | 'ai_suggested' | 'verified';
+export type PathStatus = "draft" | "ai_suggested" | "verified";
 
 export interface LearningPathStep {
   id: string;
   label: string;
   sublabel: string;
-  status: 'completed' | 'active' | 'locked' | 'target';
+  status: "completed" | "active" | "locked" | "target";
 }
 
 export interface LearningPath {
@@ -85,6 +85,7 @@ export interface StudentTask {
   title: string;
   dueLabel: string;
   urgency: 'high' | 'normal';
+  urgency: "high" | "normal";
   assessmentId: string;
 }
 
@@ -97,15 +98,3 @@ export interface QuizAttempt {
   maxScore: number;
 }
 
-export interface StudentHubData {
-  studentId: string;
-  name: string;
-  className: string;
-  avatarUrl?: string;
-  points: number;
-  dailyStreak: number;
-  performanceHistory: PerformancePoint[];
-  tasks: StudentTask[];
-  quizHistory: QuizAttempt[];
-  learningPath: LearningPath;
-}

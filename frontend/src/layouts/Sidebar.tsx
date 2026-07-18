@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutGrid, Database, Users2, Settings } from "lucide-react";
+import { LayoutGrid, Database, Users2, School, ClipboardList, Settings } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/utils/cn";
 
@@ -7,6 +7,8 @@ const NAV_ITEMS = [
   { to: "/dashboard", label: "Bảng điều khiển", icon: LayoutGrid, end: true },
   { to: "/dashboard/question-bank", label: "Ngân hàng câu hỏi", icon: Database, end: false },
   { to: "/dashboard/class-list", label: "Danh sách lớp", icon: Users2, end: false },
+  { to: "/dashboard/classes", label: "Quản lý lớp", icon: School, end: false },
+  { to: "/dashboard/tests", label: "Bài test", icon: ClipboardList, end: false },
   { to: "/dashboard/settings", label: "Cài đặt", icon: Settings, end: false },
 ];
 

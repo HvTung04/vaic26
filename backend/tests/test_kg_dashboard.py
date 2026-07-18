@@ -1,7 +1,7 @@
 """Tests for dashboard data functions."""
 
-from kg.dashboard import priority_queue, gap_radar, need_groups, interventions
-from kg.models import MasteryRecord
+from app.services.kg.dashboard import priority_queue, gap_radar, need_groups, interventions
+from app.schemas.kg import MasteryRecord
 
 
 STUDENTS = [
