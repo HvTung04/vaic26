@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+*.local.json
+bank.local.json
+__pycache__/*
+*.pyc
+
+# Env / secrets
+.env
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+
+# Build
+dist/
+build/
+*.log
