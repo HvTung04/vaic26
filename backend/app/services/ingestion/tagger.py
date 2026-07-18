@@ -5,8 +5,8 @@ Off-enum nodes -> retry once -> else flag low confidence for teacher review.
 from __future__ import annotations
 
 from .llm_client import structured_completion
-from .models import Difficulty, SplitQuestion, TagResponse
-from .taxonomy import load_taxonomy_nodes, load_taxonomy_context
+from app.schemas.ingestion import Difficulty, SplitQuestion, TagResponse
+from app.repositories.taxonomy_repo import load_taxonomy_nodes, load_taxonomy_context
 
 _TAG_SYSTEM = (
     "You tag a Vietnamese math exam question against the 2018 curriculum knowledge graph.\n"

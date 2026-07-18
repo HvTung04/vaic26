@@ -10,7 +10,7 @@ from pathlib import Path
 
 import httpx
 
-from .models import MasteryRecord
+from app.schemas.kg import MasteryRecord
 
 _API_BASE = os.environ.get("GAPLENS_API_BASE", "").rstrip("/")
 _MASTERY_FILE = Path(__file__).resolve().parents[2] / "mastery.local.json"

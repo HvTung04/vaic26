@@ -12,7 +12,7 @@ for line in env_path.read_text().splitlines():
 # Ensure backend package importable
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from app.ingestion.pipeline import intake_file
+from app.services.ingestion.pipeline import intake_file
 
 test_pdf = Path(__file__).resolve().parents[3] / "docs" / "test.pdf"
 print(f"model: {os.environ.get('GAPLENS_LLM_MODEL', 'gpt-4o')}")

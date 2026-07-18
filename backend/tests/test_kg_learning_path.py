@@ -1,8 +1,8 @@
 """Tests for learning path (template fallback only — no LLM in tests)."""
 
-from app.kg.learning_path import _template_path, _build_mastery_summary
-from app.kg.models import MasteryRecord, Graph
-from app.kg.graph import load_graph
+from app.services.kg.learning_path import _template_path, _build_mastery_summary
+from app.schemas.kg import MasteryRecord, Graph
+from app.repositories.graph_repo import load_graph
 
 
 def test_template_path_weak():

@@ -1,8 +1,8 @@
 """Tests for root-cause diagnosis."""
 
-from app.kg.root_cause import diagnose_root_cause, diagnose_all_wrong
-from app.kg.models import MasteryRecord, RootCause
-from app.kg.graph import load_graph
+from app.services.kg.root_cause import diagnose_root_cause, diagnose_all_wrong
+from app.schemas.kg import MasteryRecord, RootCause
+from app.repositories.graph_repo import load_graph
 
 
 def test_diagnose_weak_parent():
