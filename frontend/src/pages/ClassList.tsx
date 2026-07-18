@@ -1,13 +1,13 @@
 import { Users2 } from 'lucide-react';
 import { DashboardHeader } from '@/layouts/DashboardHeader';
 import { Card, CardContent } from '@/components/ui/card';
-import { useClassTelemetry } from '@/modules/dashboard/hooks/useClassTelemetry';
+import { useGetClassTelemetry } from '@/modules/dashboard/hooks/queries/useGetClassTelemetry';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 
 export default function ClassList() {
-  const { data, isLoading } = useClassTelemetry();
+  const { data, isLoading } = useGetClassTelemetry();
   const navigate = useNavigate();
 
   return (

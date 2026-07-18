@@ -5,7 +5,8 @@ import { StudentTopBar } from "./StudentTopBar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function StudentLayout() {
-  const { name, className, pendingCount, avgRecentScore, isLoading } = useStudentTopBarInfo();
+  const { name, className, pendingCount, avgRecentScore, isLoading } =
+    useStudentTopBarInfo();
 
   return (
     <div className="min-h-screen w-full px-4 py-6 sm:px-8 lg:px-12">

@@ -1,18 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  fetchAssessmentDraft,
-  generateAiQuestions,
-  parseQuestionFile,
-  publishAssessment,
-  saveQuestionDraft,
-} from '../services/assessmentApi';
+import { useQueryClient } from '@tanstack/react-query';
+import { useGetAssessmentDraft, ASSESSMENT_DRAFT_QUERY_KEY } from './queries/useGetAssessmentDraft';
+import { useMutateSaveQuestion } from './queries/useMutateSaveQuestion';
+import { useMutateGenerateQuestions } from './queries/useMutateGenerateQuestions';
+import { useMutateImportQuestions } from './queries/useMutateImportQuestions';
+import { useMutatePublishAssessment } from './queries/useMutatePublishAssessment';
+import { renumberQuestions } from '../utils';
 import type { AssessmentDraft, Question } from '../types';
-
-const DRAFT_QUERY_KEY = ['assessment', 'draft', 'biology-midterm-unit-4'];
-
-function renumber(questions: Question[]): Question[] {
-  return questions.map((q, i) => ({ ...q, order: i + 1 }));
-}
 
 function blankQuestion(order: number): Question {
   return {
@@ -36,49 +29,17 @@ function blankQuestion(order: number): Question {
 export function useAssessmentDraft() {
   const queryClient = useQueryClient();
 
-  const draftQuery = useQuery({
-    queryKey: DRAFT_QUERY_KEY,
-    queryFn: fetchAssessmentDraft,
-  });
+  const draftQuery = useGetAssessmentDraft();
+  const saveQuestionMutation = useMutateSaveQuestion();
+  const generateMutation = useMutateGenerateQuestions();
+  const importMutation = useMutateImportQuestions();
+  const publishMutation = useMutatePublishAssessment();
 
   function setQuestions(updater: (questions: Question[]) => Question[]) {
-    queryClient.setQueryData<AssessmentDraft>(DRAFT_QUERY_KEY, (prev) =>
+    queryClient.setQueryData<AssessmentDraft>(ASSESSMENT_DRAFT_QUERY_KEY, (prev) =>
       prev ? { ...prev, questions: updater(prev.questions) } : prev,
     );
   }
-
-  const saveQuestionMutation = useMutation({
-    mutationFn: saveQuestionDraft,
-    onSuccess: (savedQuestion) => {
-      setQuestions((questions) =>
-        questions.map((q) => (q.id === savedQuestion.id ? savedQuestion : q)),
-      );
-    },
-  });
-
-  const generateMutation = useMutation({
-    mutationFn: ({ sourceText, subject }: { sourceText: string; subject: string }) =>
-      generateAiQuestions(sourceText, subject),
-    onSuccess: (generatedQuestions: Question[]) => {
-      setQuestions((questions) => renumber([...questions, ...generatedQuestions]));
-    },
-  });
-
-  const importMutation = useMutation({
-    mutationFn: (file: File) => parseQuestionFile(file),
-    onSuccess: ({ questions: imported }) => {
-      setQuestions((questions) => renumber([...questions, ...imported]));
-    },
-  });
-
-  const publishMutation = useMutation({
-    mutationFn: () => publishAssessment(draftQuery.data?.id ?? ''),
-    onSuccess: () => {
-      queryClient.setQueryData<AssessmentDraft>(DRAFT_QUERY_KEY, (prev) =>
-        prev ? { ...prev, status: 'published' } : prev,
-      );
-    },
-  });
 
   function updateQuestion(updated: Question) {
     setQuestions((questions) => questions.map((q) => (q.id === updated.id ? updated : q)));
@@ -96,13 +57,13 @@ export function useAssessmentDraft() {
     if (!source) return;
     const clone: Question = { ...source, id: `q-copy-${Date.now()}`, source: 'manual' };
     const index = questions.findIndex((q) => q.id === id);
-    setQuestions((prev) => renumber([...prev.slice(0, index + 1), clone, ...prev.slice(index + 1)]));
+    setQuestions((prev) => renumberQuestions([...prev.slice(0, index + 1), clone, ...prev.slice(index + 1)]));
   }
 
   function deleteQuestion(id: string) {
     const questions = draftQuery.data?.questions ?? [];
     if (questions.length <= 1) return;
-    setQuestions((prev) => renumber(prev.filter((q) => q.id !== id)));
+    setQuestions((prev) => renumberQuestions(prev.filter((q) => q.id !== id)));
   }
 
   const draft = draftQuery.data;

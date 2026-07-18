@@ -1,20 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ImmersiveLayout } from '@/layouts/ImmersiveLayout';
-import { Button } from '@/components/ui/button';
-import { useAttemptExecution } from '@/modules/testTaking/hooks/useAttemptExecution';
-import { useSubmitAttempt } from '@/modules/testTaking/hooks/useSubmitAttempt';
-import { useSubmissionResult } from '@/modules/testTaking/hooks/useSubmissionResult';
-import { useExamTimer } from '@/modules/assessment/hooks/useExamTimer';
-import { AssessmentTopBar } from '@/modules/assessment/components/AssessmentTopBar';
-import { QuestionNavigator } from '@/modules/testTaking/components/QuestionNavigator';
-import { QuestionConsole } from '@/modules/testTaking/components/QuestionConsole';
-import { ScoreReport } from '@/modules/testTaking/components/ScoreReport';
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ImmersiveLayout } from "@/layouts/ImmersiveLayout";
+import { Button } from "@/components/ui/button";
+import { useAttemptExecution } from "@/modules/testTaking/hooks/useAttemptExecution";
+import { useSubmitAttempt } from "@/modules/testTaking/hooks/useSubmitAttempt";
+import { useSubmissionResult } from "@/modules/testTaking/hooks/useSubmissionResult";
+import { useTestExecution } from "@/modules/assessment/hooks/useTestExecution";
+import { useMutateSubmitAttempt } from "@/modules/assessment/hooks/queries/useMutateSubmitAttempt";
+import { useExamTimer } from "@/modules/assessment/hooks/useExamTimer";
+import { AssessmentTopBar } from "@/modules/assessment/components/AssessmentTopBar";
+import { QuestionNavigator } from "@/modules/testTaking/components/QuestionNavigator";
+import { QuestionConsole } from "@/modules/testTaking/components/QuestionConsole";
+import { ScoreReport } from "@/modules/testTaking/components/ScoreReport";
 
 const DEFAULT_DURATION_MINUTES = 20;
 
 export default function AssessmentConsole() {
-  const { assessmentId: testId = '' } = useParams();
+  const { assessmentId: testId = "" } = useParams();
   const navigate = useNavigate();
   const [submissionId, setSubmissionId] = useState<string | null>(null);
 
@@ -34,7 +36,9 @@ export default function AssessmentConsole() {
 
   const timer = useExamTimer(DEFAULT_DURATION_MINUTES * 60, !submissionId);
   const submitMutation = useSubmitAttempt(testId);
-  const resultQuery = useSubmissionResult(submissionId ?? '');
+  const resultQuery = useSubmissionResult(submissionId ?? "");
+  const timer = useExamTimer((assessment?.durationMinutes ?? 0) * 60, !report);
+  const submitMutation = useMutateSubmitAttempt();
 
   const handleSubmit = useCallback(() => {
     if (!attempt || submitMutation.isPending) return;
@@ -43,10 +47,16 @@ export default function AssessmentConsole() {
     });
   }, [attempt, submitMutation, buildAnswers]);
 
-  const handleContinue = useCallback(() => navigate('/student'), [navigate]);
+  const handleContinue = useCallback(() => navigate("/student"), [navigate]);
 
   useEffect(() => {
-    if (timer.isExpired && attempt && !submissionId && !submitMutation.isPending) handleSubmit();
+    if (
+      timer.isExpired &&
+      attempt &&
+      !submissionId &&
+      !submitMutation.isPending
+    )
+      handleSubmit();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer.isExpired]);
 
@@ -94,7 +104,7 @@ export default function AssessmentConsole() {
             question={currentQuestion}
             index={currentIndex}
             totalQuestions={questions.length}
-            answer={answers[currentQuestion.id] ?? ''}
+            answer={answers[currentQuestion.id] ?? ""}
             onAnswer={setAnswer}
             onPrev={goPrev}
             onNext={goNext}
@@ -105,7 +115,9 @@ export default function AssessmentConsole() {
           />
           {timer.isPaused && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-bento-lg bg-cream/90 backdrop-blur-sm">
-              <p className="font-serif text-xl font-semibold text-ink">Đã tạm dừng</p>
+              <p className="font-serif text-xl font-semibold text-ink">
+                Đã tạm dừng
+              </p>
               <Button variant="ember" onClick={timer.togglePause}>
                 Tiếp tục làm bài
               </Button>

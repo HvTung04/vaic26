@@ -4,7 +4,7 @@ import { Calendar, Plus, ArrowUpRight } from "lucide-react";
 import { DashboardHeader } from "@/layouts/DashboardHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useClassTelemetry } from "@/modules/dashboard/hooks/useClassTelemetry";
+import { useGetClassTelemetry } from "@/modules/dashboard/hooks/queries/useGetClassTelemetry";
 import { PriorityAlertsCard } from "@/modules/dashboard/components/PriorityAlerts";
 import { ClassKnowledgeGaps } from "@/modules/dashboard/components/ClassKnowledgeGaps";
 
@@ -12,7 +12,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
-  const { data, isLoading } = useClassTelemetry();
+  const { data, isLoading } = useGetClassTelemetry();
   const needSupport = data?.studentsNeedingSupport ?? 0;
 
   return (
@@ -35,7 +35,7 @@ export default function TeacherDashboard() {
             </Badge>
             <Button
               variant="primary"
-              onClick={() => navigate("/dashboard/question-bank")}
+              onClick={() => navigate("/dashboard/tests/new")}
             >
               <Plus className="h-4 w-4" /> Tạo bài kiểm tra
             </Button>
