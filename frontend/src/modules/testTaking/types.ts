@@ -45,6 +45,8 @@ export interface SubmitResult {
 export interface QuestionResult {
   questionId: string;
   questionText: string;
+  /** MCQ options, so a review UI can show all choices with the student's pick + correct one highlighted. Null for short_answer. */
+  options: string[] | null;
   isCorrect: boolean;
   studentAnswer: string;
   correctAnswer: string;

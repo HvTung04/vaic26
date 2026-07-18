@@ -45,6 +45,7 @@ interface ApiSubmissionResult {
   results: {
     questionId: string;
     questionText: string | null;
+    options: string[] | null;
     isCorrect: boolean;
     studentAnswer: string | null;
     correctAnswer: string;
@@ -99,6 +100,7 @@ export async function fetchSubmissionResult(submissionId: string): Promise<Submi
   const results: QuestionResult[] = d.results.map((r) => ({
     questionId: r.questionId,
     questionText: r.questionText ?? '',
+    options: r.options,
     isCorrect: r.isCorrect,
     studentAnswer: r.studentAnswer ?? '',
     correctAnswer: r.correctAnswer,
