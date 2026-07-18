@@ -10,6 +10,7 @@ export function useQuestionBankEditor(questionId?: string) {
   return {
     item: itemQuery.data,
     isLoading: itemQuery.isLoading,
+    isError: itemQuery.isError,
     createMutation,
     updateMutation,
   };

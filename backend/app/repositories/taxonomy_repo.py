@@ -66,6 +66,36 @@ def load_taxonomy_context() -> str:
     return "\n".join(lines)
 
 
+def _topic_key(grade: int, topic_id: str) -> str:
+    """Groups node ids like 'L6-t1-B01'..'L6-t1-B03' under one topic key
+    'L6-t1' (topic_id alone repeats across grades, e.g. 't1' is a different
+    topic in grade 6 vs grade 7)."""
+    return f"L{grade}-{topic_id}"
+
+
+def load_topics() -> list[dict]:
+    """Return deduped topics: {id, topic_name, grade, topic_id, mach}, one
+    per (grade, topic_id) pair, id = the shared node-id prefix.
+    """
+    seen: dict[str, dict] = {}
+    for n in _load_raw():
+        key = _topic_key(n["grade"], n["topic_id"])
+        if key not in seen:
+            seen[key] = {
+                "id": key,
+                "topic_name": n["topic_name"],
+                "grade": n["grade"],
+                "topic_id": n["topic_id"],
+                "mach": n["mach"],
+            }
+    return list(seen.values())
+
+
+def node_ids_for_topic(topic_key: str) -> list[str]:
+    """All node ids sharing a topic (e.g. 'L6-t1' -> ['L6-t1-B01', 'L6-t1-B02', ...])."""
+    return [n["_id"] for n in _load_raw() if _topic_key(n["grade"], n["topic_id"]) == topic_key]
+
+
 def is_valid_node(node: str | None) -> bool:
     if not node:
         return False

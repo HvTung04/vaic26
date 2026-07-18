@@ -1,7 +1,8 @@
-import { NavLink } from "react-router-dom";
-import { LayoutGrid, Database, Users2, ClipboardList, Settings } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { LayoutGrid, Database, Users2, ClipboardList, Settings, LogOut } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { ClassSelector } from "@/modules/classes/components/ClassSelector";
+import { useAuth } from "@/modules/auth/AuthContext";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Bảng điều khiển", icon: LayoutGrid, end: true },
@@ -12,6 +13,14 @@ const NAV_ITEMS = [
 ];
 
 export function Sidebar() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col justify-between border-r border-hairline/70 bg-white/60 px-5 py-6 backdrop-blur-sm">
       <div>
@@ -64,6 +73,14 @@ export function Sidebar() {
           Xem góc học sinh
           <span aria-hidden>&rarr;</span>
         </NavLink>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center justify-center gap-1.5 rounded-bento-sm border border-hairline/60 bg-white/50 px-3 py-2 text-xs font-semibold text-ink-faint transition-all hover:border-ember/40 hover:text-ember"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Đăng xuất
+        </button>
       </div>
     </aside>
   );

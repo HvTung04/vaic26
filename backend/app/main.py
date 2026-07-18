@@ -19,9 +19,17 @@ import uvicorn
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_models()
-    mongo_db = mongodb.get_database()
-    if await kg_service.get_graph_snapshot_id(mongo_db) == "unseeded":
-        await kg_service.seed_graph(mongo_db)
+
+    # Attempt Mongo connection; KG features degrade gracefully if unavailable
+    try:
+        mongo_db = mongodb.get_database()
+        snapshot_id = await kg_service.get_graph_snapshot_id(mongo_db)
+        if snapshot_id == "unseeded":
+            await kg_service.seed_graph(mongo_db)
+    except Exception as exc:
+        import logging
+        logging.warning("MongoDB unavailable — KG features disabled: %s", exc)
+
     yield
     mongodb.close_client()
 

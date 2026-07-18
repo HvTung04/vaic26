@@ -34,6 +34,58 @@ export interface ClassStudentRow {
   flagged: boolean;
 }
 
+/** Bài đang dạy (demo: chọn sẵn 1 bài trong SGK của 1 bộ sách). */
+export interface CurrentLesson {
+  name: string;
+  book: string;
+  topicKey: string;
+  /** % học sinh đã đủ nền tiên quyết để học bài này. */
+  readyPct: number;
+}
+
+/** Một chủ đề (cột) trong bản đồ thành thạo. grade < 8 = kiến thức nền lớp dưới. */
+export interface HeatmapTopic {
+  key: string;
+  label: string;
+  grade: number;
+  isCurrentLesson?: boolean;
+}
+
+/** Một học sinh (hàng) trong bản đồ thành thạo. */
+export interface HeatmapStudentRow {
+  id: string;
+  name: string;
+  band: string;
+  avgMastery: number;
+  /** Có lỗ hổng ở chủ đề nền (lớp dưới). */
+  foundationGap: boolean;
+  /** topicKey -> mastery 0..1, hoặc null nếu chưa test. */
+  cells: Record<string, number | null>;
+}
+
+/** Thanh thành thạo 1 chủ đề (dùng cho Stacked Bar visualization). */
+export interface TopicMasteryBar {
+  key: string;
+  label: string;
+  grade: number;
+  isCurrentLesson?: boolean;
+  total: number;
+  counts: {
+    mastered: number;
+    developing: number;
+    gap: number;
+    untested: number;
+  };
+  passRate: number;
+}
+
+/** Nhóm dạy bù: các học sinh cùng yếu một chủ đề. */
+export interface NeedGroup {
+  topicKey: string;
+  topicLabel: string;
+  students: { id: string; name: string }[];
+}
+
 export interface TeacherOverview {
   teacherName: string;
   term: string;
@@ -42,6 +94,11 @@ export interface TeacherOverview {
   knowledgeGaps: KnowledgeGapTopic[];
   moreGapTopicsCount: number;
   roster: ClassStudentRow[];
+  currentLesson: CurrentLesson;
+  heatmapTopics: HeatmapTopic[];
+  heatmap: HeatmapStudentRow[];
+  topicBars: TopicMasteryBar[];
+  needGroups: NeedGroup[];
 }
 
 export interface PerformancePoint {

@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input, Textarea } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
-import { KNOWLEDGE_NODES } from "../constants";
+import { NodeSearchSelect } from "./NodeSearchSelect";
+import { useTaxonomyNodes } from "../hooks/queries/useTaxonomyNodes";
 import type {
   QuestionBankDifficulty,
   QuestionBankDraftInput,
@@ -66,12 +67,15 @@ export function QuestionBankForm({
   const [difficulty, setDifficulty] = useState<QuestionBankDifficulty>(
     initialValue?.difficulty ?? "medium",
   );
-  const [nodeId, setNodeId] = useState(
-    initialValue?.node_id ?? KNOWLEDGE_NODES[0].id,
-  );
+  const [nodeId, setNodeId] = useState(initialValue?.nodeId ?? "");
   const [explanation, setExplanation] = useState(
     initialValue?.explanation ?? "",
   );
+
+  const { data: taxonomyNodes } = useTaxonomyNodes();
+  useEffect(() => {
+    if (!nodeId && taxonomyNodes?.length) setNodeId(taxonomyNodes[0].id);
+  }, [nodeId, taxonomyNodes]);
 
   const updateOption = (key: string, value: string) => {
     setOptions((prev) =>
@@ -87,7 +91,7 @@ export function QuestionBankForm({
             type,
             answer: options.find((o) => o.key === correctKey)?.text ?? "",
             difficulty,
-            node_id: nodeId,
+            nodeId,
             options,
             explanation: explanation.trim() || null,
           }
@@ -96,7 +100,7 @@ export function QuestionBankForm({
             type,
             answer: shortAnswer,
             difficulty,
-            node_id: nodeId,
+            nodeId,
             options: null,
             explanation: explanation.trim() || null,
           };
@@ -149,29 +153,45 @@ export function QuestionBankForm({
 
         {type === "mcq" ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {options.map((option) => (
-              <div key={option.key}>
-                <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-ink-faint">
-                  Option {option.key}
-                  <button
-                    type="button"
-                    onClick={() => setCorrectKey(option.key)}
-                    className={cn(
-                      "ml-auto h-3.5 w-3.5 rounded-full border-2 transition-colors",
-                      correctKey === option.key
-                        ? "border-forest bg-forest"
-                        : "border-hairline bg-white",
+            {options.map((option) => {
+              const isCorrect = correctKey === option.key;
+              return (
+                <div
+                  key={option.key}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setCorrectKey(option.key)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setCorrectKey(option.key);
+                    }
+                  }}
+                  className={cn(
+                    "cursor-pointer rounded-bento-sm border-2 p-3 transition-colors",
+                    isCorrect
+                      ? "border-forest bg-forest/10"
+                      : "border-hairline bg-white hover:border-forest/40",
+                  )}
+                >
+                  <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-ink-faint">
+                    Option {option.key}
+                    {isCorrect && (
+                      <span className="ml-auto text-forest normal-case tracking-normal">
+                        Correct
+                      </span>
                     )}
-                    aria-label={`Mark option ${option.key} as correct`}
+                  </span>
+                  <Input
+                    placeholder="Enter option text..."
+                    value={option.text}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => updateOption(option.key, e.target.value)}
+                    className={cn(isCorrect && "border-forest/40 bg-white")}
                   />
-                </label>
-                <Input
-                  placeholder="Enter option text..."
-                  value={option.text}
-                  onChange={(e) => updateOption(option.key, e.target.value)}
-                />
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div>
@@ -213,17 +233,7 @@ export function QuestionBankForm({
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-ink-faint">
               Topic / Knowledge Node
             </label>
-            <select
-              value={nodeId}
-              onChange={(e) => setNodeId(e.target.value)}
-              className="h-11 w-full rounded-bento-sm border border-hairline bg-white px-4 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40"
-            >
-              {KNOWLEDGE_NODES.map((node) => (
-                <option key={node.id} value={node.id}>
-                  {node.label}
-                </option>
-              ))}
-            </select>
+            <NodeSearchSelect nodes={taxonomyNodes} value={nodeId} onChange={setNodeId} />
           </div>
         </div>
 

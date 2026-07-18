@@ -17,8 +17,13 @@ export function StudentTopBar({
   pendingCount,
   avgRecentScore,
 }: StudentTopBarProps) {
-  const navigate = useNavigate();
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 rounded-bento-lg border border-lavender bg-white px-6 py-4 shadow-bento">
