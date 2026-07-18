@@ -10,6 +10,7 @@ import { AssessmentTopBar } from "@/modules/assessment/components/AssessmentTopB
 import { QuestionNavigator } from "@/modules/testTaking/components/QuestionNavigator";
 import { QuestionConsole } from "@/modules/testTaking/components/QuestionConsole";
 import { ScoreReport } from "@/modules/testTaking/components/ScoreReport";
+import { ProgressBar } from "@/modules/testTaking/components/ProgressBar";
 
 const DEFAULT_DURATION_MINUTES = 20;
 
@@ -26,10 +27,11 @@ export default function AssessmentConsole() {
     currentIndex,
     answers,
     setAnswer,
-    goToIndex,
     goNext,
-    goPrev,
     buildAnswers,
+    progressPercent,
+    isLast,
+    canSubmit,
   } = useAttemptExecution(testId);
 
   const timer = useExamTimer(DEFAULT_DURATION_MINUTES * 60, !submissionId);
@@ -42,6 +44,11 @@ export default function AssessmentConsole() {
       onSuccess: (result) => setSubmissionId(result.submissionId),
     });
   }, [attempt, submitMutation, buildAnswers]);
+
+  const handleSubmitClick = useCallback(() => {
+    if (!canSubmit) return;
+    handleSubmit();
+  }, [canSubmit, handleSubmit]);
 
   const handleContinue = useCallback(() => navigate("/student"), [navigate]);
 
@@ -88,13 +95,9 @@ export default function AssessmentConsole() {
         isPaused={timer.isPaused}
         onTogglePause={timer.togglePause}
       />
+      <ProgressBar percent={progressPercent} />
       <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[64px_1fr] lg:gap-8">
-        <QuestionNavigator
-          questions={questions}
-          currentIndex={currentIndex}
-          answers={answers}
-          onSelect={goToIndex}
-        />
+        <QuestionNavigator questions={questions} currentIndex={currentIndex} answers={answers} />
         <div className="relative">
           <QuestionConsole
             question={currentQuestion}
@@ -102,12 +105,11 @@ export default function AssessmentConsole() {
             totalQuestions={questions.length}
             answer={answers[currentQuestion.id] ?? ""}
             onAnswer={setAnswer}
-            onPrev={goPrev}
             onNext={goNext}
-            onSubmit={handleSubmit}
-            isFirst={currentIndex === 0}
-            isLast={currentIndex === questions.length - 1}
+            onSubmit={handleSubmitClick}
+            isLast={isLast}
             isSubmitting={submitMutation.isPending}
+            requireAnswerToProceed
           />
           {timer.isPaused && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-bento-lg bg-cream/90 backdrop-blur-sm">

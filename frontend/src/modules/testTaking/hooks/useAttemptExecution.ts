@@ -34,16 +34,15 @@ export function useAttemptExecution(testId: string) {
     [currentQuestion],
   );
 
-  const goToIndex = useCallback(
-    (index: number) => {
-      flushCurrentQuestionTime();
-      setCurrentIndex(clampNumber(index, 0, Math.max(questions.length - 1, 0)));
-    },
-    [flushCurrentQuestionTime, questions.length],
-  );
+  const isLast = currentIndex >= Math.max(questions.length - 1, 0);
+  const isCurrentAnswered = Boolean(answers[currentQuestion?.id ?? '']?.trim());
 
-  const goNext = useCallback(() => goToIndex(currentIndex + 1), [goToIndex, currentIndex]);
-  const goPrev = useCallback(() => goToIndex(currentIndex - 1), [goToIndex, currentIndex]);
+  // Sequential-only: a question must be answered before advancing, and there is no going back.
+  const goNext = useCallback(() => {
+    if (!isCurrentAnswered || isLast) return;
+    flushCurrentQuestionTime();
+    setCurrentIndex((prev) => clampNumber(prev + 1, 0, Math.max(questions.length - 1, 0)));
+  }, [flushCurrentQuestionTime, isCurrentAnswered, isLast, questions.length]);
 
   const buildAnswers = useCallback((): SubmitAnswerItem[] => {
     flushCurrentQuestionTime();
@@ -54,6 +53,10 @@ export function useAttemptExecution(testId: string) {
     }));
   }, [questions, answers, flushCurrentQuestionTime]);
 
+  const answeredCount = Object.values(answers).filter((a) => a.trim().length > 0).length;
+  const progressPercent = questions.length > 0 ? Math.round((answeredCount / questions.length) * 100) : 0;
+  const canSubmit = isLast && isCurrentAnswered;
+
   return {
     attempt: attemptQuery.data,
     isLoading: attemptQuery.isLoading,
@@ -63,10 +66,12 @@ export function useAttemptExecution(testId: string) {
     currentIndex,
     answers,
     setAnswer,
-    goToIndex,
     goNext,
-    goPrev,
     buildAnswers,
-    answeredCount: Object.values(answers).filter((a) => a.trim().length > 0).length,
+    answeredCount,
+    progressPercent,
+    isCurrentAnswered,
+    isLast,
+    canSubmit,
   };
 }

@@ -42,6 +42,7 @@ function PracticeSession({
       answer={answers[currentQuestion.id] ?? ''}
       onAnswer={(value) => setAnswers((prev) => ({ ...prev, [currentQuestion.id]: value }))}
       onPrev={() => setCurrentIndex((i) => Math.max(0, i - 1))}
+      isFirst={currentIndex === 0}
       onNext={() => setCurrentIndex((i) => Math.min(questions.length - 1, i + 1))}
       onSubmit={() => {
         if (checkMutation.isPending) return;
@@ -50,7 +51,6 @@ function PracticeSession({
           onSuccess: (res) => onGraded(res.results, res.graphUpdates),
         });
       }}
-      isFirst={currentIndex === 0}
       isLast={currentIndex === questions.length - 1}
       isSubmitting={checkMutation.isPending}
     />

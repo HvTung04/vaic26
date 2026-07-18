@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
-import { Loader2, Sparkles } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useGenerateRevisionTest } from '../hooks/useGenerateRevisionTest';
-import type { NodeState } from '@/modules/knowledgeGraph/types';
+import { useNavigate } from "react-router-dom";
+import { Loader2, Sparkles } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useGenerateRevisionTest } from "../hooks/useGenerateRevisionTest";
+import type { NodeState } from "@/modules/knowledgeGraph/types";
 
 export interface RevisionCtaProps {
   weakestNode?: NodeState | null;
@@ -25,13 +25,16 @@ export function RevisionCta({ weakestNode, isLoading }: RevisionCtaProps) {
           </div>
           <div>
             <p className="text-sm font-semibold text-ink">
-              Bạn đang yếu nhất ở <span className="text-[#6B3FCB]">{weakestNode.nodeName}</span> (
+              Bạn đang yếu nhất ở{" "}
+              <span className="text-[#6B3FCB]">{weakestNode.nodeName}</span> (
               {Math.round(weakestNode.mastery * 100)}% nắm vững)
             </p>
-            <p className="text-xs text-ink-faint">AI có thể tạo ngay một bài ôn tập ngắn nhắm đúng lỗ hổng này.</p>
+            <p className="text-xs text-ink-faint">
+              Hãy ôn tập ngay để cải thiện kiến thức này!
+            </p>
           </div>
         </div>
-        <Button
+        {/* <Button
           variant="lavender"
           disabled={generateMutation.isPending}
           onClick={() =>
@@ -42,7 +45,7 @@ export function RevisionCta({ weakestNode, isLoading }: RevisionCtaProps) {
         >
           {generateMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           Ôn tập ngay
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

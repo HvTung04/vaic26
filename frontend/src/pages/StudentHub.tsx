@@ -1,26 +1,30 @@
-import { TrendingUp } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useStudentTests } from '@/modules/testTaking/hooks/useStudentTests';
-import { useStudentResults } from '@/modules/testTaking/hooks/useStudentResults';
-import { PendingTestList } from '@/modules/testTaking/components/PendingTestList';
-import { ResultHistoryList } from '@/modules/testTaking/components/ResultHistoryList';
-import { ScoreTrendChart } from '@/modules/testTaking/components/ScoreTrendChart';
-import { useMyKnowledgeState } from '@/modules/knowledgeGraph/hooks/useMyKnowledgeState';
-import { KnowledgeMasteryMap } from '@/modules/knowledgeGraph/components/KnowledgeMasteryMap';
-import { useLearningPathProgress } from '@/modules/learningPath/hooks/useLearningPathProgress';
-import { LearningPathPractice } from '@/modules/learningPath/components/LearningPathPractice';
-import { RevisionCta } from '@/modules/revision/components/RevisionCta';
+import { TrendingUp } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useStudentTests } from "@/modules/testTaking/hooks/useStudentTests";
+import { useStudentResults } from "@/modules/testTaking/hooks/useStudentResults";
+import { PendingTestList } from "@/modules/testTaking/components/PendingTestList";
+import { ResultHistoryList } from "@/modules/testTaking/components/ResultHistoryList";
+import { ScoreTrendChart } from "@/modules/testTaking/components/ScoreTrendChart";
+import { useMyKnowledgeState } from "@/modules/knowledgeGraph/hooks/useMyKnowledgeState";
+import { KnowledgeMasteryMap } from "@/modules/knowledgeGraph/components/KnowledgeMasteryMap";
+import { useLearningPathProgress } from "@/modules/learningPath/hooks/useLearningPathProgress";
+import { LearningPathPractice } from "@/modules/learningPath/components/LearningPathPractice";
+import { RevisionCta } from "@/modules/revision/components/RevisionCta";
 
 export default function StudentHub() {
-  const { data: pendingTests, isLoading: isTestsLoading } = useStudentTests('pending');
+  const { data: pendingTests, isLoading: isTestsLoading } =
+    useStudentTests("pending");
   const { data: results, isLoading: isResultsLoading } = useStudentResults();
   const { data: graphState, isLoading: isGraphLoading } = useMyKnowledgeState();
   const { tiers, path, isLoading: isPathLoading } = useLearningPathProgress();
 
   return (
     <div className="flex flex-col gap-6">
-      <RevisionCta weakestNode={graphState?.nodes[0]} isLoading={isGraphLoading} />
+      <RevisionCta
+        weakestNode={graphState?.nodes[0]}
+        isLoading={isGraphLoading}
+      />
 
       {/*
         Desktop (lg:grid-cols-3): row 1 = learning path (full width); row 2 =
@@ -54,7 +58,9 @@ export default function StudentHub() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="mb-2 text-xs text-ink-faint">Xu hướng điểm số các bài kiểm tra gần đây</p>
+            <p className="mb-2 text-xs text-ink-faint">
+              Xu hướng điểm số các bài kiểm tra gần đây
+            </p>
             {isResultsLoading ? (
               <Skeleton className="h-48 w-full" />
             ) : (
@@ -72,7 +78,10 @@ export default function StudentHub() {
         </div>
 
         <div className="order-5 lg:col-span-1">
-          <KnowledgeMasteryMap nodes={graphState?.nodes} isLoading={isGraphLoading} />
+          <KnowledgeMasteryMap
+            nodes={graphState?.nodes}
+            isLoading={isGraphLoading}
+          />
         </div>
       </div>
     </div>
