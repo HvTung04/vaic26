@@ -1,12 +1,17 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Calendar, Plus, ArrowUpRight } from "lucide-react";
+import { Calendar, Plus } from "lucide-react";
 import { DashboardHeader } from "@/layouts/DashboardHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useClassTelemetry } from "@/modules/dashboard/hooks/useClassTelemetry";
-import { PriorityAlertsCard } from "@/modules/dashboard/components/PriorityAlerts";
 import { ClassKnowledgeGaps } from "@/modules/dashboard/components/ClassKnowledgeGaps";
+import { ClassLeaderboard } from "@/modules/dashboard/components/ClassLeaderboard";
+import { TopicStudentGroups } from "@/modules/dashboard/components/TopicStudentGroups";
+import { ClassDiagnosticStats } from "@/modules/dashboard/components/ClassDiagnosticStats";
+import { CurrentLessonCard } from "@/modules/dashboard/components/CurrentLessonCard";
+import { MiniCalendar } from "@/modules/dashboard/components/MiniCalendar";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -14,9 +19,11 @@ export default function TeacherDashboard() {
   const navigate = useNavigate();
   const { data, isLoading } = useClassTelemetry();
   const needSupport = data?.studentsNeedingSupport ?? 0;
+  const [hoveredStudentId, setHoveredStudentId] = useState<string | null>(null);
+  const [highlightedGroupIds, setHighlightedGroupIds] = useState<string[] | null>(null);
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <DashboardHeader
         title={`Chào buổi sáng, ${data?.teacherName ?? "..."}`}
         subtitle={
@@ -43,86 +50,71 @@ export default function TeacherDashboard() {
         }
       />
 
-      {/* Quick stats strip */}
+      {/* Stats 2x2 + Current Lesson + Calendar */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: EASE }}
-        className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
+        className="grid gap-3 sm:grid-cols-[1fr_1fr_320px]"
       >
-        {[
-          { label: "Cần hỗ trợ ngay", value: needSupport, accent: "bg-coral-soft/60 text-ember" },
-          { label: "Lớp đang dạy", value: "Khối 8 · Tỉ lệ", accent: "bg-lavender-soft text-ink" },
-          { label: "Vùng kiến thức yếu", value: isLoading ? "…" : (data?.knowledgeGaps?.filter(t => t.severity === "critical").length ?? 0), accent: "bg-[#6d1f1a]/10 text-[#6d1f1a]" },
-          { label: "Học sinh đạt yêu cầu", value: isLoading ? "…" : (data?.knowledgeGaps?.some(t => t.severity === "onTrack") ? "Có" : "—"), accent: "bg-[#234d2f]/10 text-[#234d2f]" },
-        ].map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: EASE, delay: 0.08 + i * 0.07 }}
-            className="rounded-bento border border-hairline/60 bg-white px-4 py-3"
-          >
-            <div className={`mb-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${s.accent}`}>
-              {s.label}
-            </div>
-            <div className="font-display text-2xl font-semibold text-ink">
-              {s.value}
-            </div>
-          </motion.div>
-        ))}
+        {/* 4 stat tiles - 2x2 */}
+        <div className="grid grid-cols-2 gap-3">
+          <ClassDiagnosticStats heatmap={data?.heatmap} alerts={data?.alerts} isLoading={isLoading} />
+        </div>
+
+        {/* Current lesson */}
+        <CurrentLessonCard lesson={data?.currentLesson} isLoading={isLoading} />
+
+        {/* Calendar */}
+        <MiniCalendar />
       </motion.div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr]">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.18 }}
-        >
-          <PriorityAlertsCard
-            data={data?.alerts}
-            isLoading={isLoading}
-            onSelectStudent={(id) => navigate(`/dashboard/students/${id}`)}
-          />
-        </motion.div>
+      {/* Knowledge gaps - full width */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: EASE, delay: 0.18 }}
+        className="mb-8"
+      >
+        <ClassKnowledgeGaps
+          topics={data?.knowledgeGaps}
+          moreCount={data?.moreGapTopicsCount}
+          isLoading={isLoading}
+        />
+      </motion.div>
+
+      {/* Leaderboard + Topic groups side by side */}
+      <div className="grid gap-6 sm:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.28 }}
         >
-          <ClassKnowledgeGaps
-            topics={data?.knowledgeGaps}
-            moreCount={data?.moreGapTopicsCount}
+          <ClassLeaderboard
+            heatmap={data?.heatmap}
+            topics={data?.heatmapTopics}
             isLoading={isLoading}
+            onSelectStudent={(id) => navigate(`/dashboard/students/${id}`)}
+            onHoverStudent={setHoveredStudentId}
+            highlightStudentIds={highlightedGroupIds}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: EASE, delay: 0.34 }}
+        >
+          <TopicStudentGroups
+            heatmap={data?.heatmap}
+            topics={data?.heatmapTopics}
+            isLoading={isLoading}
+            onSelectStudent={(id) => navigate(`/dashboard/students/${id}`)}
+            highlightStudentId={hoveredStudentId}
+            onHoverGroup={setHighlightedGroupIds}
           />
         </motion.div>
       </div>
-
-      {/* Need-based group action */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: EASE, delay: 0.4 }}
-        className="mt-6 flex items-center justify-between gap-4 rounded-bento-lg border border-ink/10 bg-ink px-6 py-5 text-cream"
-      >
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-lime">
-            Nhóm theo nhu cầu
-          </p>
-          <p className="mt-1.5 font-display text-lg font-medium">
-            Tạo nhóm can thiệp nhanh từ {needSupport} học sinh cần hỗ trợ
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          size="sm"
-          className="shrink-0"
-          onClick={() => navigate("/dashboard/class-list")}
-        >
-          Tạo nhóm
-          <ArrowUpRight className="h-3.5 w-3.5" />
-        </Button>
-      </motion.div>
     </div>
   );
 }

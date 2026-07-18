@@ -4,7 +4,140 @@ import type {
   StudentInsight,
   StudentHubData,
   LearningPath,
+  HeatmapTopic,
+  HeatmapStudentRow,
+  TopicMasteryBar,
+  NeedGroup,
+  CurrentLesson,
 } from "../types";
+
+// ── Bản đồ thành thạo (mock deterministic) ──────────────────────────────────
+// Cột = chủ đề (grade < 8 là nền lớp dưới). Bài đang dạy demo: "Hằng đẳng thức".
+const HEATMAP_TOPICS: HeatmapTopic[] = [
+  { key: "int", label: "Số nguyên", grade: 6 },
+  { key: "frac", label: "Phân số & Số thập phân", grade: 6 },
+  { key: "expr7", label: "Biểu thức đại số", grade: 7 },
+  { key: "poly", label: "Đa thức nhiều biến", grade: 8 },
+  { key: "iden", label: "Hằng đẳng thức đáng nhớ", grade: 8, isCurrentLesson: true },
+  { key: "fact", label: "Phân tích đa thức", grade: 8 },
+  { key: "pyth", label: "Định lí Pythagore", grade: 8 },
+  { key: "pyr", label: "Hình chóp đều", grade: 8 },
+];
+const CURRENT_TOPIC = HEATMAP_TOPICS.find((t) => t.isCurrentLesson)!;
+
+const HM_SEED: { id: string; name: string; ability: number }[] = [
+  { id: "minh-tuan", name: "Minh Tuấn", ability: 0.34 },
+  { id: "bao-ngoc", name: "Bảo Ngọc", ability: 0.48 },
+  { id: "gia-huy", name: "Gia Huy", ability: 0.41 },
+  { id: "phuong-linh", name: "Phương Linh", ability: 0.55 },
+  { id: "duc-anh", name: "Đức Anh", ability: 0.83 },
+  { id: "thu-ha", name: "Thu Hà", ability: 0.9 },
+  { id: "khanh-vy", name: "Khánh Vy", ability: 0.72 },
+  { id: "tuan-kiet", name: "Tuấn Kiệt", ability: 0.27 },
+  { id: "ngoc-mai", name: "Ngọc Mai", ability: 0.66 },
+  { id: "quoc-bao", name: "Quốc Bảo", ability: 0.6 },
+  { id: "lan-chi", name: "Lan Chi", ability: 0.5 },
+  { id: "hoang-nam", name: "Hoàng Nam", ability: 0.38 },
+];
+
+// LCG nhỏ để mock ổn định (không phụ thuộc thứ tự render).
+function seeded(seed: number): () => number {
+  let s = seed >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 0xffffffff;
+  };
+}
+
+function bandOf(avg: number): string {
+  if (avg >= 0.7) return "Vững";
+  if (avg >= 0.55) return "Khá";
+  if (avg >= 0.4) return "Cần hỗ trợ";
+  return "Nguy cơ";
+}
+
+function buildHeatmap(): HeatmapStudentRow[] {
+  return HM_SEED.map((s, i) => {
+    const rnd = seeded(26 + i * 101);
+    const cells: Record<string, number | null> = {};
+    for (const t of HEATMAP_TOPICS) {
+      if (rnd() < 0.1 && !t.isCurrentLesson) {
+        cells[t.key] = null; // chưa test
+        continue;
+      }
+      const bias = t.grade === 8 ? 0.08 : -0.05;
+      const m = s.ability + bias + (rnd() - 0.5) * 0.34;
+      cells[t.key] = Math.round(Math.min(0.98, Math.max(0.05, m)) * 100) / 100;
+    }
+    const tested = Object.values(cells).filter((v): v is number => v !== null);
+    const avg = tested.reduce((a, b) => a + b, 0) / tested.length;
+    const foundationGap = HEATMAP_TOPICS.some(
+      (t) => t.grade < 8 && cells[t.key] !== null && (cells[t.key] as number) < 0.4,
+    );
+    return {
+      id: s.id,
+      name: s.name,
+      band: bandOf(avg),
+      avgMastery: Math.round(avg * 100) / 100,
+      foundationGap,
+      cells,
+    };
+  }).sort((a, b) => b.avgMastery - a.avgMastery); // giỏi -> yếu
+}
+
+const HEATMAP = buildHeatmap();
+
+function buildNeedGroups(rows: HeatmapStudentRow[]): NeedGroup[] {
+  return HEATMAP_TOPICS.map((t) => {
+    const students = rows
+      .filter((r) => r.cells[t.key] !== null && (r.cells[t.key] as number) < 0.6)
+      .map((r) => ({ id: r.id, name: r.name }));
+    return { topicKey: t.key, topicLabel: t.label, students };
+  })
+    .filter((g) => g.students.length >= 2)
+    .sort((a, b) => b.students.length - a.students.length);
+}
+
+const NEED_GROUPS = buildNeedGroups(HEATMAP);
+
+function buildTopicBars(): TopicMasteryBar[] {
+  return HEATMAP_TOPICS.map((t) => {
+    const counts = { mastered: 0, developing: 0, gap: 0, untested: 0 };
+    for (const row of HEATMAP) {
+      const m = row.cells[t.key];
+      if (m === null) { counts.untested++; continue; }
+      if (m >= 0.6) counts.mastered++;
+      else if (m >= 0.4) counts.developing++;
+      else counts.gap++;
+    }
+    const total = counts.mastered + counts.developing + counts.gap;
+    return {
+      key: t.key, label: t.label, grade: t.grade,
+      isCurrentLesson: t.isCurrentLesson,
+      total, counts,
+      passRate: total > 0 ? Math.round((counts.mastered / total) * 100) : 0,
+    };
+  }).sort((a, b) => a.passRate - b.passRate);
+}
+
+const TOPIC_BARS = buildTopicBars();
+
+// % lớp đủ nền (trung bình các chủ đề lớp dưới >= 0.5) để học bài đang dạy.
+const CURRENT_LESSON: CurrentLesson = {
+  name: CURRENT_TOPIC.label,
+  book: "Chân trời sáng tạo",
+  topicKey: CURRENT_TOPIC.key,
+  readyPct: Math.round(
+    (HEATMAP.filter((r) => {
+      const nen = HEATMAP_TOPICS.filter((t) => t.grade < 8)
+        .map((t) => r.cells[t.key])
+        .filter((v): v is number => v !== null);
+      return nen.length > 0 && nen.reduce((a, b) => a + b, 0) / nen.length >= 0.5;
+    }).length /
+      HEATMAP.length) *
+      100,
+  ),
+};
 
 const TEACHER_OVERVIEW: TeacherOverview = {
   teacherName: "Cô Lan Anh",
@@ -76,6 +209,11 @@ const TEACHER_OVERVIEW: TeacherOverview = {
     },
   ],
   moreGapTopicsCount: 3,
+  currentLesson: CURRENT_LESSON,
+  heatmapTopics: HEATMAP_TOPICS,
+  heatmap: HEATMAP,
+  topicBars: TOPIC_BARS,
+  needGroups: NEED_GROUPS,
   roster: [
     {
       id: "minh-tuan",
