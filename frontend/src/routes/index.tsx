@@ -5,6 +5,7 @@ import { MainLayout } from '@/layouts/MainLayout';
 import { StudentLayout } from '@/layouts/StudentLayout';
 import { PageSkeleton } from '@/components/PageSkeleton';
 
+const Landing = lazy(() => import('@/pages/Landing'));
 const TeacherDashboard = lazy(() => import('@/pages/TeacherDashboard'));
 const StudentInsights = lazy(() => import('@/pages/StudentInsights'));
 const QuestionBank = lazy(() => import('@/pages/QuestionBank'));
@@ -21,6 +22,10 @@ function withSuspense(element: ReactNode) {
 const router = createBrowserRouter([
   {
     path: '/',
+    element: withSuspense(<Landing />),
+  },
+  {
+    path: '/dashboard',
     element: <MainLayout />,
     children: [
       { index: true, element: withSuspense(<TeacherDashboard />) },
