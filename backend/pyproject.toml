@@ -19,7 +19,7 @@ dependencies = [
 test = ["pytest>=8.0"]
 
 [tool.setuptools.packages.find]
-include = ["ingestion*", "bubblesheet*"]
+include = ["ingestion*", "bubblesheet*", "kg*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
