@@ -109,7 +109,7 @@ function StatTile({ icon: Icon, label, value, detail, iconBg, iconColor, borderA
   iconBg: string;
   iconColor: string;
   borderAccent: string;
-  isLoading: boolean;
+  isLoading?: boolean;
 }) {
   return (
     <div className={cn(
