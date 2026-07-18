@@ -107,7 +107,6 @@ Quy trình:
 4. Mỗi câu trả lời được lưu theo các metric:
 	- đúng/sai
 	- thời gian làm bài
-	- độ tự tin hoặc mức do dự nếu có
 	- vùng kiến thức
 	- độ khó
 	- kiểu lỗi
