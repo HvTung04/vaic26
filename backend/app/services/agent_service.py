@@ -5,7 +5,6 @@ diagnosis are not here — they run inline in content_service / grading_service.
 
 from __future__ import annotations
 
-import uuid
 from datetime import datetime, timezone
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -122,31 +121,47 @@ async def generate_revision_test(
     learning_path_id: str,
     teacher_note: str | None,
     question_count: int | None,
+    node_id: str | None = None,
 ) -> dict:
-    path = await learning_path_repo.get_by_id(db, learning_path_id)
-    mastery_map = await kg_service.get_mastery_map(mongo_db, student_id)
-
     class_ids = await class_repo.list_class_ids_for_student(db, student_id)
     class_id = class_ids[0] if class_ids else None
 
-    all_questions = await question_repo.find_for_auto_compose(db, node_ids=[], count=10_000)
-    # find_for_auto_compose filters by node_id.in_(node_ids); empty list means "any node" here
-    bank = [
-        {
-            "id": str(q.id),
-            "knowledge_nodes": [q.node_id],
-            "difficulty": {"easy": 1, "medium": 2, "hard": 3}[q.difficulty.value],
-        }
-        for q in all_questions
-    ]
+    if node_id:
+        # Student picked one topic to drill directly — skip the weakest-node
+        # auto-selection and just pull a short set of questions for that node.
+        questions = await question_repo.find_for_auto_compose(
+            db, node_ids=[node_id], count=question_count or 5
+        )
+        diff_counts = {"easy": 0, "medium": 0, "hard": 0}
+        for q in questions:
+            diff_counts[q.difficulty.value] += 1
+        question_ids = [str(q.id) for q in questions]
+        difficulty_mix = diff_counts
+        target_node_ids = [node_id]
+    else:
+        mastery_map = await kg_service.get_mastery_map(mongo_db, student_id)
 
-    submissions = await submission_repo.list_submissions_for_student(db, student_id)
-    answered_ids = get_answered_question_ids(
-        [{"question_id": str(a.question_id)} for s in submissions for a in s.answers]
-    )
+        all_questions = await question_repo.find_for_auto_compose(db, node_ids=[], count=10_000)
+        # find_for_auto_compose filters by node_id.in_(node_ids); empty list means "any node" here
+        bank = [
+            {
+                "id": str(q.id),
+                "knowledge_nodes": [q.node_id],
+                "difficulty": {"easy": 1, "medium": 2, "hard": 3}[q.difficulty.value],
+            }
+            for q in all_questions
+        ]
 
-    max_total = question_count or 10
-    revision = select_revision_questions(mastery_map, bank, answered_ids, max_total=max_total)
+        submissions = await submission_repo.list_submissions_for_student(db, student_id)
+        answered_ids = get_answered_question_ids(
+            [{"question_id": str(a.question_id)} for s in submissions for a in s.answers]
+        )
+
+        max_total = question_count or 10
+        revision = select_revision_questions(mastery_map, bank, answered_ids, max_total=max_total)
+        question_ids = [q["id"] for q in revision.questions]
+        difficulty_mix = revision.difficulty_distribution
+        target_node_ids = revision.target_nodes
 
     test = await test_repo.create_test(
         db,
@@ -154,16 +169,16 @@ async def generate_revision_test(
         class_id=class_id,
         type_=TestType.REVISION,
         created_by=student_id,
-        question_ids=[q["id"] for q in revision.questions],
+        question_ids=question_ids,
     )
     await test_repo.create_assignments(db, test_id=test.id, student_ids=[student_id], due_at=None)
 
     return {
         "test_id": str(test.id),
         "student_id": student_id,
-        "question_ids": [q["id"] for q in revision.questions],
-        "difficulty_mix": revision.difficulty_distribution,
-        "target_node_ids": revision.target_nodes,
+        "question_ids": question_ids,
+        "difficulty_mix": difficulty_mix,
+        "target_node_ids": target_node_ids,
     }
 
 
