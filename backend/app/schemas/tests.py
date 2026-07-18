@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
 from app.models.test import TestType
+
+TestCompletionStatus = Literal["not_started", "in_progress", "completed"]
 
 
 class DifficultyMix(BaseModel):
@@ -58,6 +61,9 @@ class TestListItem(BaseModel):
     type: TestType
     class_id: str
     created_at: datetime
+    status: TestCompletionStatus
+    assigned_count: int = 0
+    submitted_count: int = 0
 
 
 class TestAssignRequest(BaseModel):

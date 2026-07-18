@@ -186,6 +186,7 @@ async def get_class_results(
     rows = [
         StudentResultRow(
             student_id=str(student.id),
+            full_name=student.full_name,
             score=(
                 (latest_by_student[str(student.id)].score or 0) / (latest_by_student[str(student.id)].total or 1)
                 * 100
@@ -193,12 +194,16 @@ async def get_class_results(
                 else None
             ),
             status="submitted" if str(student.id) in latest_by_student else "pending",
+            submission_id=(
+                str(latest_by_student[str(student.id)].id) if str(student.id) in latest_by_student else None
+            ),
         )
         for student in roster
     ]
 
     return ClassResultsResponse(
         test_id=test_id,
+        test_title=test.title,
         class_avg_score=round(class_avg, 2),
         distribution=[ScoreDistributionBucket(score_range=k, count=v) for k, v in buckets.items()],
         per_node_accuracy=[
