@@ -1,67 +1,5 @@
 import { withMockDelay } from '@/services/mockClient';
-import { calcAccuracy } from '@/utils/format';
-import type {
-  Assessment,
-  AssessmentDraft,
-  Question,
-  QuestionDifficulty,
-  QuestionOptionKey,
-  ScoreReportData,
-  TestAttemptSubmission,
-} from '../types';
-
-const ASSESSMENT_TITLES: Record<string, { title: string; subject: string }> = {
-  'giai-tich-12': { title: 'Giải tích 12: Khảo sát hàm số', subject: 'Toán' },
-  'song-co-hoc': { title: 'Vật Lý: Sóng cơ học', subject: 'Vật Lý' },
-};
-
-const DIFFICULTY_CYCLE: QuestionDifficulty[] = ['Easy', 'Medium', 'Hard'];
-
-function pointsForDifficulty(difficulty: QuestionDifficulty) {
-  if (difficulty === 'Easy') return 10;
-  if (difficulty === 'Medium') return 15;
-  return 20;
-}
-
-function hashToRange(value: string, min: number, max: number) {
-  let hash = 0;
-  for (let i = 0; i < value.length; i += 1) hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
-  return min + (hash % (max - min + 1));
-}
-
-function buildQuestion(order: number, subject: string): Question {
-  const difficulty = DIFFICULTY_CYCLE[(order - 1) % DIFFICULTY_CYCLE.length];
-  const options: Question['options'] = [
-    { key: 'A', text: `Phương án A cho câu ${order}` },
-    { key: 'B', text: `Phương án B cho câu ${order}` },
-    { key: 'C', text: `Phương án C cho câu ${order}` },
-    { key: 'D', text: `Phương án D cho câu ${order}` },
-  ];
-  const correctOption: QuestionOptionKey = (['A', 'B', 'C', 'D'] as const)[order % 4];
-  return {
-    id: `q-${order}`,
-    order,
-    prompt: `Câu ${order}: Nội dung câu hỏi ${subject} minh hoạ cho phiên kiểm tra thích ứng.`,
-    options,
-    correctOption,
-    topicTag: `${subject} · Dạng ${order}`,
-    difficulty,
-    points: pointsForDifficulty(difficulty),
-    explanation: `Giải thích ngắn gọn cho đáp án đúng của câu ${order}.`,
-  };
-}
-
-function buildAssessment(assessmentId: string): Assessment {
-  const meta = ASSESSMENT_TITLES[assessmentId] ?? { title: 'Bài kiểm tra thích ứng', subject: 'Toán' };
-  return {
-    id: assessmentId,
-    title: meta.title,
-    subject: meta.subject,
-    durationMinutes: 20,
-    sessionCode: `AS-${hashToRange(assessmentId, 1000, 9999)}`,
-    questions: Array.from({ length: 10 }, (_, i) => buildQuestion(i + 1, meta.subject)),
-  };
-}
+import type { AssessmentDraft, Question } from '../types';
 
 const DRAFT_ASSESSMENT: AssessmentDraft = {
   id: 'biology-midterm-unit-4',
@@ -97,10 +35,6 @@ const DRAFT_ASSESSMENT: AssessmentDraft = {
   ],
 };
 
-export async function fetchAssessment(assessmentId: string): Promise<Assessment> {
-  return withMockDelay(buildAssessment(assessmentId));
-}
-
 export async function fetchAssessmentDraft(): Promise<AssessmentDraft> {
   return withMockDelay(structuredClone(DRAFT_ASSESSMENT));
 }
@@ -132,54 +66,4 @@ export async function saveQuestionDraft(question: Question): Promise<Question> {
 
 export async function publishAssessment(draftId: string): Promise<{ id: string; status: 'published' }> {
   return withMockDelay({ id: draftId, status: 'published' as const }, 900);
-}
-
-function shuffledRank(): { classRank: number; classSize: number } {
-  const classSize = 32;
-  const classRank = Math.max(1, Math.round(classSize * 0.15));
-  return { classRank, classSize };
-}
-
-export async function submitTestAttempt(
-  assessment: Assessment,
-  submission: TestAttemptSubmission,
-): Promise<ScoreReportData> {
-  const questionResults = assessment.questions.map((question) => {
-    const selectedOption = submission.answers[question.id] ?? null;
-    const telemetry = submission.telemetry.find((t) => t.questionId === question.id);
-    const isCorrect = selectedOption === question.correctOption;
-    return {
-      question,
-      selectedOption,
-      isCorrect,
-      timeSpentSeconds: telemetry?.timeSpentSeconds ?? 0,
-      pointsEarned: isCorrect ? question.points : 0,
-      reviewNeeded: !isCorrect,
-      waverCount: telemetry?.answerChanges.length ?? 0,
-    };
-  });
-
-  const correctCount = questionResults.filter((r) => r.isCorrect).length;
-  const accuracy = calcAccuracy(correctCount, assessment.questions.length);
-  const totalPossiblePoints = assessment.questions.reduce((sum, q) => sum + q.points, 0);
-  const pointsEarned = questionResults.reduce((sum, r) => sum + r.pointsEarned, 0);
-  const finalScorePercent = totalPossiblePoints > 0 ? Math.round((pointsEarned / totalPossiblePoints) * 100) : 0;
-  const { classRank, classSize } = shuffledRank();
-
-  const report: ScoreReportData = {
-    assessmentId: assessment.id,
-    assessmentTitle: assessment.title,
-    accuracy,
-    correctCount,
-    totalQuestions: assessment.questions.length,
-    durationSeconds: submission.totalDurationSeconds,
-    classRank,
-    classSize,
-    pointsEarned,
-    totalPossiblePoints,
-    finalScorePercent,
-    questionResults,
-  };
-
-  return withMockDelay(report, 900);
 }

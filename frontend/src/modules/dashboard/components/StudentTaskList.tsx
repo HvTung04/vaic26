@@ -1,8 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { CalendarClock, FlaskConical, Sigma } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { StudentTask } from "../types";
 
@@ -17,9 +15,6 @@ export interface StudentTaskListProps {
 }
 
 export function StudentTaskList({ tasks, isLoading }: StudentTaskListProps) {
-  const navigate = useNavigate();
-  const nextTask = tasks?.[0];
-
   return (
     <Card className="h-full">
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
@@ -58,16 +53,6 @@ export function StudentTaskList({ tasks, isLoading }: StudentTaskListProps) {
             );
           })
         )}
-        <Button
-          variant="primary"
-          className="mt-1 w-full"
-          disabled={!nextTask}
-          onClick={() =>
-            nextTask && navigate(`/assessment/${nextTask.assessmentId}`)
-          }
-        >
-          Làm ngay
-        </Button>
       </CardContent>
     </Card>
   );

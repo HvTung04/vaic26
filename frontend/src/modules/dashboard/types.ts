@@ -85,7 +85,6 @@ export interface StudentTask {
   title: string;
   dueLabel: string;
   urgency: 'high' | 'normal';
-  assessmentId: string;
 }
 
 export interface QuizAttempt {
@@ -97,15 +96,3 @@ export interface QuizAttempt {
   maxScore: number;
 }
 
-export interface StudentHubData {
-  studentId: string;
-  name: string;
-  className: string;
-  avatarUrl?: string;
-  points: number;
-  dailyStreak: number;
-  performanceHistory: PerformancePoint[];
-  tasks: StudentTask[];
-  quizHistory: QuizAttempt[];
-  learningPath: LearningPath;
-}

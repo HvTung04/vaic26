@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
-import { useStudentHub } from "@/modules/dashboard/hooks/useStudentHub";
+import { useStudentTopBarInfo } from "@/modules/studentSelf/hooks/useStudentTopBarInfo";
 import { StudentTopBar } from "./StudentTopBar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function StudentLayout() {
-  const { data, isLoading } = useStudentHub();
+  const { name, className, pendingCount, avgRecentScore, isLoading } = useStudentTopBarInfo();
 
   return (
     <div className="min-h-screen w-full px-4 py-6 sm:px-8 lg:px-12">
@@ -14,10 +14,10 @@ export function StudentLayout() {
           <Skeleton className="h-[76px] w-full rounded-bento-lg" />
         ) : (
           <StudentTopBar
-            name={data?.name ?? ""}
-            className={data?.className ?? ""}
-            points={data?.points ?? 0}
-            dailyStreak={data?.dailyStreak ?? 0}
+            name={name}
+            className={className}
+            pendingCount={pendingCount}
+            avgRecentScore={avgRecentScore}
           />
         )}
         <div className="mt-6">
