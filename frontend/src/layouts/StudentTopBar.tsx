@@ -22,24 +22,22 @@ export function StudentTopBar({
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 rounded-bento-lg border border-lavender bg-white px-6 py-4 shadow-bento">
-      <p className="font-serif text-2xl font-bold text-ink">GapLens</p>
+      <p className="font-serif text-2xl font-bold text-ink">
+        {" "}
+        <Link to="/student">GapLens</Link>
+      </p>
       <div className="flex items-center gap-3">
         <span className="flex items-center gap-1.5 rounded-full bg-lavender-soft px-3 py-1.5 text-sm font-semibold text-[#6B3FCB]">
           <ClipboardList className="h-3.5 w-3.5" /> Bài cần làm: {pendingCount}
         </span>
         {avgRecentScore !== null && (
           <span className="flex items-center gap-1.5 rounded-full bg-mint px-3 py-1.5 text-sm font-semibold text-[#136B4E]">
-            <TrendingUp className="h-3.5 w-3.5" /> Điểm TB gần đây: {avgRecentScore}%
+            <TrendingUp className="h-3.5 w-3.5" /> Điểm TB gần đây:{" "}
+            {avgRecentScore}%
           </span>
         )}
       </div>
       <div className="flex items-center gap-3">
-        <Link
-          to="/"
-          className="hidden text-xs font-semibold text-ink-faint underline-offset-2 transition-colors hover:text-primary hover:underline sm:inline"
-        >
-          Giao diện giáo viên &rarr;
-        </Link>
         <div className="text-right">
           <p className="text-sm font-semibold text-ink">{name}</p>
           <p className="text-[11px] font-bold uppercase tracking-wide text-ink-faint">
@@ -61,7 +59,7 @@ export function StudentTopBar({
           aria-label="Đăng xuất"
           onClick={() => {
             logout();
-            navigate('/login', { replace: true });
+            navigate("/login", { replace: true });
           }}
         >
           <LogOut className="h-4 w-4" />
