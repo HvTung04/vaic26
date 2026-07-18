@@ -6,13 +6,15 @@ from ingestion.models import RawExam, SourceType, SplitQuestion, TagResponse, Di
 
 def test_split_exam_segments(monkeypatch):
     fake = {"questions": [
-        {"index": 1, "text": "Câu 1?", "options": ["A", "B"]},
-        {"index": 2, "text": "Câu 2?", "options": ["A", "B", "C"]},
+        {"index": 1, "text": "Câu 1?", "options": ["A", "B"], "correct_answer": "B"},
+        {"index": 2, "text": "Câu 2?", "options": ["A", "B", "C"], "correct_answer": "A"},
     ]}
     monkeypatch.setattr(splitter, "structured_completion", lambda **k: fake)
     out = splitter.split_exam(RawExam(source_type=SourceType.PDF, text="raw"))
     assert len(out) == 2
     assert out[0].text == "Câu 1?"
+    assert out[0].correct_answer == "B"
+    assert out[1].correct_answer == "A"
 
 
 def test_split_empty_raises(monkeypatch):

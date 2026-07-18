@@ -38,7 +38,7 @@ class QuestionDraft(BaseModel):
     index: int
     text: str
     options: list[AnswerOption] = Field(default_factory=list)
-    correct_answer: Optional[str] = None
+    correct_answer: str = ""  # LLM solves, teacher verifies on review
     knowledge_nodes: list[str] = Field(default_factory=list)  # taxonomy node ids
     difficulty: Optional[Difficulty] = None
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
@@ -50,7 +50,7 @@ class SplitQuestion(BaseModel):
     index: int
     text: str
     options: list[str] = Field(default_factory=list)
-    correct_answer: Optional[str] = None
+    correct_answer: str = ""  # LLM always solves, never null
 
 
 class SplitResponse(BaseModel):

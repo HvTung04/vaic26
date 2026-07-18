@@ -1,5 +1,6 @@
 """Splitter: LLM structured output segments RawExam into Question drafts.
 No numbering heuristics — one schema handles PDF-text and photo-OCR uniformly.
+LLM also solves each question and always returns correct_answer.
 """
 
 from __future__ import annotations
@@ -8,9 +9,15 @@ from .llm_client import structured_completion
 from .models import RawExam, SplitQuestion, SplitResponse
 
 _SPLIT_SYSTEM = (
-    "You segment a Vietnamese exam into individual questions. Preserve LaTeX and "
-    "math symbols verbatim. For each question return its text, option texts in order "
-    "(A, B, C, D...), and the correct answer key if visible. Output strict JSON."
+    "You are a Vietnamese math teacher. Segment this exam into individual questions.\n"
+    "For each question:\n"
+    "1. Extract the question text exactly (preserve LaTeX and math symbols).\n"
+    "2. Extract all options (A, B, C, D...) exactly.\n"
+    "3. SOLVE the question yourself and determine the correct answer.\n"
+    "   - If the answer key is visible in the source, use it.\n"
+    "   - If not, solve it yourself. You are a math teacher — compute the answer.\n"
+    "4. Always return correct_answer as a non-null option key (e.g. \"B\").\n\n"
+    "Output strict JSON. Never return null for correct_answer."
 )
 
 _SPLIT_SCHEMA = {
@@ -24,9 +31,9 @@ _SPLIT_SCHEMA = {
                     "index": {"type": "integer"},
                     "text": {"type": "string"},
                     "options": {"type": "array", "items": {"type": "string"}},
-                    "correct_answer": {"type": ["string", "null"]},
+                    "correct_answer": {"type": "string"},
                 },
-                "required": ["index", "text", "options"],
+                "required": ["index", "text", "options", "correct_answer"],
                 "additionalProperties": False,
             },
         }
