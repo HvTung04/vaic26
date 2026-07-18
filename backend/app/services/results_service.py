@@ -17,6 +17,7 @@ async def get_student_results(db: AsyncSession, student_id: str) -> StudentResul
         weak_nodes = [g["node_id"] for g in (s.graph_updates or []) if g["mastery_after"] < 0.5]
         tests_out.append(
             StudentTestResult(
+                submission_id=str(s.id),
                 test_id=str(s.test_id),
                 title=test.title if test else str(s.test_id),
                 score=(s.score or 0) / (s.total or 1) * 100,

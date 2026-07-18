@@ -93,6 +93,7 @@ class ClassResultsResponse(BaseModel):
 
 
 class StudentTestResult(BaseModel):
+    submission_id: str
     test_id: str
     title: str
     score: float
