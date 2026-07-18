@@ -141,18 +141,23 @@ export interface RevisionTestResult {
 }
 
 /**
- * POST /agents/revision-test. The endpoint derives targets from the student's
- * learning path, so we resolve `path_id` first. `nodeId` is advisory (the CTA's
- * weakest node) and not sent.
+ * POST /agents/revision-test, scoped to a single node — used when the student
+ * picks a topic directly (e.g. from the learning-path practice picker). The
+ * endpoint still requires a `learning_path_id`, so we resolve the student's
+ * current path first; server-side, passing `node_id` skips the "weakest node"
+ * auto-selection and pulls questions for exactly that node.
  */
 export async function generateRevisionTest(
   studentId: string,
-  _nodeId: string,
+  nodeId: string,
+  questionCount?: number,
 ): Promise<RevisionTestResult> {
   const path = await http.get<{ pathId: string }>(`/students/${studentId}/learning-path`);
   const res = await http.post<ApiRevisionTest>('/agents/revision-test', {
     student_id: studentId,
     learning_path_id: path.pathId,
+    node_id: nodeId,
+    question_count: questionCount,
   });
   return {
     testId: res.testId,

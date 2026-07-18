@@ -9,7 +9,7 @@ import { ScoreTrendChart } from '@/modules/testTaking/components/ScoreTrendChart
 import { useMyKnowledgeState } from '@/modules/knowledgeGraph/hooks/useMyKnowledgeState';
 import { KnowledgeMasteryMap } from '@/modules/knowledgeGraph/components/KnowledgeMasteryMap';
 import { useLearningPathProgress } from '@/modules/learningPath/hooks/useLearningPathProgress';
-import { LearningPathTiers } from '@/modules/learningPath/components/LearningPathTiers';
+import { LearningPathPractice } from '@/modules/learningPath/components/LearningPathPractice';
 import { RevisionCta } from '@/modules/revision/components/RevisionCta';
 
 export default function StudentHub() {
@@ -31,17 +31,20 @@ export default function StudentHub() {
         needed).
       */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <Card className="order-1 lg:col-span-3">
-          <CardContent className="pt-6">
-            {isPathLoading ? (
-              <Skeleton className="h-32 w-full" />
-            ) : (
-              tiers.length > 0 && (
-                <LearningPathTiers tiers={tiers} pathStatus={path?.status} nodeNames={path?.nodeNames} />
-              )
-            )}
-          </CardContent>
-        </Card>
+        <div className="order-1 lg:col-span-3">
+          {isPathLoading ? (
+            <Skeleton className="h-32 w-full" />
+          ) : (
+            tiers.length > 0 && (
+              <LearningPathPractice
+                tiers={tiers}
+                pathStatus={path?.status}
+                nodeNames={path?.nodeNames}
+                masteryNodes={graphState?.nodes}
+              />
+            )
+          )}
+        </div>
 
         <Card className="order-3 lg:order-2 lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
