@@ -34,15 +34,6 @@ export interface ClassStudentRow {
   flagged: boolean;
 }
 
-/** Bài đang dạy (demo: chọn sẵn 1 bài trong SGK của 1 bộ sách). */
-export interface CurrentLesson {
-  name: string;
-  book: string;
-  topicKey: string;
-  /** % học sinh đã đủ nền tiên quyết để học bài này. */
-  readyPct: number;
-}
-
 /** Một chủ đề (cột) trong bản đồ thành thạo. grade < 8 = kiến thức nền lớp dưới. */
 export interface HeatmapTopic {
   key: string;
@@ -94,7 +85,6 @@ export interface TeacherOverview {
   knowledgeGaps: KnowledgeGapTopic[];
   moreGapTopicsCount: number;
   roster: ClassStudentRow[];
-  currentLesson: CurrentLesson;
   heatmapTopics: HeatmapTopic[];
   heatmap: HeatmapStudentRow[];
   topicBars: TopicMasteryBar[];

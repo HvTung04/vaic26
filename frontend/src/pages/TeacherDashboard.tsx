@@ -10,8 +10,9 @@ import { ClassKnowledgeGaps } from "@/modules/dashboard/components/ClassKnowledg
 import { ClassLeaderboard } from "@/modules/dashboard/components/ClassLeaderboard";
 import { TopicStudentGroups } from "@/modules/dashboard/components/TopicStudentGroups";
 import { ClassDiagnosticStats } from "@/modules/dashboard/components/ClassDiagnosticStats";
-import { CurrentLessonCard } from "@/modules/dashboard/components/CurrentLessonCard";
+import { DayLessonsCard } from "@/modules/dashboard/components/DayLessonsCard";
 import { MiniCalendar } from "@/modules/dashboard/components/MiniCalendar";
+import { getLessonsForDate } from "@/modules/dashboard/data/calendarSchedule";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -21,6 +22,8 @@ export default function TeacherDashboard() {
   const needSupport = data?.studentsNeedingSupport ?? 0;
   const [hoveredStudentId, setHoveredStudentId] = useState<string | null>(null);
   const [highlightedGroupIds, setHighlightedGroupIds] = useState<string[] | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
+  const selectedDayLessons = getLessonsForDate(selectedDate);
 
   return (
     <div className="flex flex-col gap-8">
@@ -62,11 +65,11 @@ export default function TeacherDashboard() {
           <ClassDiagnosticStats heatmap={data?.heatmap} alerts={data?.alerts} isLoading={isLoading} />
         </div>
 
-        {/* Current lesson */}
-        <CurrentLessonCard lesson={data?.currentLesson} isLoading={isLoading} />
+        {/* Lịch dạy của ngày đang chọn — nhiều lớp/tiết trong cùng một ngày */}
+        <DayLessonsCard date={selectedDate} lessons={selectedDayLessons} isLoading={isLoading} />
 
         {/* Calendar */}
-        <MiniCalendar />
+        <MiniCalendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
       </motion.div>
 
       {/* Knowledge gaps - full width */}

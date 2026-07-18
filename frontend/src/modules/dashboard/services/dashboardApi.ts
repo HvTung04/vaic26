@@ -8,7 +8,6 @@ import type {
   HeatmapStudentRow,
   TopicMasteryBar,
   NeedGroup,
-  CurrentLesson,
 } from "../types";
 
 // ── Bản đồ thành thạo (mock deterministic) ──────────────────────────────────
@@ -23,7 +22,6 @@ const HEATMAP_TOPICS: HeatmapTopic[] = [
   { key: "pyth", label: "Định lí Pythagore", grade: 8 },
   { key: "pyr", label: "Hình chóp đều", grade: 8 },
 ];
-const CURRENT_TOPIC = HEATMAP_TOPICS.find((t) => t.isCurrentLesson)!;
 
 const HM_SEED: { id: string; name: string; ability: number }[] = [
   { id: "minh-tuan", name: "Minh Tuấn", ability: 0.34 },
@@ -122,23 +120,6 @@ function buildTopicBars(): TopicMasteryBar[] {
 
 const TOPIC_BARS = buildTopicBars();
 
-// % lớp đủ nền (trung bình các chủ đề lớp dưới >= 0.5) để học bài đang dạy.
-const CURRENT_LESSON: CurrentLesson = {
-  name: CURRENT_TOPIC.label,
-  book: "Chân trời sáng tạo",
-  topicKey: CURRENT_TOPIC.key,
-  readyPct: Math.round(
-    (HEATMAP.filter((r) => {
-      const nen = HEATMAP_TOPICS.filter((t) => t.grade < 8)
-        .map((t) => r.cells[t.key])
-        .filter((v): v is number => v !== null);
-      return nen.length > 0 && nen.reduce((a, b) => a + b, 0) / nen.length >= 0.5;
-    }).length /
-      HEATMAP.length) *
-      100,
-  ),
-};
-
 const TEACHER_OVERVIEW: TeacherOverview = {
   teacherName: "Cô Lan Anh",
   term: "Học kỳ I - 2024",
@@ -209,7 +190,6 @@ const TEACHER_OVERVIEW: TeacherOverview = {
     },
   ],
   moreGapTopicsCount: 3,
-  currentLesson: CURRENT_LESSON,
   heatmapTopics: HEATMAP_TOPICS,
   heatmap: HEATMAP,
   topicBars: TOPIC_BARS,

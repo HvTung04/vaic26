@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
+import { getEventsForDate } from '../data/calendarSchedule';
 
 const MONTHS = ['Th 1', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7', 'Th 8', 'Th 9', 'Th 10', 'Th 11', 'Th 12'];
 const DAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -14,23 +15,20 @@ function getFirstDayOfMonth(year: number, month: number) {
   return new Date(year, month, 1).getDay();
 }
 
-const MOCK_EVENTS: Record<string, { label: string; bg: string; dot: string }[]> = {
-  '2026-07-08': [{ label: 'Ôn tập Phân số', bg: 'bg-lavender-soft/50', dot: 'bg-lavender' }],
-  '2026-07-15': [{ label: 'KT 15 phút', bg: 'bg-primary/8', dot: 'bg-primary' }],
-  '2026-07-18': [{ label: 'Họp phụ huynh', bg: 'bg-lime-soft/60', dot: 'bg-forest' }],
-  '2026-07-22': [{ label: 'KT giữa kỳ', bg: 'bg-coral-soft/40', dot: 'bg-ember' }],
-  '2026-07-25': [{ label: 'Deadline bài tập', bg: 'bg-cream-200/80', dot: 'bg-ink-faint' }],
-};
-
-function formatDateKey(year: number, month: number, day: number) {
-  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+function isSameDay(a: Date, day: number, month: number, year: number) {
+  return a.getDate() === day && a.getMonth() === month && a.getFullYear() === year;
 }
 
-export function MiniCalendar() {
+export interface MiniCalendarProps {
+  /** Ngày đang được chọn — thông tin của ngày này sẽ hiển thị ở tab bên trái. */
+  selectedDate: Date;
+  onSelectDate: (date: Date) => void;
+}
+
+export function MiniCalendar({ selectedDate, onSelectDate }: MiniCalendarProps) {
   const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate());
+  const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
+  const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
 
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
@@ -44,9 +42,6 @@ export function MiniCalendar() {
     if (currentMonth === 11) { setCurrentMonth(0); setCurrentYear(currentYear + 1); }
     else { setCurrentMonth(currentMonth + 1); }
   };
-
-  const selectedKey = selectedDay != null ? formatDateKey(currentYear, currentMonth, selectedDay) : null;
-  const selectedEvents = selectedKey ? MOCK_EVENTS[selectedKey] ?? [] : [];
 
   return (
     <Card className="flex h-full flex-col">
@@ -85,16 +80,18 @@ export function MiniCalendar() {
 
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
-            const dateKey = formatDateKey(currentYear, currentMonth, day);
-            const hasEvent = MOCK_EVENTS[dateKey];
-            const isToday = day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
-            const isSelected = day === selectedDay;
+            const cellDate = new Date(currentYear, currentMonth, day);
+            // Chỉ hiện chấm cho ngày có tiết dạy thật (khớp với danh sách bên DayLessonsCard).
+            const lessons = getEventsForDate(cellDate).filter((e) => e.kind === 'lesson');
+            const hasEvents = lessons.length > 0;
+            const isToday = isSameDay(today, day, currentMonth, currentYear);
+            const isSelected = isSameDay(selectedDate, day, currentMonth, currentYear);
 
             return (
               <button
                 key={day}
                 type="button"
-                onClick={() => setSelectedDay(day)}
+                onClick={() => onSelectDate(cellDate)}
                 className={cn(
                   'relative flex h-9 w-full items-center justify-center rounded-bento-sm text-sm font-medium transition-all',
                   isSelected && !isToday && 'bg-ink text-cream font-bold',
@@ -104,32 +101,19 @@ export function MiniCalendar() {
                 )}
               >
                 {day}
-                {hasEvent && (
-                  <span className={cn(
-                    'absolute bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full',
-                    isSelected || isToday ? 'bg-cream/80' : hasEvent[0].dot,
-                  )} />
+                {hasEvents && (
+                  <span className="absolute bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-0.5">
+                    {lessons.slice(0, 3).map((e, idx) => (
+                      <span
+                        key={idx}
+                        className={cn('h-1.5 w-1.5 rounded-full', isSelected || isToday ? 'bg-cream/80' : e.dot)}
+                      />
+                    ))}
+                  </span>
                 )}
               </button>
             );
           })}
-        </div>
-
-        {/* Events */}
-        <div className="mt-1 flex flex-col gap-1.5">
-          <span className="text-xs font-bold text-ink-faint">
-            {selectedDay != null
-              ? selectedEvents.length > 0
-                ? `Ngày ${selectedDay}`
-                : `Ngày ${selectedDay} · Trống`
-              : 'Chọn ngày'}
-          </span>
-          {selectedEvents.map((e, i) => (
-            <div key={i} className={cn('flex items-center gap-2 rounded-bento-sm px-3 py-2', e.bg)}>
-              <span className={cn('h-2 w-2 rounded-full shrink-0', e.dot)} />
-              <span className="text-xs font-medium text-ink">{e.label}</span>
-            </div>
-          ))}
         </div>
       </CardContent>
     </Card>
