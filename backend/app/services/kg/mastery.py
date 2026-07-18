@@ -4,7 +4,7 @@ NOT LLM — formula-based, testable, no hallucination risk.
 
 from __future__ import annotations
 
-from .models import MasteryRecord, Graph
+from app.schemas.kg import MasteryRecord, Graph
 
 # Difficulty weights: harder questions = stronger signal
 DIFFICULTY_WEIGHT = {1: 0.10, 2: 0.20, 3: 0.35}

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pdfplumber
 
-from .models import RawExam, SourceType
+from app.schemas.ingestion import RawExam, SourceType
 
 
 def parse_pdf(path: str | Path) -> RawExam:

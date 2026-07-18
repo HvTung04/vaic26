@@ -7,6 +7,8 @@ export interface QuestionOption {
   text: string;
 }
 
+export type QuestionSource = 'manual' | 'ai' | 'import';
+
 export interface Question {
   id: string;
   order: number;
@@ -14,10 +16,13 @@ export interface Question {
   options: QuestionOption[];
   correctOption: QuestionOptionKey;
   topicTag: string;
+  /** Knowledge-graph node this question is auto-labeled against, when parsed/generated. */
+  knowledgeNodeId?: string;
   difficulty: QuestionDifficulty;
   points: number;
   explanation?: string;
   referenceImageUrl?: string;
+  source?: QuestionSource;
 }
 
 export type DifficultyLevel = 'conceptual' | 'applied' | 'advanced' | 'adaptive';

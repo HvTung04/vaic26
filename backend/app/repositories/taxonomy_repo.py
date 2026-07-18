@@ -11,7 +11,7 @@ import json
 import os
 from pathlib import Path
 
-_DOCS_DIR = Path(__file__).resolve().parents[2] / "docs"
+_DOCS_DIR = Path(__file__).resolve().parents[3] / "docs"
 _NODES_PATH = _DOCS_DIR / "curriculum_nodes.json"
 _EDGES_PATH = _DOCS_DIR / "curriculum_edges.json"
 

@@ -1,6 +1,6 @@
 """Tests for mastery update formula."""
 
-from kg.mastery import (
+from app.services.kg.mastery import (
     update_mastery,
     unit_proximity,
     update_student_mastery,
@@ -8,8 +8,8 @@ from kg.mastery import (
     get_weak_nodes,
     DIFFICULTY_WEIGHT,
 )
-from kg.models import MasteryRecord, Graph
-from kg.graph import load_graph
+from app.schemas.kg import MasteryRecord, Graph
+from app.repositories.graph_repo import load_graph
 
 
 def test_correct_boost():

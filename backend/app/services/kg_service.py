@@ -1,7 +1,7 @@
-"""Knowledge Graph service: MongoDB is the store, the pure kg/* modules (already
-built by the KG role) are the algorithms. This module is the only place that
-knows both — it loads nodes/edges/mastery from Mongo into the in-memory
-dataclasses those modules expect, and persists the results back.
+"""Knowledge Graph service: MongoDB is the store, the pure app.services.kg.*
+modules are the algorithms. This module is the only place that knows both —
+it loads nodes/edges/mastery from Mongo into the in-memory dataclasses those
+modules expect, and persists the results back.
 """
 
 from __future__ import annotations
@@ -12,9 +12,9 @@ from pathlib import Path
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from kg.graph import build_graph
-from kg.mastery import MIN_ANSWERS_TO_TRUST, unit_proximity, update_student_mastery
-from kg.models import Graph, MasteryRecord
+from app.repositories.graph_repo import build_graph
+from app.services.kg.mastery import MIN_ANSWERS_TO_TRUST, unit_proximity, update_student_mastery
+from app.schemas.kg import Graph, MasteryRecord
 
 from app.db import mongodb as mdb
 

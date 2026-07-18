@@ -10,7 +10,7 @@ from pathlib import Path
 
 import httpx
 
-from .models import QuestionDraft
+from app.schemas.ingestion import QuestionDraft
 
 _API_BASE = os.environ.get("GAPLENS_API_BASE", "").rstrip("/")
 
@@ -19,7 +19,7 @@ def _local_bank_path() -> Path:
     return Path(
         os.environ.get(
             "GAPLENS_LOCAL_BANK",
-            Path(__file__).resolve().parents[1] / "bank.local.json",
+            Path(__file__).resolve().parents[2] / "bank.local.json",
         )
     )
 

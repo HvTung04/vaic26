@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .models import Graph, MasteryRecord, RootCause
+from app.schemas.kg import Graph, MasteryRecord, RootCause
 from .graph import get_all_chains
 
 

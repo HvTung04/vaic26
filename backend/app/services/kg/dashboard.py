@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 
-from .models import (
+from app.schemas.kg import (
     MasteryRecord,
     DashboardPriority,
     GapRadar,

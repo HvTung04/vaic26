@@ -1,7 +1,7 @@
 """Tests for splitter + tagger schemas (no real LLM; monkeypatch client)."""
 
-from ingestion import splitter, tagger
-from ingestion.models import RawExam, SourceType, SplitQuestion, TagResponse, Difficulty
+from app.services.ingestion import splitter, tagger
+from app.schemas.ingestion import RawExam, SourceType, SplitQuestion, TagResponse, Difficulty
 
 
 def test_split_exam_segments(monkeypatch):

@@ -8,9 +8,9 @@ import json
 import os
 from dataclasses import dataclass
 
-from .models import MasteryRecord, LearningPath, LearningTier, Graph
+from app.schemas.kg import MasteryRecord, LearningPath, LearningTier, Graph
 from .mastery import get_weak_nodes
-from ingestion.llm_client import structured_completion
+from app.services.ingestion.llm_client import structured_completion
 
 
 _LEARNING_PATH_SYSTEM = (
