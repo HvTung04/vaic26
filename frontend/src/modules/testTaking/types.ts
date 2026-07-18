@@ -50,6 +50,7 @@ export interface QuestionResult {
   isCorrect: boolean;
   studentAnswer: string;
   correctAnswer: string;
+  timeSpentSeconds: number;
   explanation: string | null;
   rootCauseNodeId: string | null;
   rootCauseNodeName: string | null;

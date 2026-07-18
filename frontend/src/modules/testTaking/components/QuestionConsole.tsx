@@ -10,12 +10,15 @@ export interface QuestionConsoleProps {
   totalQuestions: number;
   answer: string;
   onAnswer: (answer: string) => void;
-  onPrev: () => void;
   onNext: () => void;
   onSubmit: () => void;
-  isFirst: boolean;
   isLast: boolean;
   isSubmitting?: boolean;
+  /** Free-navigation (e.g. practice mode) only: omit to disable going back. */
+  onPrev?: () => void;
+  isFirst?: boolean;
+  /** Graded test flow: block Next/Submit until the current question has an answer. */
+  requireAnswerToProceed?: boolean;
 }
 
 export function QuestionConsole({
@@ -24,13 +27,15 @@ export function QuestionConsole({
   totalQuestions,
   answer,
   onAnswer,
-  onPrev,
   onNext,
   onSubmit,
-  isFirst,
   isLast,
   isSubmitting,
+  onPrev,
+  isFirst,
+  requireAnswerToProceed,
 }: QuestionConsoleProps) {
+  const blockedByAnswer = Boolean(requireAnswerToProceed) && answer.trim().length === 0;
   return (
     <div className="flex h-full flex-col rounded-bento-lg border border-hairline bg-white p-8 shadow-bento">
       <p className="mb-2 text-xs font-bold uppercase tracking-widest text-ink-faint">
@@ -79,21 +84,22 @@ export function QuestionConsole({
       </div>
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        {totalQuestions > 1 ? (
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={onPrev} disabled={isFirst}>
-              <ArrowLeft className="h-4 w-4" /> Trước
-            </Button>
-            <Button variant="outline" onClick={onNext} disabled={isLast}>
-              Tiếp theo <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
+        {onPrev ? (
+          <Button variant="outline" onClick={onPrev} disabled={isFirst}>
+            <ArrowLeft className="h-4 w-4" /> Trước
+          </Button>
         ) : (
           <div />
         )}
-        <Button variant="ember" onClick={onSubmit} disabled={isSubmitting}>
-          {isSubmitting ? 'Đang nộp bài...' : 'Nộp bài'} <PenLine className="h-4 w-4" />
-        </Button>
+        {isLast ? (
+          <Button variant="ember" onClick={onSubmit} disabled={blockedByAnswer || isSubmitting}>
+            {isSubmitting ? 'Đang nộp bài...' : 'Nộp bài'} <PenLine className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button variant="ember" onClick={onNext} disabled={blockedByAnswer}>
+            Tiếp theo <ArrowRight className="h-4 w-4" />
+          </Button>
+        )}
       </div>
     </div>
   );

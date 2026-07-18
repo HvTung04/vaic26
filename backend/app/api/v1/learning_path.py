@@ -10,6 +10,8 @@ from app.api.deps import MongoDB
 from app.core.errors import api_error
 from app.core.security import CurrentUser, ensure_self_or_teacher
 from app.db.postgres import get_db
+from app.models.learning_path import LearningPath
+from app.models.user import UserRole
 from app.repositories import learning_path_repo, submission_repo, test_repo
 from app.schemas.agents import PathTier
 from app.schemas.learning_path import (
@@ -26,15 +28,7 @@ router = APIRouter(tags=["learning-path"])
 DbSession = Annotated[AsyncSession, Depends(get_db)]
 
 
-@router.get("/students/{student_id}/learning-path", response_model=StudentLearningPathResponse)
-async def get_learning_path(
-    student_id: str, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
-) -> StudentLearningPathResponse:
-    ensure_self_or_teacher(current_user, student_id)
-    path = await learning_path_repo.get_active_for_student(db, student_id)
-    if path is None:
-        raise api_error(404, "not_found", "No learning path generated yet for this student")
-
+async def _to_response(path: LearningPath, mongo_db) -> StudentLearningPathResponse:
     tiers = [PathTier(**t) for t in path.tiers]
     graph = await kg_service.load_graph(mongo_db)
     node_ids = {nid for tier in tiers for nid in tier.node_ids}
@@ -47,6 +41,30 @@ async def get_learning_path(
         status=path.status,
         node_names=node_names,
     )
+
+
+@router.get("/students/{student_id}/learning-path", response_model=StudentLearningPathResponse)
+async def get_learning_path(
+    student_id: str, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
+) -> StudentLearningPathResponse:
+    ensure_self_or_teacher(current_user, student_id)
+    path = await learning_path_repo.get_active_for_student(db, student_id)
+    if path is None:
+        raise api_error(404, "not_found", "No learning path generated yet for this student")
+    return await _to_response(path, mongo_db)
+
+
+@router.post("/students/{student_id}/learning-path/verify", response_model=StudentLearningPathResponse)
+async def verify_learning_path(
+    student_id: str, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
+) -> StudentLearningPathResponse:
+    if current_user.role != UserRole.TEACHER:
+        raise api_error(403, "forbidden", "Only teachers can verify a learning path")
+    path = await learning_path_repo.get_active_for_student(db, student_id)
+    if path is None:
+        raise api_error(404, "not_found", "No learning path to verify")
+    path = await learning_path_repo.verify(db, path)
+    return await _to_response(path, mongo_db)
 
 
 @router.get("/students/{student_id}/progress", response_model=StudentProgressResponse)

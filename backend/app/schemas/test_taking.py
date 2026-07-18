@@ -65,6 +65,7 @@ class QuestionResult(BaseModel):
     is_correct: bool
     student_answer: str | None = None
     correct_answer: str
+    time_spent_seconds: int = 0
     explanation: str | None = None
     root_cause_node_id: str | None = None
     root_cause_node_name: str | None = None

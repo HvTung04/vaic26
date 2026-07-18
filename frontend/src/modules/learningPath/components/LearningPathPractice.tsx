@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertCircle, BookOpen, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { AlertCircle, BookOpen, CheckCircle2, Loader2, ShieldCheck, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,9 +10,9 @@ import { usePracticeQuestions } from '../hooks/usePracticeQuestions';
 import { useCheckPracticeAnswers } from '../hooks/useCheckPracticeAnswers';
 import type { AttemptQuestion, GraphUpdate, QuestionResult } from '@/modules/testTaking/types';
 import type { NodeState } from '@/modules/knowledgeGraph/types';
-import type { TierProgress } from '../types';
+import type { PathStatus, TierProgress } from '../types';
 
-const TIER_LABEL: Record<TierProgress['tier'], string> = {
+export const TIER_LABEL: Record<TierProgress['tier'], string> = {
   foundation: 'Nền tảng',
   bridge: 'Kết nối',
   application: 'Vận dụng',
@@ -42,6 +42,7 @@ function PracticeSession({
       answer={answers[currentQuestion.id] ?? ''}
       onAnswer={(value) => setAnswers((prev) => ({ ...prev, [currentQuestion.id]: value }))}
       onPrev={() => setCurrentIndex((i) => Math.max(0, i - 1))}
+      isFirst={currentIndex === 0}
       onNext={() => setCurrentIndex((i) => Math.min(questions.length - 1, i + 1))}
       onSubmit={() => {
         if (checkMutation.isPending) return;
@@ -50,7 +51,6 @@ function PracticeSession({
           onSuccess: (res) => onGraded(res.results, res.graphUpdates),
         });
       }}
-      isFirst={currentIndex === 0}
       isLast={currentIndex === questions.length - 1}
       isSubmitting={checkMutation.isPending}
     />
@@ -91,7 +91,7 @@ function PracticeResultPanel({
 
 export interface LearningPathPracticeProps {
   tiers: TierProgress[];
-  pathStatus?: 'active' | 'completed' | 'superseded';
+  pathStatus?: PathStatus;
   nodeNames?: Record<string, string>;
   masteryNodes?: NodeState[];
 }
@@ -123,10 +123,16 @@ export function LearningPathPractice({ tiers, pathStatus, nodeNames, masteryNode
           <CardTitle>Lộ trình học cá nhân hoá</CardTitle>
           <p className="mt-1 text-sm text-ink-soft">Chọn một chủ đề để luyện tập ngay với câu hỏi thật.</p>
         </div>
-        {pathStatus === 'active' && (
-          <Badge variant="lavender" className="shrink-0 gap-1">
-            <Sparkles className="h-3 w-3" /> Do AI đề xuất
+        {pathStatus === 'verified' ? (
+          <Badge variant="mint" className="shrink-0 gap-1">
+            <ShieldCheck className="h-3 w-3" /> Giáo viên đã xác nhận
           </Badge>
+        ) : (
+          pathStatus === 'active' && (
+            <Badge variant="lavender" className="shrink-0 gap-1">
+              <Sparkles className="h-3 w-3" /> Do AI đề xuất
+            </Badge>
+          )
         )}
       </CardHeader>
       <CardContent className="flex flex-col gap-6 lg:flex-row lg:items-start">

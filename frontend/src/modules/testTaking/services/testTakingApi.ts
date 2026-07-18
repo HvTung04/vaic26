@@ -49,6 +49,7 @@ interface ApiSubmissionResult {
     isCorrect: boolean;
     studentAnswer: string | null;
     correctAnswer: string;
+    timeSpentSeconds: number;
     explanation: string | null;
     rootCauseNodeId: string | null;
     rootCauseNodeName: string | null;
@@ -104,6 +105,7 @@ export async function fetchSubmissionResult(submissionId: string): Promise<Submi
     isCorrect: r.isCorrect,
     studentAnswer: r.studentAnswer ?? '',
     correctAnswer: r.correctAnswer,
+    timeSpentSeconds: r.timeSpentSeconds,
     explanation: r.explanation,
     rootCauseNodeId: r.rootCauseNodeId,
     rootCauseNodeName: r.rootCauseNodeName,
