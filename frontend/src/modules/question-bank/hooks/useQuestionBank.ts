@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetQuestionBank } from './queries/useGetQuestionBank';
 import type {
   QuestionBankDifficulty,
@@ -8,21 +8,28 @@ import type {
 } from '../types';
 
 const PAGE_SIZE = 8;
+const SEARCH_DEBOUNCE_MS = 300;
 
 const EMPTY_ITEMS: never[] = [];
 
-const DIFFICULTY_RANK: Record<QuestionBankDifficulty, number> = { easy: 0, medium: 1, hard: 2 };
-
 export function useQuestionBank() {
-  const query = useGetQuestionBank();
-
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<QuestionBankType | 'all'>('all');
   const [difficultyFilter, setDifficultyFilter] = useState<QuestionBankDifficulty | 'all'>('all');
-  const [nodeFilter, setNodeFilter] = useState<string>('all');
+  const [topicFilter, setTopicFilter] = useState<string>('all');
   const [sortField, setSortField] = useState<QuestionBankSortField>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, typeFilter, difficultyFilter, topicFilter, sortField, sortDirection]);
 
   function toggleSort(field: QuestionBankSortField) {
     if (field === sortField) {
@@ -33,46 +40,29 @@ export function useQuestionBank() {
     }
   }
 
-  const items = query.data ?? EMPTY_ITEMS;
+  const query = useGetQuestionBank({
+    search: debouncedSearch || undefined,
+    type: typeFilter,
+    difficulty: difficultyFilter,
+    topic: topicFilter,
+    sortField,
+    sortDirection,
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
+  });
 
-  const filtered = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    return items.filter((q) => {
-      if (typeFilter !== 'all' && q.type !== typeFilter) return false;
-      if (difficultyFilter !== 'all' && q.difficulty !== difficultyFilter) return false;
-      if (nodeFilter !== 'all' && q.node_id !== nodeFilter) return false;
-      if (term && !q.text.toLowerCase().includes(term)) return false;
-      return true;
-    });
-  }, [items, search, typeFilter, difficultyFilter, nodeFilter]);
-
-  const sorted = useMemo(() => {
-    const copy = [...filtered];
-    copy.sort((a, b) => {
-      let cmp = 0;
-      if (sortField === 'text') cmp = a.text.localeCompare(b.text);
-      else if (sortField === 'type') cmp = a.type.localeCompare(b.type);
-      else if (sortField === 'difficulty') cmp = DIFFICULTY_RANK[a.difficulty] - DIFFICULTY_RANK[b.difficulty];
-      else cmp = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-      return sortDirection === 'asc' ? cmp : -cmp;
-    });
-    return copy;
-  }, [filtered, sortField, sortDirection]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [search, typeFilter, difficultyFilter, nodeFilter, sortField, sortDirection]);
-
-  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-  const pageItems = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageItems = query.data?.items ?? EMPTY_ITEMS;
+  const totalCount = query.data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const pageRangeStart = pageItems.length ? (page - 1) * PAGE_SIZE + 1 : 0;
-  const pageRangeEnd = Math.min(page * PAGE_SIZE, sorted.length);
+  const pageRangeEnd = Math.min(page * PAGE_SIZE, totalCount);
 
   return {
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
     pageItems,
-    totalCount: items.length,
-    filteredCount: sorted.length,
+    totalCount,
+    filteredCount: totalCount,
     page,
     totalPages,
     pageRangeStart,
@@ -84,8 +74,8 @@ export function useQuestionBank() {
     setTypeFilter,
     difficultyFilter,
     setDifficultyFilter,
-    nodeFilter,
-    setNodeFilter,
+    topicFilter,
+    setTopicFilter,
     sortField,
     sortDirection,
     toggleSort,
