@@ -72,3 +72,26 @@ class QuestionDetail(BaseModel):
 class QuestionListResponse(BaseModel):
     items: list[QuestionDetail]
     total: int
+    limit: int
+    offset: int
+
+
+class TaxonomyNode(BaseModel):
+    id: str
+    topic_name: str
+    grade: int
+    topic_id: str
+    mach: str
+    # Specific content block description; unset on grouped /taxonomy/topics rows
+    # since a topic spans several nodes with different content each.
+    noi_dung_cu_the: str | None = None
+
+
+class QuestionWriteRequest(BaseModel):
+    text: str
+    type: QuestionType
+    options: list[QuestionOption] | None = None
+    answer: str
+    explanation: str | None = None
+    difficulty: Difficulty
+    node_id: str

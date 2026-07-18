@@ -1,74 +1,64 @@
 import { http } from '@/services/httpClient';
 import type {
+  QuestionBankDifficulty,
   QuestionBankDraftInput,
   QuestionBankItem,
+  QuestionBankListResult,
+  QuestionBankSortField,
+  QuestionBankType,
+  SortDirection,
 } from '../types';
 
 /**
- * Real API bindings for the Question Bank domain.
- *
- * Backend endpoints (content.py):
- *   GET    /questions              — list with filters
- *   GET    /questions/{id}         — single item
- *   PATCH  /questions/{id}         — update
- *   POST   /content/uploads        — upload file (separate flow)
- *   POST   /content/uploads/{id}/approve — approve parsed drafts
- *
- * NOTE: There is no POST /questions for direct creation. The backend
- * requires upload→parse→approve pipeline. For MVP, createQuestionBankItem
- * is a placeholder that will need the full upload pipeline wired.
+ * Real API bindings for the Question Bank domain (backend/app/api/v1/content.py).
+ * The httpClient camelCases response keys, so the backend's snake_case
+ * (`node_id`, `source_upload_id`, `created_at`) already lands on the FE types.
  */
 
 export interface QuestionBankListParams {
-  nodeId?: string;
-  difficulty?: string;
   search?: string;
+  type?: QuestionBankType | 'all';
+  difficulty?: QuestionBankDifficulty | 'all';
+  /** Topic key from GET /taxonomy/topics (e.g. "L6-t1") — matches every node under that topic. */
+  topic?: string | 'all';
+  sortField?: QuestionBankSortField;
+  sortDirection?: SortDirection;
   limit?: number;
   offset?: number;
 }
 
-export interface QuestionBankListResult {
-  items: QuestionBankItem[];
-  total: number;
+export async function fetchQuestionBank(params: QuestionBankListParams = {}): Promise<QuestionBankListResult> {
+  return http.get<QuestionBankListResult>('/questions', {
+    search: params.search || undefined,
+    type: params.type && params.type !== 'all' ? params.type : undefined,
+    difficulty: params.difficulty && params.difficulty !== 'all' ? params.difficulty : undefined,
+    topic: params.topic && params.topic !== 'all' ? params.topic : undefined,
+    sort_by: params.sortField,
+    sort_dir: params.sortDirection,
+    limit: params.limit,
+    offset: params.offset,
+  });
 }
 
-/** GET /questions — paginated list with optional filters. */
-export async function fetchQuestionBank(
-  params?: QuestionBankListParams,
-): Promise<QuestionBankListResult> {
-  const query: Record<string, string | number> = {};
-  if (params?.nodeId) query.node_id = params.nodeId;
-  if (params?.difficulty) query.difficulty = params.difficulty;
-  if (params?.search) query.search = params.search;
-  if (params?.limit) query.limit = params.limit;
-  if (params?.offset) query.offset = params.offset;
-  return http.get<QuestionBankListResult>('/questions', query);
-}
-
-/** GET /questions/{id} — single question detail. */
-export async function fetchQuestionBankItem(
-  id: string,
-): Promise<QuestionBankItem> {
+export async function fetchQuestionBankItem(id: string): Promise<QuestionBankItem> {
   return http.get<QuestionBankItem>(`/questions/${id}`);
 }
 
-/**
- * Create a question via the upload→approve pipeline.
- *
- * TODO: This requires the full upload→OCR→parse→approve flow.
- * Backend has no POST /questions endpoint for direct creation.
- * Current implementation creates a mock-local question for UI flow.
- * Wire to real pipeline once upload workflow is connected.
- */
-export async function createQuestionBankItem(
-  payload: QuestionBankDraftInput,
-): Promise<QuestionBankItem> {
-  // Real flow: upload file → poll status → get draft_ids → approve
-  // For now, use PATCH on a temp ID pattern (backend will 404, handled by caller)
-  // TODO: implement real upload→approve pipeline
-  throw new Error(
-    'Direct question creation not yet supported. Use file upload pipeline.',
-  );
+// Request bodies must be snake_case (the httpClient only camelCases responses).
+function toWritePayload(payload: QuestionBankDraftInput) {
+  return {
+    text: payload.text,
+    type: payload.type,
+    options: payload.options,
+    answer: payload.answer,
+    explanation: payload.explanation,
+    difficulty: payload.difficulty,
+    node_id: payload.nodeId,
+  };
+}
+
+export async function createQuestionBankItem(payload: QuestionBankDraftInput): Promise<QuestionBankItem> {
+  return http.post<QuestionBankItem>('/questions', toWritePayload(payload));
 }
 
 /** PATCH /questions/{id} — update a question. */
@@ -76,12 +66,5 @@ export async function updateQuestionBankItem(
   id: string,
   payload: QuestionBankDraftInput,
 ): Promise<QuestionBankItem> {
-  return http.patch<QuestionBankItem>(`/questions/${id}`, {
-    text: payload.text,
-    options: payload.options ?? null,
-    answer: payload.answer,
-    explanation: payload.explanation ?? null,
-    difficulty: payload.difficulty,
-    node_id: payload.node_id,
-  });
+  return http.patch<QuestionBankItem>(`/questions/${id}`, toWritePayload(payload));
 }

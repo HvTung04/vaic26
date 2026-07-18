@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import uuid
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Query, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,9 +12,9 @@ from app.core.config import get_settings
 from app.core.errors import api_error
 from app.core.security import CurrentUser
 from app.db.postgres import get_db
-from app.models.question import Difficulty
+from app.models.question import Difficulty, QuestionType
 from app.models.user import UserRole
-from app.repositories import question_repo
+from app.repositories import question_repo, taxonomy_repo
 from app.schemas.content import (
     ApproveRequest,
     ApproveResponse,
@@ -22,6 +22,8 @@ from app.schemas.content import (
     QuestionDetail,
     QuestionListResponse,
     QuestionOption,
+    QuestionWriteRequest,
+    TaxonomyNode,
     UploadCreateResponse,
     UploadStatusResponse,
 )
@@ -30,6 +32,27 @@ from app.services.content_service import process_upload
 router = APIRouter(tags=["content"])
 
 DbSession = Annotated[AsyncSession, Depends(get_db)]
+
+
+@router.get("/taxonomy/nodes", response_model=list[TaxonomyNode])
+async def list_taxonomy_nodes(current_user: CurrentUser) -> list[TaxonomyNode]:
+    node_map = taxonomy_repo.load_node_map()
+    return [
+        TaxonomyNode(
+            id=n["_id"],
+            topic_name=n["topic_name"],
+            grade=n["grade"],
+            topic_id=n["topic_id"],
+            mach=n["mach"],
+            noi_dung_cu_the=n["noi_dung_cu_the"],
+        )
+        for n in node_map.values()
+    ]
+
+
+@router.get("/taxonomy/topics", response_model=list[TaxonomyNode])
+async def list_taxonomy_topics(current_user: CurrentUser) -> list[TaxonomyNode]:
+    return [TaxonomyNode(**t) for t in taxonomy_repo.load_topics()]
 
 
 @router.post("/content/uploads", response_model=UploadCreateResponse)
@@ -131,35 +154,77 @@ async def approve_drafts(
     return ApproveResponse(upload_id=upload_id, created_question_ids=created_ids, approved_count=len(created_ids))
 
 
+def _to_question_detail(question) -> QuestionDetail:
+    options = [QuestionOption(**o) for o in question.options] if question.options else None
+    return QuestionDetail(
+        id=str(question.id),
+        text=question.text,
+        type=question.type,
+        options=options,
+        answer=question.answer,
+        explanation=question.explanation,
+        difficulty=question.difficulty,
+        node_id=question.node_id,
+        source_upload_id=str(question.source_upload_id) if question.source_upload_id else None,
+        created_at=question.created_at,
+    )
+
+
 @router.get("/questions", response_model=QuestionListResponse)
 async def list_questions(
     current_user: CurrentUser,
     db: DbSession,
     node_id: str | None = None,
-    difficulty: str | None = None,
+    topic: str | None = None,
+    difficulty: Difficulty | None = None,
+    type: QuestionType | None = None,
+    subject: str | None = None,
+    grade: int | None = None,
     search: str | None = None,
-    limit: int = 50,
-    offset: int = 0,
+    sort_by: Literal["text", "type", "difficulty", "created_at"] = "created_at",
+    sort_dir: Literal["asc", "desc"] = "desc",
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> QuestionListResponse:
-    items, total = await question_repo.list_questions(
-        db, node_id=node_id, difficulty=difficulty, search=search, limit=limit, offset=offset,
+    if current_user.role != UserRole.TEACHER:
+        raise api_error(403, "forbidden", "Only teachers can view answer keys")
+
+    topic_node_ids = taxonomy_repo.node_ids_for_topic(topic) if topic else None
+
+    questions, total = await question_repo.list_questions(
+        db,
+        node_id=node_id,
+        topic_node_ids=topic_node_ids,
+        difficulty=difficulty,
+        type=type,
+        subject=subject,
+        grade=grade,
+        search=search,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+        limit=limit,
+        offset=offset,
     )
-    questions = [
-        QuestionDetail(
-            id=str(q.id),
-            text=q.text,
-            type=q.type,
-            options=[QuestionOption(**o) for o in q.options] if q.options else None,
-            answer=q.answer,
-            explanation=q.explanation,
-            difficulty=q.difficulty,
-            node_id=q.node_id,
-            source_upload_id=str(q.source_upload_id) if q.source_upload_id else None,
-            created_at=q.created_at,
-        )
-        for q in items
-    ]
-    return QuestionListResponse(items=questions, total=total)
+    items = [_to_question_detail(q) for q in questions]
+    return QuestionListResponse(items=items, total=total, limit=limit, offset=offset)
+
+
+@router.post("/questions", response_model=QuestionDetail, status_code=201)
+async def create_question(payload: QuestionWriteRequest, current_user: CurrentUser, db: DbSession) -> QuestionDetail:
+    if current_user.role != UserRole.TEACHER:
+        raise api_error(403, "forbidden", "Only teachers can create questions")
+
+    question = await question_repo.create_question(
+        db,
+        text=payload.text,
+        type=payload.type,
+        options=[o.model_dump() for o in payload.options] if payload.options else None,
+        answer=payload.answer,
+        explanation=payload.explanation,
+        difficulty=payload.difficulty,
+        node_id=payload.node_id,
+    )
+    return _to_question_detail(question)
 
 
 @router.get("/questions/{question_id}", response_model=QuestionDetail)
@@ -171,36 +236,12 @@ async def get_question(question_id: str, current_user: CurrentUser, db: DbSessio
     if question is None:
         raise api_error(404, "not_found", "Question not found")
 
-    options = [QuestionOption(**o) for o in question.options] if question.options else None
-    return QuestionDetail(
-        id=str(question.id),
-        text=question.text,
-        type=question.type,
-        options=options,
-        answer=question.answer,
-        explanation=question.explanation,
-        difficulty=question.difficulty,
-        node_id=question.node_id,
-        source_upload_id=str(question.source_upload_id) if question.source_upload_id else None,
-        created_at=question.created_at,
-    )
-
-
-class QuestionUpdateRequest(BaseModel):
-    text: str | None = None
-    options: list[QuestionOption] | None = None
-    answer: str | None = None
-    explanation: str | None = None
-    difficulty: Difficulty | None = None
-    node_id: str | None = None
+    return _to_question_detail(question)
 
 
 @router.patch("/questions/{question_id}", response_model=QuestionDetail)
 async def update_question(
-    question_id: str,
-    payload: QuestionUpdateRequest,
-    current_user: CurrentUser,
-    db: DbSession,
+    question_id: str, payload: QuestionWriteRequest, current_user: CurrentUser, db: DbSession
 ) -> QuestionDetail:
     if current_user.role != UserRole.TEACHER:
         raise api_error(403, "forbidden", "Only teachers can edit questions")
@@ -209,32 +250,15 @@ async def update_question(
     if question is None:
         raise api_error(404, "not_found", "Question not found")
 
-    if payload.text is not None:
-        question.text = payload.text
-    if payload.options is not None:
-        question.options = [o.model_dump() for o in payload.options]
-    if payload.answer is not None:
-        question.answer = payload.answer
-    if payload.explanation is not None:
-        question.explanation = payload.explanation
-    if payload.difficulty is not None:
-        question.difficulty = payload.difficulty
-    if payload.node_id is not None:
-        question.node_id = payload.node_id
-
-    await db.commit()
-    await db.refresh(question)
-
-    options = [QuestionOption(**o) for o in question.options] if question.options else None
-    return QuestionDetail(
-        id=str(question.id),
-        text=question.text,
-        type=question.type,
-        options=options,
-        answer=question.answer,
-        explanation=question.explanation,
-        difficulty=question.difficulty,
-        node_id=question.node_id,
-        source_upload_id=str(question.source_upload_id) if question.source_upload_id else None,
-        created_at=question.created_at,
+    question = await question_repo.update_question(
+        db,
+        question,
+        text=payload.text,
+        type=payload.type,
+        options=[o.model_dump() for o in payload.options] if payload.options else None,
+        answer=payload.answer,
+        explanation=payload.explanation,
+        difficulty=payload.difficulty,
+        node_id=payload.node_id,
     )
+    return _to_question_detail(question)
