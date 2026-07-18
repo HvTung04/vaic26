@@ -12,12 +12,12 @@ import httpx
 
 from app.schemas.kg import MasteryRecord
 
-_API_BASE = os.environ.get("GAPLENS_API_BASE", "").rstrip("/")
+_API_BASE = os.environ.get("GARY_API_BASE", "").rstrip("/")
 _MASTERY_FILE = Path(__file__).resolve().parents[2] / "mastery.local.json"
 
 
 def _mastery_path() -> Path:
-    return Path(os.environ.get("GAPLENS_MASTERY_FILE", str(_MASTERY_FILE)))
+    return Path(os.environ.get("GARY_MASTERY_FILE", str(_MASTERY_FILE)))
 
 
 def save_mastery(

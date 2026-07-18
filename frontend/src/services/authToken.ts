@@ -3,7 +3,7 @@
  * the plain `httpClient` (below) can read it without importing React context,
  * and so it survives reloads.
  */
-const STORAGE_KEY = 'gaplens.access_token';
+const STORAGE_KEY = 'gary.access_token';
 
 let inMemoryToken: string | null = null;
 

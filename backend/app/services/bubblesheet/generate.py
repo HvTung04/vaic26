@@ -23,7 +23,7 @@ def generate_bubble_sheet(
     questions: list[dict],  # [{"index": int, "text": str, "options": list[str]}]
     output: str | Path,
     template: BubbleTemplate = DEFAULT_TEMPLATE,
-    title: str = "GapLens — Answer Sheet",
+    title: str = "G.A.R.Y — Answer Sheet",
 ) -> Path:
     """Create bubble sheet PDF. Returns output path."""
     c = canvas.Canvas(str(output), pagesize=A4)
@@ -78,7 +78,7 @@ def generate_bubble_sheet(
 def generate_bubble_sheet_bytes(
     questions: list[dict],
     template: BubbleTemplate = DEFAULT_TEMPLATE,
-    title: str = "GapLens — Answer Sheet",
+    title: str = "G.A.R.Y — Answer Sheet",
 ) -> bytes:
     """Same as generate_bubble_sheet but returns PDF bytes (no file write)."""
     buf = BytesIO()

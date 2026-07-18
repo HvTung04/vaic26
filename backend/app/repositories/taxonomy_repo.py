@@ -25,8 +25,8 @@ def _load_raw() -> list[dict]:
     global _nodes_cache
     if _nodes_cache is None:
         path = _NODES_PATH
-        if os.environ.get("GAPLENS_TAXONOMY_PATH"):
-            path = Path(os.environ["GAPLENS_TAXONOMY_PATH"])
+        if os.environ.get("GARY_TAXONOMY_PATH"):
+            path = Path(os.environ["GARY_TAXONOMY_PATH"])
         _nodes_cache = json.loads(path.read_text(encoding="utf-8"))
     return _nodes_cache
 

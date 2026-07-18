@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useClasses } from './hooks/useClasses';
 import type { ClassSummary } from './types';
 
-const STORAGE_KEY = 'gaplens.selectedClassId';
+const STORAGE_KEY = 'gary.selectedClassId';
 
 interface SelectedClassContextValue {
   classId: string;

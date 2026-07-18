@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(title="GapLens API", version="2.0.0", lifespan=lifespan)
+    app = FastAPI(title="G.A.R.Y API", version="2.0.0", lifespan=lifespan)
 
     app.add_middleware(
         CORSMiddleware,

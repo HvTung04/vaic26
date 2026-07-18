@@ -2,7 +2,7 @@ import { env } from '@/config/env';
 import { clearToken, getToken } from './authToken';
 
 /**
- * Thin fetch wrapper around the GapLens FastAPI backend (`/api/v1`).
+ * Thin fetch wrapper around the G.A.R.Y FastAPI backend (`/api/v1`).
  *
  * Responsibilities:
  *  - prefix the base URL and attach the Bearer JWT,

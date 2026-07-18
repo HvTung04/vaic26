@@ -1,8 +1,8 @@
-# GapLens AI Classroom
+# G.A.R.Y AI Classroom
 
 ## Tóm tắt sản phẩm
 
-GapLens AI Classroom là một hệ thống dạy kèm thích ứng cho giáo dục phổ thông Việt Nam, được thiết kế để giải quyết đúng vấn đề lõi trong một lớp học đông: cùng một bài giảng nhưng trình độ đầu vào của học sinh chênh lệch rất lớn. Thay vì chỉ chấm đúng/sai, hệ thống chẩn đoán nguyên nhân gốc của lỗi, xác định học sinh đang hổng ở đâu trong chuỗi kiến thức, rồi tạo lộ trình luyện tập cá nhân hóa để lấp đúng lỗ hổng đó.
+G.A.R.Y AI Classroom là một hệ thống dạy kèm thích ứng cho giáo dục phổ thông Việt Nam, được thiết kế để giải quyết đúng vấn đề lõi trong một lớp học đông: cùng một bài giảng nhưng trình độ đầu vào của học sinh chênh lệch rất lớn. Thay vì chỉ chấm đúng/sai, hệ thống chẩn đoán nguyên nhân gốc của lỗi, xác định học sinh đang hổng ở đâu trong chuỗi kiến thức, rồi tạo lộ trình luyện tập cá nhân hóa để lấp đúng lỗ hổng đó.
 
 Sản phẩm không thay thế giáo viên. Nó tăng sức mạnh cho giáo viên bằng một lớp điều khiển riêng: tự động nhóm học sinh theo nhu cầu thực tế, ưu tiên ai cần hỗ trợ trước, và phát hiện lỗ hổng kiến thức chung của cả lớp để giáo viên quyết định phần nào cần dạy lại. Với vùng nông thôn hoặc điều kiện mạng yếu, giáo viên có thể chỉ cần chụp ảnh bài làm của học sinh; hệ thống sẽ số hóa, chấm, phân tích và tạo báo cáo. Với môi trường thành thị, toàn bộ quy trình này vẫn chạy mượt trên web/app và mở rộng được cho quy mô lớn.
 
@@ -12,7 +12,7 @@ Mục tiêu của sản phẩm là trở thành một hạ tầng lớp học AI
 
 Vấn đề lớn nhất của giáo dục phổ thông Việt Nam không phải thiếu nội dung, mà là độ lệch năng lực trong cùng một lớp học. Một giáo viên phải dạy 35-45 học sinh với nền tảng rất khác nhau. Học sinh yếu bị bỏ lại phía sau vì không theo kịp nhịp lớp, trong khi học sinh khá bị chậm lại vì phải chờ đợi. Những app học hiện tại thường đi theo tuyến cố định, dừng ở mức “đúng/sai”, không giải thích được vì sao học sinh sai và càng không biết phải học bù ở đâu.
 
-GapLens giải quyết khoảng trống này bằng ba nguyên tắc:
+G.A.R.Y giải quyết khoảng trống này bằng ba nguyên tắc:
 
 1. Chẩn đoán nguyên nhân gốc thay vì chỉ ghi nhận kết quả.
 2. Tạo lộ trình học cá nhân theo hổng kiến thức thật sự.
@@ -20,7 +20,7 @@ GapLens giải quyết khoảng trống này bằng ba nguyên tắc:
 
 ## Định vị sản phẩm
 
-Đây không phải một app luyện đề thông thường. GapLens là một hệ điều hành cho lớp học thích ứng:
+Đây không phải một app luyện đề thông thường. G.A.R.Y là một hệ điều hành cho lớp học thích ứng:
 
 - Với học sinh: một gia sư cá nhân biết mình sai ở đâu, phải ôn gì trước, và nên luyện dạng nào tiếp theo.
 - Với giáo viên: một bảng điều khiển lớp học giúp ra quyết định sư phạm nhanh hơn, không cần đọc từng bài thủ công.
@@ -150,7 +150,7 @@ Với lớp học đông, đây là điểm thay đổi vận hành thật sự:
 
 ## Quy trình cho vùng nông thôn và điều kiện mạng yếu
 
-Ở vùng nông thôn, phần cứng và mạng không thể là rào cản. GapLens được thiết kế offline-first và low-bandwidth-first.
+Ở vùng nông thôn, phần cứng và mạng không thể là rào cản. G.A.R.Y được thiết kế offline-first và low-bandwidth-first.
 
 ### Workflow thực tế
 
@@ -172,7 +172,7 @@ Nếu chỉ thiết kế cho thành thị, sản phẩm sẽ bỏ lỡ nơi nhu 
 
 ## UX AI-Native & Tư duy thiết kế
 
-Trải nghiệm của GapLens phải sang, nhanh, ít ma sát và không nhàm chán. AI-native ở đây có nghĩa là giảm giao diện thừa chứ không phải nhồi thêm chatbot.
+Trải nghiệm của G.A.R.Y phải sang, nhanh, ít ma sát và không nhàm chán. AI-native ở đây có nghĩa là giảm giao diện thừa chứ không phải nhồi thêm chatbot.
 
 ### Nguyên tắc UX
 
@@ -298,7 +298,7 @@ Hệ thống không được tự ý bịa kiến thức, bịa đáp án, hoặ
 
 ### Tại sao sản phẩm có thể bán được
 
-GapLens giải quyết một nỗi đau thật, lặp lại hàng tuần, trong một bối cảnh có ngân sách và nhu cầu rõ ràng: trường học, giáo viên, trung tâm phụ đạo, và mô hình hỗ trợ học tập cho khu vực thiếu nguồn lực.
+G.A.R.Y giải quyết một nỗi đau thật, lặp lại hàng tuần, trong một bối cảnh có ngân sách và nhu cầu rõ ràng: trường học, giáo viên, trung tâm phụ đạo, và mô hình hỗ trợ học tập cho khu vực thiếu nguồn lực.
 
 Giá trị kinh doanh nằm ở chỗ:
 
@@ -414,7 +414,7 @@ Chịu trách nhiệm auth, data model, API, sync, storage, analytics, question 
 
 ## Thông điệp cốt lõi cho ban giám khảo
 
-GapLens AI Classroom không chỉ số hóa bài kiểm tra. Nó biến lớp học từ mô hình “một bài giảng cho tất cả” thành mô hình “một lớp học, nhiều đường đi, một giáo viên điều phối bằng dữ liệu”. Giá trị của hệ thống nằm ở chỗ nó giúp giáo viên nhìn thấy nguyên nhân gốc của lỗ hổng, can thiệp đúng lúc, và cá nhân hóa ở quy mô lớp học thật mà vẫn phù hợp với điều kiện Việt Nam.
+G.A.R.Y AI Classroom không chỉ số hóa bài kiểm tra. Nó biến lớp học từ mô hình “một bài giảng cho tất cả” thành mô hình “một lớp học, nhiều đường đi, một giáo viên điều phối bằng dữ liệu”. Giá trị của hệ thống nằm ở chỗ nó giúp giáo viên nhìn thấy nguyên nhân gốc của lỗ hổng, can thiệp đúng lúc, và cá nhân hóa ở quy mô lớp học thật mà vẫn phù hợp với điều kiện Việt Nam.
 
 Nếu cần một câu chốt để thuyết trình, hãy dùng:
 

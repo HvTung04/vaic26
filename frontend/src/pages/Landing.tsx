@@ -41,7 +41,7 @@ function Nav() {
             <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-ember" />
           </div>
           <span className="font-display text-lg font-semibold tracking-tight text-ink">
-            GapLens
+            G.A.R.Y
           </span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm text-ink-soft md:flex">
@@ -138,7 +138,7 @@ function Hero() {
             transition={{ duration: 0.7, ease: EASE, delay: 0.24 }}
             className="mt-7 max-w-[52ch] text-lg text-ink-soft leading-relaxed"
           >
-            GapLens không chấm đúng/sai. Nó chẩn đoán{" "}
+            G.A.R.Y không chấm đúng/sai. Nó chẩn đoán{" "}
             <em className="font-display not-italic text-ink">nguyên nhân gốc</em> của lỗi,
             truy vết học sinh đang hổng ở đâu trong chuỗi kiến thức, rồi tạo lộ trình
             luyện tập cá nhân hóa để lấp đúng chỗ đó.
@@ -375,7 +375,7 @@ function Shift() {
               className={`relative z-10 flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${mode === m ? "text-cream" : "text-ink-soft hover:text-ink"
                 }`}
             >
-              {m === "old" ? "Lớp học truyền thống" : "GapLens"}
+              {m === "old" ? "Lớp học truyền thống" : "G.A.R.Y"}
             </button>
           ))}
           <motion.div
@@ -856,7 +856,7 @@ function FinalCTA() {
           Ôn đúng chỗ đó.
         </h2>
         <p className="relative mx-auto mt-6 max-w-[52ch] text-base leading-relaxed text-cream/70">
-          GapLens bám sát chương trình Giáo dục phổ thông 2018, kiểm soát nghiêm ngặt độ tin
+          G.A.R.Y bám sát chương trình Giáo dục phổ thông 2018, kiểm soát nghiêm ngặt độ tin
           cậy của mọi gợi ý. Mỗi chẩn đoán đều trỏ về đúng node kiến thức, đúng nguồn.
         </p>
         <div className="relative mt-10 flex flex-wrap justify-center gap-3">
@@ -883,7 +883,7 @@ function FinalCTA() {
             <div className="absolute inset-0 rounded-full bg-ink" />
             <div className="absolute inset-[4px] rounded-full border-2 border-lime" />
           </div>
-          <span className="font-display font-semibold text-ink">GapLens</span>
+          <span className="font-display font-semibold text-ink">G.A.R.Y</span>
         </div>
         <p>Dạy kèm thích ứng · Theo Chương trình GDPT 2018 · Hackathon demo</p>
       </footer>

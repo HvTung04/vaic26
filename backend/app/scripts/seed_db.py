@@ -153,7 +153,7 @@ async def _get_or_create_user(db, *, username: str, full_name: str, role: UserRo
     return await user_repo.create_user(
         db,
         username=username,
-        password_hash=hash_password("gaplens123"),
+        password_hash=hash_password("gary123"),
         full_name=full_name,
         role=role,
     )
@@ -298,8 +298,8 @@ async def main() -> None:
         questions = await seed_questions(db, grade6_nodes)
         await seed_student_activity(db, mongo_db, teacher, class_group, students, questions)
 
-        print(f"teacher: teacher1 / gaplens123 (id={teacher.id})")
-        print(f"student demo: {students[0].username} / gaplens123 (id={students[0].id})")
+        print(f"teacher: teacher1 / gary123 (id={teacher.id})")
+        print(f"student demo: {students[0].username} / gary123 (id={students[0].id})")
         print(f"class: {class_group.name} (id={class_group.id}), {len(students)} students")
         print(f"questions seeded: {len(questions)}")
         print("seeded weekly+revision submissions & learning path for student1-3 (dashboard test data)")

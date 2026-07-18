@@ -1,4 +1,4 @@
-# GapLens — Contract (single source of truth)
+# G.A.R.Y — Contract (single source of truth)
 
 Schema + API contract. Any change here MUST be reflected in code and announced to
 the team. Taxonomy node list is OWNED by BE/AI 2 (Knowledge Graph) — Role 1 consumes

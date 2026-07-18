@@ -1,4 +1,4 @@
-# GapLens — Kế hoạch thi hackathon (18 giờ)
+# G.A.R.Y — Kế hoạch thi hackathon (18 giờ)
 
 > Bám theo [spec.md](./spec.md). Tài liệu này là kế hoạch **thực thi** trong khung giờ hackathon, không thay thế spec — mọi quyết định kỹ thuật/nội dung phải quy chiếu về spec khi có mâu thuẫn.
 

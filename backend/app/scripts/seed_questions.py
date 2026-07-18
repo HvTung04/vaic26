@@ -34,9 +34,9 @@ SAMPLE = [
 
 
 def main() -> None:
-    os.environ.setdefault("GAPLENS_LOCAL_BANK", "bank.local.json")
+    os.environ.setdefault("GARY_LOCAL_BANK", "bank.local.json")
     pushed = push_drafts(SAMPLE)
-    print(f"seeded {len(pushed)} questions -> {os.environ['GAPLENS_LOCAL_BANK']}")
+    print(f"seeded {len(pushed)} questions -> {os.environ['GARY_LOCAL_BANK']}")
 
 
 if __name__ == "__main__":

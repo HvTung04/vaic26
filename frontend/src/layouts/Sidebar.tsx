@@ -32,7 +32,7 @@ export function Sidebar() {
               <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-ember" />
             </div>
             <p className="font-display text-xl font-semibold leading-tight text-ink">
-              GapLens
+              G.A.R.Y
             </p>
           </div>
           <p className="mt-2 pl-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-faint">

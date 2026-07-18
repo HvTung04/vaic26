@@ -8,7 +8,7 @@ from app.schemas.kg import MasteryRecord
 
 
 def test_save_load_roundtrip(tmp_path, monkeypatch):
-    monkeypatch.setenv("GAPLENS_MASTERY_FILE", str(tmp_path / "m.json"))
+    monkeypatch.setenv("GARY_MASTERY_FILE", str(tmp_path / "m.json"))
     mmap = {
         "L6-t1-B01": MasteryRecord(
             student_id="s1", node_id="L6-t1-B01",

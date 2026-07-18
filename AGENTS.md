@@ -1,6 +1,6 @@
 # AGENTS.md
 
-GapLens AI Classroom — adaptive tutoring system for Vietnamese K-12 (Chương trình
+G.A.R.Y AI Classroom — adaptive tutoring system for Vietnamese K-12 (Chương trình
 Giáo dục phổ thông 2018). The repo is a hackathon scaffold; `backend/` and
 `frontend/` are empty. Source of truth for product intent lives in `docs/SPEC.md`
 (product spec) and `docs/PLAN.md` (18h execution plan). Trust those over guesses.

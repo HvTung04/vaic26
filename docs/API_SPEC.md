@@ -1,4 +1,4 @@
-# GapLens — API Contract (v2)
+# G.A.R.Y — API Contract (v2)
 
 > Nguồn sự thật duy nhất cho schema + API giữa BE/AI/FE. Đổi gì ở đây phải báo cả team ngay (xem [PLAN.md § 4](../docs/PLAN.md)).
 > Base path: `/api/v1`. Auth: Bearer JWT trừ khi ghi chú khác. Mọi field thời gian là ISO-8601 UTC.

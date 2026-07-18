@@ -12,13 +12,13 @@ import httpx
 
 from app.schemas.ingestion import QuestionDraft
 
-_API_BASE = os.environ.get("GAPLENS_API_BASE", "").rstrip("/")
+_API_BASE = os.environ.get("GARY_API_BASE", "").rstrip("/")
 
 
 def _local_bank_path() -> Path:
     return Path(
         os.environ.get(
-            "GAPLENS_LOCAL_BANK",
+            "GARY_LOCAL_BANK",
             Path(__file__).resolve().parents[2] / "bank.local.json",
         )
     )
@@ -38,7 +38,7 @@ def _draft_to_payload(d: QuestionDraft) -> dict:
 
 
 def push_drafts(drafts: list[QuestionDraft]) -> list[dict]:
-    """POST drafts. Uses API if GAPLENS_API_BASE set, else local JSON fallback."""
+    """POST drafts. Uses API if GARY_API_BASE set, else local JSON fallback."""
     payloads = [_draft_to_payload(d) for d in drafts]
     if _API_BASE:
         httpx.post(f"{_API_BASE}/questions", json=payloads, timeout=30)

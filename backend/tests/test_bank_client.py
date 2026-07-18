@@ -9,8 +9,8 @@ from app.repositories.bank_repo import push_drafts
 
 def test_push_local_fallback(tmp_path, monkeypatch):
     bank = tmp_path / "bank.local.json"
-    monkeypatch.setenv("GAPLENS_LOCAL_BANK", str(bank))
-    monkeypatch.delenv("GAPLENS_API_BASE", raising=False)
+    monkeypatch.setenv("GARY_LOCAL_BANK", str(bank))
+    monkeypatch.delenv("GARY_API_BASE", raising=False)
     d = QuestionDraft(
         index=1, text="q?", options=[AnswerOption(key="A", text="x")],
         source_type=SourceType.PDF, knowledge_nodes=["math-g5-fraction-equivalent"],

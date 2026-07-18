@@ -48,7 +48,7 @@ export default function Login() {
             <div className="absolute inset-[5px] rounded-full border-2 border-lime" />
             <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-ember" />
           </div>
-          <span className="font-display text-lg font-semibold tracking-tight text-ink">GapLens</span>
+          <span className="font-display text-lg font-semibold tracking-tight text-ink">G.A.R.Y</span>
         </Link>
         <h1 className="font-display text-xl font-semibold text-ink">Đăng nhập</h1>
         <p className="mt-1 text-sm text-ink-soft">Dùng tài khoản giáo viên hoặc học sinh.</p>
@@ -90,7 +90,7 @@ export default function Login() {
         </form>
 
         <p className="mt-4 text-center text-xs text-ink-faint">
-          Demo: teacher1 / student1 — mật khẩu <span className="font-mono">gaplens123</span>
+          Demo: teacher1 / student1 — mật khẩu <span className="font-mono">gary123</span>
         </p>
       </div>
     </div>

@@ -1,4 +1,4 @@
-"""Generate GapLens contract Excel sheet — data models + API endpoints."""
+"""Generate G.A.R.Y contract Excel sheet — data models + API endpoints."""
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter

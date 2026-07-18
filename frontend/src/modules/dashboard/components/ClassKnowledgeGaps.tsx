@@ -193,7 +193,7 @@ export function ClassKnowledgeGaps({ topics, moreCount = 0, isLoading }: ClassKn
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-lavender-soft">
                   <Bot className="h-3.5 w-3.5 text-lavender" />
                 </div>
-                <span className="text-xs font-semibold text-ink">GapLens AI</span>
+                <span className="text-xs font-semibold text-ink">G.A.R.Y AI</span>
                 <span className="ml-auto flex items-center gap-1 text-[10px] text-forest">
                   <span className="h-1.5 w-1.5 rounded-full bg-forest" /> Đang hoạt động
                 </span>

@@ -29,7 +29,7 @@ export function StudentTopBar({
     <header className="flex flex-wrap items-center justify-between gap-3 rounded-bento-lg border border-lavender bg-white px-6 py-4 shadow-bento">
       <p className="font-serif text-2xl font-bold text-ink">
         {" "}
-        <Link to="/student">GapLens</Link>
+        <Link to="/student">G.A.R.Y</Link>
       </p>
       <div className="flex items-center gap-3">
         <span className="flex items-center gap-1.5 rounded-full bg-lavender-soft px-3 py-1.5 text-sm font-semibold text-[#6B3FCB]">

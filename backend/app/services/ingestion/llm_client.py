@@ -17,7 +17,7 @@ def get_client() -> OpenAI:
 
 
 def get_model() -> str:
-    return os.environ.get("GAPLENS_LLM_MODEL", "gpt-4o")
+    return os.environ.get("GARY_LLM_MODEL", "gpt-4o")
 
 
 def structured_completion(

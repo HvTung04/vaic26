@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from app.services.ingestion.pipeline import intake_file
 
 test_pdf = Path(__file__).resolve().parents[3] / "docs" / "test.pdf"
-print(f"model: {os.environ.get('GAPLENS_LLM_MODEL', 'gpt-4o')}")
+print(f"model: {os.environ.get('GARY_LLM_MODEL', 'gpt-4o')}")
 print(f"key present: {bool(os.environ.get('OPENAI_API_KEY'))}")
 print(f"input: {test_pdf} ({test_pdf.stat().st_size // 1024} KB)")
 print()

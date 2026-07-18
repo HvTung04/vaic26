@@ -1,4 +1,4 @@
-# GapLens FE↔BE Wiring Plan
+# G.A.R.Y FE↔BE Wiring Plan
 
 ## Production Decisions
 

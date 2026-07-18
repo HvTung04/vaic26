@@ -17,7 +17,7 @@ export function AssessmentTopBar({
   return (
     <header className="mb-8 flex items-center justify-between">
       <div className="flex items-baseline gap-3">
-        <p className="font-serif text-2xl font-bold text-ember">GapLens</p>
+        <p className="font-serif text-2xl font-bold text-ember">G.A.R.Y</p>
         <span className="text-xs font-semibold uppercase tracking-widest text-ink-faint">
           Session: #{sessionCode}
         </span>
