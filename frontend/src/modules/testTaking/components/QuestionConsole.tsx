@@ -40,7 +40,7 @@ export function QuestionConsole({
 
       <div className="flex flex-1 flex-col gap-3">
         {question.type === 'mcq' && question.options ? (
-          question.options.map((option) => {
+          question.options.map((option, optionIndex) => {
             const isSelected = answer === option;
             return (
               <button
@@ -60,7 +60,7 @@ export function QuestionConsole({
                     isSelected ? 'bg-white text-ink' : 'bg-cream-100 text-ink-faint',
                   )}
                 >
-                  {isSelected ? <Check className="h-4 w-4" /> : null}
+                  {isSelected ? <Check className="h-4 w-4" /> : String.fromCharCode(65 + optionIndex)}
                 </span>
                 <span className={cn('text-sm', isSelected ? 'font-bold text-ink' : 'font-medium text-ink-soft')}>
                   {option}
@@ -79,14 +79,18 @@ export function QuestionConsole({
       </div>
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={onPrev} disabled={isFirst}>
-            <ArrowLeft className="h-4 w-4" /> Trước
-          </Button>
-          <Button variant="outline" onClick={onNext} disabled={isLast}>
-            Tiếp theo <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
+        {totalQuestions > 1 ? (
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={onPrev} disabled={isFirst}>
+              <ArrowLeft className="h-4 w-4" /> Trước
+            </Button>
+            <Button variant="outline" onClick={onNext} disabled={isLast}>
+              Tiếp theo <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        ) : (
+          <div />
+        )}
         <Button variant="ember" onClick={onSubmit} disabled={isSubmitting}>
           {isSubmitting ? 'Đang nộp bài...' : 'Nộp bài'} <PenLine className="h-4 w-4" />
         </Button>

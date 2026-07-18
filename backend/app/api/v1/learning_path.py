@@ -6,6 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import MongoDB
 from app.core.errors import api_error
 from app.core.security import CurrentUser, ensure_self_or_teacher
 from app.db.postgres import get_db
@@ -18,6 +19,7 @@ from app.schemas.learning_path import (
     TestHistoryItem,
     TestHistoryResponse,
 )
+from app.services import kg_service
 
 router = APIRouter(tags=["learning-path"])
 
@@ -25,17 +27,25 @@ DbSession = Annotated[AsyncSession, Depends(get_db)]
 
 
 @router.get("/students/{student_id}/learning-path", response_model=StudentLearningPathResponse)
-async def get_learning_path(student_id: str, current_user: CurrentUser, db: DbSession) -> StudentLearningPathResponse:
+async def get_learning_path(
+    student_id: str, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
+) -> StudentLearningPathResponse:
     ensure_self_or_teacher(current_user, student_id)
     path = await learning_path_repo.get_active_for_student(db, student_id)
     if path is None:
         raise api_error(404, "not_found", "No learning path generated yet for this student")
 
+    tiers = [PathTier(**t) for t in path.tiers]
+    graph = await kg_service.load_graph(mongo_db)
+    node_ids = {nid for tier in tiers for nid in tier.node_ids}
+    node_names = {nid: graph.nodes[nid].topic_name for nid in node_ids if nid in graph.nodes}
+
     return StudentLearningPathResponse(
         path_id=str(path.id),
         generated_at=path.generated_at,
-        tiers=[PathTier(**t) for t in path.tiers],
+        tiers=tiers,
         status=path.status,
+        node_names=node_names,
     )
 
 

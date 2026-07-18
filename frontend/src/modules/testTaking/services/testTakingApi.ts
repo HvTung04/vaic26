@@ -27,6 +27,7 @@ import type {
 // ---- Raw API shapes (post camelCase) ------------------------------------
 
 interface ApiStudentResult {
+  submissionId: string;
   testId: string;
   title: string;
   score: number; // percentage 0-100
@@ -44,6 +45,7 @@ interface ApiSubmissionResult {
   results: {
     questionId: string;
     questionText: string | null;
+    options: string[] | null;
     isCorrect: boolean;
     studentAnswer: string | null;
     correctAnswer: string;
@@ -98,6 +100,7 @@ export async function fetchSubmissionResult(submissionId: string): Promise<Submi
   const results: QuestionResult[] = d.results.map((r) => ({
     questionId: r.questionId,
     questionText: r.questionText ?? '',
+    options: r.options,
     isCorrect: r.isCorrect,
     studentAnswer: r.studentAnswer ?? '',
     correctAnswer: r.correctAnswer,
@@ -122,6 +125,7 @@ export async function fetchStudentResults(studentId: string): Promise<StudentRes
   const res = await http.get<{ tests: ApiStudentResult[] }>(`/students/${studentId}/results`);
   return res.tests
     .map((t) => ({
+      submissionId: t.submissionId,
       testId: t.testId,
       title: t.title,
       score: Math.round(t.score),
@@ -139,18 +143,23 @@ export interface RevisionTestResult {
 }
 
 /**
- * POST /agents/revision-test. The endpoint derives targets from the student's
- * learning path, so we resolve `path_id` first. `nodeId` is advisory (the CTA's
- * weakest node) and not sent.
+ * POST /agents/revision-test, scoped to a single node — used when the student
+ * picks a topic directly (e.g. from the learning-path practice picker). The
+ * endpoint still requires a `learning_path_id`, so we resolve the student's
+ * current path first; server-side, passing `node_id` skips the "weakest node"
+ * auto-selection and pulls questions for exactly that node.
  */
 export async function generateRevisionTest(
   studentId: string,
-  _nodeId: string,
+  nodeId: string,
+  questionCount?: number,
 ): Promise<RevisionTestResult> {
   const path = await http.get<{ pathId: string }>(`/students/${studentId}/learning-path`);
   const res = await http.post<ApiRevisionTest>('/agents/revision-test', {
     student_id: studentId,
     learning_path_id: path.pathId,
+    node_id: nodeId,
+    question_count: questionCount,
   });
   return {
     testId: res.testId,
