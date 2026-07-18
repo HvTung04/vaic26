@@ -35,6 +35,9 @@ class RevisionTestRequest(BaseModel):
     learning_path_id: str
     teacher_note: str | None = None
     question_count: int | None = None
+    # When set, practice is scoped to this single node (e.g. a topic picked
+    # from the learning-path UI) instead of the auto-selected weakest nodes.
+    node_id: str | None = None
 
 
 class DifficultyMixOut(BaseModel):

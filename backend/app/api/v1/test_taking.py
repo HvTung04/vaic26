@@ -136,6 +136,11 @@ async def get_submission_result(
             QuestionResult(
                 question_id=str(a.question_id),
                 question_text=by_id[str(a.question_id)].text if str(a.question_id) in by_id else None,
+                options=(
+                    [o["text"] for o in by_id[str(a.question_id)].options]
+                    if str(a.question_id) in by_id and by_id[str(a.question_id)].options
+                    else None
+                ),
                 is_correct=bool(a.is_correct),
                 student_answer=a.answer,
                 correct_answer=by_id[str(a.question_id)].answer if str(a.question_id) in by_id else "",

@@ -43,6 +43,7 @@ async def revision_test(
         learning_path_id=payload.learning_path_id,
         teacher_note=payload.teacher_note,
         question_count=payload.question_count,
+        node_id=payload.node_id,
     )
     return RevisionTestResponse(**result)
 

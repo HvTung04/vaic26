@@ -23,6 +23,8 @@ const TestEdit = lazy(() => import('@/pages/TestEdit'));
 const SubmissionDetail = lazy(() => import('@/pages/SubmissionDetail'));
 const Settings = lazy(() => import('@/pages/Settings'));
 const StudentHub = lazy(() => import('@/pages/StudentHub'));
+const StudentTestHistory = lazy(() => import('@/pages/StudentTestHistory'));
+const StudentSubmissionDetail = lazy(() => import('@/pages/StudentSubmissionDetail'));
 const AssessmentConsole = lazy(() => import('@/pages/AssessmentConsole'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
@@ -71,7 +73,11 @@ const router = createBrowserRouter([
     children: [
       {
         element: <StudentLayout />,
-        children: [{ index: true, element: withSuspense(<StudentHub />) }],
+        children: [
+          { index: true, element: withSuspense(<StudentHub />) },
+          { path: 'results', element: withSuspense(<StudentTestHistory />) },
+          { path: 'results/:submissionId', element: withSuspense(<StudentSubmissionDetail />) },
+        ],
       },
     ],
   },

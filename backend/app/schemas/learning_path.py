@@ -13,6 +13,9 @@ class StudentLearningPathResponse(BaseModel):
     generated_at: datetime
     tiers: list[PathTier]
     status: PathStatus
+    # node_id -> human name, so the UI can render tiers without a separate
+    # node-catalog lookup (there is no standalone endpoint for that).
+    node_names: dict[str, str] = {}
 
 
 class ProgressPoint(BaseModel):

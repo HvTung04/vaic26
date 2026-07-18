@@ -59,6 +59,9 @@ class GraphUpdate(BaseModel):
 class QuestionResult(BaseModel):
     question_id: str
     question_text: str | None = None
+    # MCQ options, so a review UI can show all choices with the student's
+    # pick + correct one highlighted, not just the raw answer text.
+    options: list[str] | None = None
     is_correct: bool
     student_answer: str | None = None
     correct_answer: str
