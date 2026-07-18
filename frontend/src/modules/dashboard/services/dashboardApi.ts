@@ -1,4 +1,5 @@
 import { withMockDelay } from "@/services/mockClient";
+import { http } from "@/services/httpClient";
 import type {
   TeacherOverview,
   StudentInsight,
@@ -346,6 +347,10 @@ function fallbackInsight(studentId: string): StudentInsight {
   return { ...base, studentId, name: studentId };
 }
 
+export async function fetchStudentHub(): Promise<TeacherOverview> {
+  return withMockDelay(TEACHER_OVERVIEW);
+}
+
 export async function fetchTeacherOverview(): Promise<TeacherOverview> {
   return withMockDelay(TEACHER_OVERVIEW);
 }
@@ -383,4 +388,148 @@ export async function aiUpdateStudentPath(
   };
   STUDENT_INSIGHTS[studentId] = { ...insight, learningPath: updated };
   return withMockDelay(updated, 1100);
+}
+
+// =============================================================================
+// Real API bindings — teacher dashboard endpoints
+// =============================================================================
+
+export interface PriorityQueueItem {
+  studentId: string;
+  fullName: string;
+  urgency: number;
+  reason: string;
+  weakNodeIds: string[];
+}
+
+export interface GapRadarItem {
+  nodeId: string;
+  nodeName: string;
+  weakRatio: number;
+  avgMastery: number;
+}
+
+export interface GroupItem {
+  groupId: string;
+  nodeIds: string[];
+  nodeNames: string[];
+  studentIds: string[];
+}
+
+export type InterventionType = 're_teach' | 'mini_group' | 'peer_support' | 'extra_practice';
+export type InterventionStatus = 'suggested' | 'applied' | 'dismissed';
+
+export interface InterventionItem {
+  id: string;
+  type: InterventionType;
+  nodeId: string;
+  targetStudentIds: string[];
+  rationale: string;
+  status: InterventionStatus;
+}
+
+export interface ClassProgressPoint {
+  period: string;
+  avgMastery: number;
+  testsCompleted: number;
+  studentsImproved: number;
+}
+
+export interface ClassResultStudent {
+  studentId: string;
+  fullName: string;
+  score: number | null;
+  status: 'submitted' | 'pending';
+  submissionId: string | null;
+}
+
+export interface ClassResultsData {
+  testId: string;
+  testTitle: string;
+  classAvgScore: number;
+  distribution: { scoreRange: string; count: number }[];
+  perNodeAccuracy: { nodeId: string; accuracy: number }[];
+  students: ClassResultStudent[];
+}
+
+export interface StudentTestResult {
+  testId: string;
+  title: string;
+  score: number;
+  submittedAt: string;
+  weakNodeIds: string[];
+}
+
+/** GET /teacher/classes/{classId}/priority-queue */
+export async function fetchPriorityQueue(classId: string): Promise<PriorityQueueItem[]> {
+  const res = await http.get<{ items: PriorityQueueItem[] }>(
+    `/teacher/classes/${classId}/priority-queue`,
+  );
+  return res.items;
+}
+
+/** GET /teacher/classes/{classId}/gap-radar */
+export async function fetchGapRadar(classId: string): Promise<GapRadarItem[]> {
+  const res = await http.get<{ items: GapRadarItem[] }>(
+    `/teacher/classes/${classId}/gap-radar`,
+  );
+  return res.items;
+}
+
+/** GET /teacher/classes/{classId}/groups */
+export async function fetchGroups(classId: string): Promise<GroupItem[]> {
+  const res = await http.get<{ items: GroupItem[] }>(
+    `/teacher/classes/${classId}/groups`,
+  );
+  return res.items;
+}
+
+/** GET /teacher/classes/{classId}/interventions */
+export async function fetchInterventions(classId: string): Promise<InterventionItem[]> {
+  const res = await http.get<{ items: InterventionItem[] }>(
+    `/teacher/classes/${classId}/interventions`,
+  );
+  return res.items;
+}
+
+/** POST /teacher/interventions/{interventionId}/apply */
+export async function applyIntervention(
+  interventionId: string,
+  note?: string,
+): Promise<{ id: string; status: string; appliedAt: string }> {
+  return http.post(`/teacher/interventions/${interventionId}/apply`, { note });
+}
+
+/** GET /teacher/classes/{classId}/progress-timeline */
+export async function fetchClassProgressTimeline(classId: string): Promise<ClassProgressPoint[]> {
+  const res = await http.get<{ classId: string; timeline: ClassProgressPoint[] }>(
+    `/teacher/classes/${classId}/progress-timeline`,
+  );
+  return res.timeline;
+}
+
+/** GET /teacher/classes/{classId}/results?test_id= */
+export async function fetchClassResults(
+  classId: string,
+  testId?: string,
+): Promise<ClassResultsData> {
+  return http.get<ClassResultsData>(
+    `/teacher/classes/${classId}/results`,
+    testId ? { test_id: testId } : undefined,
+  );
+}
+
+/** GET /teacher/students/{studentId}/results */
+export async function fetchStudentResultsTeacher(
+  studentId: string,
+): Promise<StudentTestResult[]> {
+  const res = await http.get<{ tests: StudentTestResult[] }>(
+    `/teacher/students/${studentId}/results`,
+  );
+  return res.tests;
+}
+
+/** GET /agents/dashboard-insights — AI-generated composite insight */
+export async function fetchDashboardInsights(classId: string): Promise<unknown> {
+  return http.get('/agents/dashboard-insights', { class_id: classId });
 }

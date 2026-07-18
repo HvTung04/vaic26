@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
-import { ClipboardList, TrendingUp } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ClipboardList, LogOut, TrendingUp } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/modules/auth/AuthContext";
 
 export interface StudentTopBarProps {
   name: string;
@@ -15,6 +16,14 @@ export function StudentTopBar({
   pendingCount,
   avgRecentScore,
 }: StudentTopBarProps) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 rounded-bento-lg border border-lavender bg-white px-6 py-4 shadow-bento">
       <p className="font-serif text-2xl font-bold text-ink">GapLens</p>
@@ -50,6 +59,14 @@ export function StudentTopBar({
               .join("")}
           </AvatarFallback>
         </Avatar>
+        <button
+          type="button"
+          onClick={handleLogout}
+          aria-label="Đăng xuất"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-ink-faint transition-colors hover:bg-ember/10 hover:text-ember"
+        >
+          <LogOut className="h-4 w-4" />
+        </button>
       </div>
     </header>
   );

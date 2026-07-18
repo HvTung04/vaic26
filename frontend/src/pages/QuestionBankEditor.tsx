@@ -9,7 +9,7 @@ export default function QuestionBankEditor() {
   const { questionId } = useParams<{ questionId: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(questionId);
-  const { item, isLoading, createMutation, updateMutation } =
+  const { item, isLoading, isError, createMutation, updateMutation } =
     useQuestionBankEditor(questionId);
 
   const handleSubmit = (payload: QuestionBankDraftInput) => {
@@ -34,7 +34,7 @@ export default function QuestionBankEditor() {
 
       {isEditMode && isLoading ? (
         <Skeleton className="h-140 w-full" />
-      ) : isEditMode && !item ? (
+      ) : isEditMode && (isError || !item) ? (
         <p className="text-sm text-ink-faint">Question not found.</p>
       ) : (
         <QuestionBankForm
