@@ -12,9 +12,9 @@ from pathlib import Path
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from kg.graph import build_graph
-from kg.mastery import MIN_ANSWERS_TO_TRUST, unit_proximity, update_student_mastery
-from kg.models import Graph, MasteryRecord
+from app.kg.graph import build_graph
+from app.kg.mastery import MIN_ANSWERS_TO_TRUST, unit_proximity, update_student_mastery
+from app.kg.models import Graph, MasteryRecord
 
 from app.db import mongodb as mdb
 

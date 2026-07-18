@@ -31,7 +31,7 @@ dependencies = [
 test = ["pytest>=8.0", "pytest-asyncio>=0.23", "httpx>=0.27"]
 
 [tool.setuptools.packages.find]
-include = ["ingestion*", "bubblesheet*", "kg*", "app*"]
+include = ["app*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

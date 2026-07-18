@@ -8,7 +8,7 @@ from pathlib import Path
 
 from .models import Node, Edge, Graph
 
-_DOCS = Path(__file__).resolve().parents[2] / "docs"
+_DOCS = Path(__file__).resolve().parents[3] / "docs"
 
 
 def load_graph(

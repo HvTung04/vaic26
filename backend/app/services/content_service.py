@@ -9,11 +9,11 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 
-from ingestion.image_ocr import parse_photo
-from ingestion.models import Difficulty as IngestDifficulty
-from ingestion.pdf_parser import parse_pdf
-from ingestion.splitter import split_exam
-from ingestion.tagger import tag_question
+from app.ingestion.image_ocr import parse_photo
+from app.ingestion.models import Difficulty as IngestDifficulty
+from app.ingestion.pdf_parser import parse_pdf
+from app.ingestion.splitter import split_exam
+from app.ingestion.tagger import tag_question
 
 from app.db.postgres import async_session_factory
 from app.models.question import Difficulty, QuestionType, UploadStatus

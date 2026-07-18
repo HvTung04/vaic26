@@ -273,6 +273,6 @@ for i, (k, v) in enumerate(formula_data, 3):
     ws4.cell(row=i, column=2, value=v)
 
 # Save
-out = Path(__file__).resolve().parents[1] / "contract.xlsx"
+out = Path(__file__).resolve().parents[2] / "contract.xlsx"
 wb.save(str(out))
 print(f"saved: {out}")

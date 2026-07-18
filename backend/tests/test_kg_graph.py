@@ -1,6 +1,6 @@
 """Tests for graph loading and traversal."""
 
-from kg.graph import (
+from app.kg.graph import (
     load_graph,
     get_prerequisites,
     get_dependents,
