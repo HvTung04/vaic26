@@ -3,7 +3,7 @@ import { Sparkles, CheckCircle2, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useStudentPath } from "../hooks/useStudentPath";
+import { useTeacherPathActions } from "@/modules/learningPath/hooks/useTeacherPathActions";
 
 export interface PathEditorPanelProps {
   studentId: string;
@@ -11,7 +11,7 @@ export interface PathEditorPanelProps {
 
 export function PathEditorPanel({ studentId }: PathEditorPanelProps) {
   const [note, setNote] = useState("");
-  const { verifyMutation, aiUpdateMutation } = useStudentPath(studentId);
+  const { generateMutation, verifyMutation } = useTeacherPathActions(studentId);
 
   return (
     <div className="flex flex-col gap-3 pt-6">
@@ -25,12 +25,12 @@ export function PathEditorPanel({ studentId }: PathEditorPanelProps) {
         <Button
           variant="primary"
           className="flex-1"
-          disabled={aiUpdateMutation.isPending}
+          disabled={generateMutation.isPending}
           onClick={() =>
-            aiUpdateMutation.mutate(note, { onSuccess: () => setNote("") })
+            generateMutation.mutate(undefined, { onSuccess: () => setNote("") })
           }
         >
-          {aiUpdateMutation.isPending ? (
+          {generateMutation.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <Sparkles className="h-4 w-4" />
@@ -56,7 +56,7 @@ export function PathEditorPanel({ studentId }: PathEditorPanelProps) {
           Lộ trình đã được xác nhận và giao cho học sinh.
         </p>
       )}
-      {aiUpdateMutation.isSuccess && (
+      {generateMutation.isSuccess && (
         <p className="text-xs font-medium text-[#6B3FCB]">
           AI đã cập nhật đề xuất lộ trình mới.
         </p>

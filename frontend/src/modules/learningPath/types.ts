@@ -1,6 +1,6 @@
 export type PathTierName = 'foundation' | 'bridge' | 'application';
 
-export type PathStatus = 'active' | 'completed' | 'superseded';
+export type PathStatus = 'active' | 'completed' | 'superseded' | 'verified';
 
 export interface PathTier {
   tier: PathTierName;

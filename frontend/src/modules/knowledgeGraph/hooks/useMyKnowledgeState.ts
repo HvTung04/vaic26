@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/modules/auth/AuthContext';
 import { fetchMyKnowledgeState } from '../services/knowledgeGraphApi';
 
-export function useMyKnowledgeState() {
-  const studentId = useAuth().user?.id ?? '';
+export function useMyKnowledgeState(studentIdOverride?: string) {
+  const studentId = studentIdOverride || (useAuth().user?.id ?? '');
   return useQuery({
     queryKey: ['knowledge-graph', studentId],
     queryFn: () => fetchMyKnowledgeState(studentId),

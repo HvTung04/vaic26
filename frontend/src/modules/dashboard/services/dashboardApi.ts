@@ -533,3 +533,15 @@ export async function fetchStudentResultsTeacher(
 export async function fetchDashboardInsights(classId: string): Promise<unknown> {
   return http.get('/agents/dashboard-insights', { class_id: classId });
 }
+
+export interface UserProfile {
+  id: string;
+  username: string;
+  fullName: string;
+  role: string;
+}
+
+/** GET /users/{user_id} — used by the teacher's student-detail page for the header. */
+export async function fetchUserProfile(userId: string): Promise<UserProfile> {
+  return http.get<UserProfile>(`/users/${userId}`);
+}

@@ -62,6 +62,7 @@ export interface SubmissionQuestionResult {
   isCorrect: boolean;
   studentAnswer: string;
   correctAnswer: string;
+  timeSpentSeconds: number;
   explanation: string | null;
   rootCauseNodeName: string | null;
 }

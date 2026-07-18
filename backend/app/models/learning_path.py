@@ -15,6 +15,7 @@ class PathStatus(str, enum.Enum):
     ACTIVE = "active"
     COMPLETED = "completed"
     SUPERSEDED = "superseded"
+    VERIFIED = "verified"
 
 
 class LearningPath(Base):
