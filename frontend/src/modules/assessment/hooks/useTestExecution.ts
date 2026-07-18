@@ -1,16 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAssessment } from '../services/assessmentApi';
+import { useGetAssessment } from './queries/useGetAssessment';
 import { useTestTelemetry } from './useTestTelemetry';
 import { clampNumber } from '@/utils/format';
 import type { QuestionOptionKey, TestAttemptSubmission, WaveredAnswer } from '../types';
 
 export function useTestExecution(assessmentId: string) {
-  const assessmentQuery = useQuery({
-    queryKey: ['assessment', assessmentId],
-    queryFn: () => fetchAssessment(assessmentId),
-    enabled: Boolean(assessmentId),
-  });
+  const assessmentQuery = useGetAssessment(assessmentId);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, QuestionOptionKey | null>>({});

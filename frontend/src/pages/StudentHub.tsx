@@ -1,14 +1,14 @@
 import { TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useStudentHub } from "@/modules/dashboard/hooks/useStudentHub";
+import { useGetStudentHub } from "@/modules/dashboard/hooks/queries/useGetStudentHub";
 import { PerformanceChart } from "@/modules/dashboard/components/PerformanceChart";
 import { StudentTaskList } from "@/modules/dashboard/components/StudentTaskList";
 import { QuizHistoryList } from "@/modules/dashboard/components/QuizHistoryList";
 import { LearningPathMap } from "@/modules/dashboard/components/LearningPathMap";
 
 export default function StudentHub() {
-  const { data, isLoading } = useStudentHub();
+  const { data, isLoading } = useGetStudentHub();
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

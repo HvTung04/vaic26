@@ -29,3 +29,11 @@ export function formatPoints(points: number) {
 export function clampNumber(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
+
+export function formatDate(isoDate: string) {
+  return new Date(isoDate).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}

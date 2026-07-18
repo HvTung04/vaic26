@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
-import { useStudentHub } from "@/modules/dashboard/hooks/useStudentHub";
+import { useGetStudentHub } from "@/modules/dashboard/hooks/queries/useGetStudentHub";
 import { StudentTopBar } from "./StudentTopBar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function StudentLayout() {
-  const { data, isLoading } = useStudentHub();
+  const { data, isLoading } = useGetStudentHub();
 
   return (
     <div className="min-h-screen w-full px-4 py-6 sm:px-8 lg:px-12">

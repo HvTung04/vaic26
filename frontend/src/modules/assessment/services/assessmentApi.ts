@@ -1,5 +1,6 @@
 import { withMockDelay } from '@/services/mockClient';
 import { calcAccuracy } from '@/utils/format';
+import { KNOWLEDGE_NODES } from '@/modules/question-bank/constants';
 import type {
   Assessment,
   AssessmentDraft,
@@ -16,16 +17,6 @@ const ASSESSMENT_TITLES: Record<string, { title: string; subject: string }> = {
 };
 
 const DIFFICULTY_CYCLE: QuestionDifficulty[] = ['Easy', 'Medium', 'Hard'];
-
-/** Knowledge-graph nodes the file-parsing service can auto-label extracted questions against. */
-const KNOWLEDGE_NODES: { id: string; label: string }[] = [
-  { id: 'kg-cell-organelles', label: 'Cell Organelles' },
-  { id: 'kg-photosynthesis', label: 'Photosynthesis' },
-  { id: 'kg-cell-cycle', label: 'Cell Cycle' },
-  { id: 'kg-cell-transport', label: 'Cell Transport' },
-  { id: 'kg-genetics', label: 'Genetics & Heredity' },
-  { id: 'kg-evolution', label: 'Evolution' },
-];
 
 function pointsForDifficulty(difficulty: QuestionDifficulty) {
   if (difficulty === 'Easy') return 10;

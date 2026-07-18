@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ImmersiveLayout } from '@/layouts/ImmersiveLayout';
 import { Button } from '@/components/ui/button';
 import { useTestExecution } from '@/modules/assessment/hooks/useTestExecution';
-import { useSubmitAttempt } from '@/modules/assessment/hooks/useSubmitAttempt';
+import { useMutateSubmitAttempt } from '@/modules/assessment/hooks/queries/useMutateSubmitAttempt';
 import { useExamTimer } from '@/modules/assessment/hooks/useExamTimer';
 import { AssessmentTopBar } from '@/modules/assessment/components/AssessmentTopBar';
 import { QuestionNavigator } from '@/modules/assessment/components/QuestionNavigator';
@@ -31,7 +31,7 @@ export default function AssessmentConsole() {
   } = useTestExecution(assessmentId);
 
   const timer = useExamTimer((assessment?.durationMinutes ?? 0) * 60, !report);
-  const submitMutation = useSubmitAttempt();
+  const submitMutation = useMutateSubmitAttempt();
 
   const handleSubmit = () => {
     if (!assessment) return;

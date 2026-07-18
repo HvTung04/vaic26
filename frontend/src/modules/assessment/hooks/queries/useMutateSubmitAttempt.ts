@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
-import { submitTestAttempt } from '../services/assessmentApi';
-import type { Assessment, TestAttemptSubmission } from '../types';
+import { submitTestAttempt } from '../../services/assessmentApi';
+import type { Assessment, TestAttemptSubmission } from '../../types';
 
-export function useSubmitAttempt() {
+export function useMutateSubmitAttempt() {
   return useMutation({
     mutationFn: ({
       assessment,
