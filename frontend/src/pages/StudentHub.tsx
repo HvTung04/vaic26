@@ -22,8 +22,28 @@ export default function StudentHub() {
     <div className="flex flex-col gap-6">
       <RevisionCta weakestNode={graphState?.nodes[0]} isLoading={isGraphLoading} />
 
+      {/*
+        Desktop (lg:grid-cols-3): row 1 = learning path (full width); row 2 =
+        chart (2/3) + pending tests (1/3); row 3 = result history (2/3) +
+        mastery map (1/3). Mobile: single column, ordered path > pending >
+        chart > history > mastery map via the `order-*` utilities below (grid
+        auto-placement follows `order`, so no separate mobile-only markup is
+        needed).
+      */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-1">
+        <Card className="order-1 lg:col-span-3">
+          <CardContent className="pt-6">
+            {isPathLoading ? (
+              <Skeleton className="h-32 w-full" />
+            ) : (
+              tiers.length > 0 && (
+                <LearningPathTiers tiers={tiers} pathStatus={path?.status} nodeNames={path?.nodeNames} />
+              )
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="order-3 lg:order-2 lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base">Kết quả học tập</CardTitle>
             <div className="flex h-8 w-8 items-center justify-center rounded-bento-sm bg-cream-100 text-ink-soft">
@@ -40,27 +60,17 @@ export default function StudentHub() {
           </CardContent>
         </Card>
 
-        <div className="lg:col-span-1">
+        <div className="order-2 lg:order-3 lg:col-span-1">
           <PendingTestList tests={pendingTests} isLoading={isTestsLoading} />
         </div>
 
-        <div className="lg:col-span-1 lg:row-span-2">
+        <div className="order-4 lg:col-span-2">
           <ResultHistoryList history={results} isLoading={isResultsLoading} />
         </div>
 
-        <div className="lg:col-span-1">
+        <div className="order-5 lg:col-span-1">
           <KnowledgeMasteryMap nodes={graphState?.nodes} isLoading={isGraphLoading} />
         </div>
-
-        <Card className="lg:col-span-2">
-          <CardContent className="pt-6">
-            {isPathLoading ? (
-              <Skeleton className="h-32 w-full" />
-            ) : (
-              tiers.length > 0 && <LearningPathTiers tiers={tiers} pathStatus={path?.status} />
-            )}
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

@@ -27,6 +27,7 @@ import type {
 // ---- Raw API shapes (post camelCase) ------------------------------------
 
 interface ApiStudentResult {
+  submissionId: string;
   testId: string;
   title: string;
   score: number; // percentage 0-100
@@ -122,6 +123,7 @@ export async function fetchStudentResults(studentId: string): Promise<StudentRes
   const res = await http.get<{ tests: ApiStudentResult[] }>(`/students/${studentId}/results`);
   return res.tests
     .map((t) => ({
+      submissionId: t.submissionId,
       testId: t.testId,
       title: t.title,
       score: Math.round(t.score),

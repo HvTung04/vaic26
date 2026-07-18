@@ -72,6 +72,7 @@ export interface SubmissionResult {
 }
 
 export interface StudentResultHistoryItem {
+  submissionId: string;
   testId: string;
   title: string;
   score: number;

@@ -14,6 +14,8 @@ export interface LearningPath {
   generatedAt: string;
   status: PathStatus;
   tiers: PathTier[];
+  /** node_id -> human name, resolved server-side (no client node catalog). */
+  nodeNames: Record<string, string>;
 }
 
 export type TierProgressStatus = 'completed' | 'current' | 'upcoming';

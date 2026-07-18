@@ -1,7 +1,6 @@
 import { Check, Flame, Lock, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/cn';
-import { nodeName } from '@/modules/studentSelf/knowledgeNodes';
 import type { TierProgress, TierProgressStatus } from '../types';
 
 const TIER_LABEL: Record<TierProgress['tier'], string> = {
@@ -31,9 +30,10 @@ const labelStyles: Record<TierProgressStatus, string> = {
 export interface LearningPathTiersProps {
   tiers: TierProgress[];
   pathStatus?: 'active' | 'completed' | 'superseded';
+  nodeNames?: Record<string, string>;
 }
 
-export function LearningPathTiers({ tiers, pathStatus }: LearningPathTiersProps) {
+export function LearningPathTiers({ tiers, pathStatus, nodeNames }: LearningPathTiersProps) {
   const current = tiers.find((t) => t.status === 'current');
 
   return (
@@ -66,7 +66,7 @@ export function LearningPathTiers({ tiers, pathStatus }: LearningPathTiersProps)
                   {tier.avgMastery !== null ? `${Math.round(tier.avgMastery * 100)}% nắm vững` : 'Chưa có dữ liệu'}
                 </p>
                 <p className="mt-1 max-w-[9rem] text-[11px] text-ink-faint">
-                  {tier.nodeIds.map((id) => nodeName(id)).join(' · ')}
+                  {tier.nodeIds.map((id) => nodeNames?.[id] ?? id).join(' · ')}
                 </p>
               </div>
             </div>
