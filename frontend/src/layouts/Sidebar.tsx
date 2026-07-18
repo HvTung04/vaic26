@@ -1,30 +1,21 @@
 import { NavLink } from "react-router-dom";
-import { LayoutGrid, Database, Users2, School, ClipboardList, Settings } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { LayoutGrid, Database, Users2, ClipboardList, Settings } from "lucide-react";
 import { cn } from "@/utils/cn";
+import { ClassSelector } from "@/modules/classes/components/ClassSelector";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Bảng điều khiển", icon: LayoutGrid, end: true },
   { to: "/dashboard/question-bank", label: "Ngân hàng câu hỏi", icon: Database, end: false },
-  { to: "/dashboard/class-list", label: "Danh sách lớp", icon: Users2, end: false },
-  { to: "/dashboard/classes", label: "Quản lý lớp", icon: School, end: false },
+  { to: "/dashboard/class-list", label: "Quản lý học sinh", icon: Users2, end: false },
   { to: "/dashboard/tests", label: "Bài test", icon: ClipboardList, end: false },
   { to: "/dashboard/settings", label: "Cài đặt", icon: Settings, end: false },
 ];
 
-export interface SidebarProps {
-  teacherName?: string;
-  teacherRole?: string;
-}
-
-export function Sidebar({
-  teacherName = "Cô Lan Anh",
-  teacherRole = "Toán · Khối 8",
-}: SidebarProps) {
+export function Sidebar() {
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col justify-between border-r border-hairline/70 bg-white/60 px-5 py-6 backdrop-blur-sm">
       <div>
-        <div className="mb-8 px-1">
+        <div className="mb-6 px-1">
           <div className="flex items-center gap-2.5">
             <div className="relative h-7 w-7">
               <div className="absolute inset-0 rounded-full bg-ink" />
@@ -39,6 +30,11 @@ export function Sidebar({
             Bảng điều khiển giáo viên
           </p>
         </div>
+
+        <div className="mb-6">
+          <ClassSelector />
+        </div>
+
         <nav className="flex flex-col gap-1">
           {NAV_ITEMS.map((item) => (
             <NavLink
@@ -68,23 +64,6 @@ export function Sidebar({
           Xem góc học sinh
           <span aria-hidden>&rarr;</span>
         </NavLink>
-        <div className="flex items-center gap-3 rounded-bento-sm border border-hairline/70 bg-white p-3">
-          <Avatar className="h-9 w-9">
-            <AvatarFallback className="bg-lavender text-ink">
-              {teacherName
-                .split(" ")
-                .slice(-2)
-                .map((p) => p[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-ink">
-              {teacherName}
-            </p>
-            <p className="truncate text-xs text-ink-faint">{teacherRole}</p>
-          </div>
-        </div>
       </div>
     </aside>
   );

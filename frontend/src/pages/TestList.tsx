@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useClassTests } from '@/modules/tests/hooks/useClassTests';
 import { TestStatusBadge } from '@/modules/tests/components/TestStatusBadge';
-import { useAuth } from '@/modules/auth/AuthContext';
+import { useSelectedClass } from '@/modules/classes/SelectedClassContext';
 import type { TestKind } from '@/modules/tests/types';
 
 const TYPE_LABEL: Record<TestKind, string> = {
@@ -22,13 +22,15 @@ function formatDate(iso: string) {
 
 export default function TestList() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const classId = user?.classIds[0] ?? '';
+  const { classId, selectedClass } = useSelectedClass();
   const { data: tests, isLoading } = useClassTests(classId);
 
   return (
     <div>
-      <DashboardHeader title="Danh sách bài test" subtitle="Toán - Khối 8" />
+      <DashboardHeader
+        title="Danh sách bài test"
+        subtitle={selectedClass ? `${selectedClass.subject} · Khối ${selectedClass.grade} · ${selectedClass.name}` : undefined}
+      />
 
       {isLoading && (
         <div className="flex flex-col gap-3">
