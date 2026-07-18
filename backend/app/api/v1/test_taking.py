@@ -144,6 +144,7 @@ async def get_submission_result(
                 is_correct=bool(a.is_correct),
                 student_answer=a.answer,
                 correct_answer=by_id[str(a.question_id)].answer if str(a.question_id) in by_id else "",
+                time_spent_seconds=a.time_spent_seconds,
                 explanation=by_id[str(a.question_id)].explanation if str(a.question_id) in by_id else None,
                 root_cause_node_id=a.root_cause_node_id,
                 root_cause_node_name=_resolve_root_cause_name(a, node_names),

@@ -12,10 +12,15 @@ async def get_by_id(db: AsyncSession, path_id: str | uuid.UUID) -> LearningPath 
     return await db.get(LearningPath, path_id)
 
 
+# A verified path is still the student's "current" path (teacher approval
+# doesn't retire it) — only a newly generated path supersedes it.
+_CURRENT_STATUSES = (PathStatus.ACTIVE, PathStatus.VERIFIED)
+
+
 async def get_active_for_student(db: AsyncSession, student_id: str | uuid.UUID) -> LearningPath | None:
     result = await db.execute(
         select(LearningPath)
-        .where(LearningPath.student_id == student_id, LearningPath.status == PathStatus.ACTIVE)
+        .where(LearningPath.student_id == student_id, LearningPath.status.in_(_CURRENT_STATUSES))
         .order_by(LearningPath.generated_at.desc())
     )
     return result.scalars().first()
@@ -31,7 +36,7 @@ async def create(
 ) -> LearningPath:
     if previous_path_id:
         previous = await get_by_id(db, previous_path_id)
-        if previous and previous.status == PathStatus.ACTIVE:
+        if previous and previous.status in _CURRENT_STATUSES:
             previous.status = PathStatus.SUPERSEDED
 
     current = await get_active_for_student(db, student_id)
@@ -46,6 +51,16 @@ async def create(
         status=PathStatus.ACTIVE,
     )
     db.add(path)
+    await db.commit()
+    await db.refresh(path)
+    return path
+
+
+async def verify(db: AsyncSession, path: LearningPath) -> LearningPath:
+    """Teacher marks the AI-suggested path as reviewed/approved. Kept as a
+    distinct status (not a separate boolean) so the FE can render it with the
+    same `status` field it already reads for active/completed/superseded."""
+    path.status = PathStatus.VERIFIED
     await db.commit()
     await db.refresh(path)
     return path
