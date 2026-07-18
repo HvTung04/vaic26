@@ -17,3 +17,8 @@ export function formatPoints(points: number) {
 export function clampNumber(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
+
+export function calcAccuracy(correct: number, total: number): number {
+  if (total === 0) return 0;
+  return Math.round((correct / total) * 100);
+}

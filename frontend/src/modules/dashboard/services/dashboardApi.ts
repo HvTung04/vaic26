@@ -133,6 +133,7 @@ const STUDENT_INSIGHTS: Record<string, StudentInsight> = {
         title: "Ôn tập Phân số",
         dueLabel: "Hết hạn trong 3 giờ",
         urgency: "high",
+        assessmentId: "assess-1",
       },
       {
         id: "task-2",
@@ -140,6 +141,7 @@ const STUDENT_INSIGHTS: Record<string, StudentInsight> = {
         title: "Tỷ lệ thức nâng cao",
         dueLabel: "Hết hạn ngày mai",
         urgency: "normal",
+        assessmentId: "assess-2",
       },
     ],
     quizHistory: [

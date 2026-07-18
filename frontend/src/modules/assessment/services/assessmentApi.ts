@@ -1,5 +1,4 @@
 import { withMockDelay } from '@/services/mockClient';
-import type { AssessmentDraft, Question } from '../types';
 import { calcAccuracy } from '@/utils/format';
 import type {
   Assessment,

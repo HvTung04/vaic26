@@ -85,7 +85,6 @@ export interface StudentTask {
   title: string;
   dueLabel: string;
   urgency: 'high' | 'normal';
-  urgency: "high" | "normal";
   assessmentId: string;
 }
 
