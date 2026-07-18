@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 from collections import deque
 from pathlib import Path
 
@@ -16,13 +15,21 @@ def load_graph(
     nodes_path: str | Path | None = None,
     edges_path: str | Path | None = None,
 ) -> Graph:
-    """Load curriculum nodes + edges, build adjacency lists."""
+    """Load curriculum nodes + edges from the docs/ JSON fixtures, build adjacency lists."""
     np = Path(nodes_path) if nodes_path else _DOCS / "curriculum_nodes.json"
     ep = Path(edges_path) if edges_path else _DOCS / "curriculum_edges.json"
 
     raw_nodes = json.loads(np.read_text(encoding="utf-8"))
     raw_edges = json.loads(ep.read_text(encoding="utf-8"))
 
+    return build_graph(raw_nodes, raw_edges)
+
+
+def build_graph(raw_nodes: list[dict], raw_edges: list[dict]) -> Graph:
+    """Build a Graph (with adjacency lists) from already-loaded node/edge dicts.
+    Same `_id`/`from`/`to` shape as curriculum_nodes.json / curriculum_edges.json,
+    regardless of whether they came from the JSON fixtures or MongoDB.
+    """
     nodes = {}
     for n in raw_nodes:
         nodes[n["_id"]] = Node(
