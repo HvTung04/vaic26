@@ -22,8 +22,9 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/format";
-import { KNOWLEDGE_NODES, nodeLabel } from "../constants";
+import { nodeLabel } from "../constants";
 import { useQuestionBank } from "../hooks/useQuestionBank";
+import { useTaxonomyNodes, useTaxonomyTopics } from "../hooks/queries/useTaxonomyNodes";
 import type {
   QuestionBankDifficulty,
   QuestionBankSortField,
@@ -83,7 +84,6 @@ export function QuestionBankTable({
   const {
     isLoading,
     pageItems,
-    totalCount,
     filteredCount,
     page,
     totalPages,
@@ -96,12 +96,14 @@ export function QuestionBankTable({
     setTypeFilter,
     difficultyFilter,
     setDifficultyFilter,
-    nodeFilter,
-    setNodeFilter,
+    topicFilter,
+    setTopicFilter,
     sortField,
     sortDirection,
     toggleSort,
   } = useQuestionBank();
+  const { data: taxonomyNodes } = useTaxonomyNodes();
+  const { data: taxonomyTopics } = useTaxonomyTopics();
 
   return (
     <div className="flex flex-col gap-4">
@@ -116,14 +118,14 @@ export function QuestionBankTable({
           />
         </div>
         <select
-          value={nodeFilter}
-          onChange={(e) => setNodeFilter(e.target.value)}
+          value={topicFilter}
+          onChange={(e) => setTopicFilter(e.target.value)}
           className="h-11 rounded-bento-sm border border-hairline bg-white px-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40"
         >
           <option value="all">All Topics</option>
-          {KNOWLEDGE_NODES.map((node) => (
-            <option key={node.id} value={node.id}>
-              {node.label}
+          {taxonomyTopics?.map((topic) => (
+            <option key={topic.id} value={topic.id}>
+              {topic.topicName}
             </option>
           ))}
         </select>
@@ -201,7 +203,7 @@ export function QuestionBankTable({
                     </button>
                   </TableHead>
                 ))}
-                <TableHead>Topic / Node</TableHead>
+                <TableHead>Topic</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -240,11 +242,11 @@ export function QuestionBankTable({
                       </Badge>
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-ink-soft">
-                      {formatDate(question.created_at)}
+                      {formatDate(question.createdAt)}
                     </TableCell>
                     <TableCell>
                       <Badge variant="lavender">
-                        {nodeLabel(question.node_id)}
+                        {nodeLabel(taxonomyNodes, question.nodeId)}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -270,9 +272,6 @@ export function QuestionBankTable({
             <p>
               Showing {pageRangeStart}-{pageRangeEnd} of {filteredCount}{" "}
               question{filteredCount === 1 ? "" : "s"}
-              {filteredCount !== totalCount
-                ? ` (filtered from ${totalCount})`
-                : ""}
             </p>
             <div className="flex items-center gap-2">
               <Button

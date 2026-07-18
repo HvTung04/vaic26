@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.question import Difficulty, Question, QuestionDraft, QuestionType, Upload, UploadStatus
@@ -104,6 +104,128 @@ async def create_question_from_draft(
 
 async def get_question(db: AsyncSession, question_id: str | uuid.UUID) -> Question | None:
     return await db.get(Question, question_id)
+
+
+_SORTABLE_COLUMNS = {
+    "text": Question.text,
+    "type": Question.type,
+    "difficulty": Question.difficulty,
+    "created_at": Question.created_at,
+}
+
+
+def _filtered_questions_query(
+    *,
+    node_id: str | None,
+    topic_node_ids: list[str] | None,
+    difficulty: Difficulty | None,
+    type: QuestionType | None,
+    subject: str | None,
+    grade: int | None,
+    search: str | None,
+):
+    query = select(Question)
+    if subject is not None or grade is not None:
+        query = query.join(Upload, Question.source_upload_id == Upload.id)
+        if subject is not None:
+            query = query.where(Upload.subject == subject)
+        if grade is not None:
+            query = query.where(Upload.grade == grade)
+    if node_id is not None:
+        query = query.where(Question.node_id == node_id)
+    if topic_node_ids is not None:
+        query = query.where(Question.node_id.in_(topic_node_ids))
+    if difficulty is not None:
+        query = query.where(Question.difficulty == difficulty)
+    if type is not None:
+        query = query.where(Question.type == type)
+    if search:
+        query = query.where(Question.text.ilike(f"%{search}%"))
+    return query
+
+
+async def list_questions(
+    db: AsyncSession,
+    *,
+    node_id: str | None = None,
+    topic_node_ids: list[str] | None = None,
+    difficulty: Difficulty | None = None,
+    type: QuestionType | None = None,
+    subject: str | None = None,
+    grade: int | None = None,
+    search: str | None = None,
+    sort_by: str = "created_at",
+    sort_dir: str = "desc",
+    limit: int = 50,
+    offset: int = 0,
+) -> tuple[list[Question], int]:
+    base_query = _filtered_questions_query(
+        node_id=node_id,
+        topic_node_ids=topic_node_ids,
+        difficulty=difficulty,
+        type=type,
+        subject=subject,
+        grade=grade,
+        search=search,
+    )
+
+    count_result = await db.execute(select(func.count()).select_from(base_query.subquery()))
+    total = count_result.scalar_one()
+
+    sort_column = _SORTABLE_COLUMNS.get(sort_by, Question.created_at)
+    order = sort_column.asc() if sort_dir == "asc" else sort_column.desc()
+    page_result = await db.execute(base_query.order_by(order).limit(limit).offset(offset))
+    return list(page_result.scalars().all()), total
+
+
+async def create_question(
+    db: AsyncSession,
+    *,
+    text: str,
+    type: QuestionType,
+    options: list | None,
+    answer: str,
+    explanation: str | None,
+    difficulty: Difficulty,
+    node_id: str,
+) -> Question:
+    question = Question(
+        text=text,
+        type=type,
+        options=options,
+        answer=answer,
+        explanation=explanation,
+        difficulty=difficulty,
+        node_id=node_id,
+    )
+    db.add(question)
+    await db.commit()
+    await db.refresh(question)
+    return question
+
+
+async def update_question(
+    db: AsyncSession,
+    question: Question,
+    *,
+    text: str,
+    type: QuestionType,
+    options: list | None,
+    answer: str,
+    explanation: str | None,
+    difficulty: Difficulty,
+    node_id: str,
+) -> Question:
+    question.text = text
+    question.type = type
+    question.options = options
+    question.answer = answer
+    question.explanation = explanation
+    question.difficulty = difficulty
+    question.node_id = node_id
+    await db.commit()
+    await db.refresh(question)
+    return question
 
 
 async def get_questions(db: AsyncSession, question_ids: list[str | uuid.UUID]) -> list[Question]:
