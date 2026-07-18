@@ -10,6 +10,8 @@ const TeacherDashboard = lazy(() => import('@/pages/TeacherDashboard'));
 const StudentInsights = lazy(() => import('@/pages/StudentInsights'));
 const QuestionBank = lazy(() => import('@/pages/QuestionBank'));
 const ClassList = lazy(() => import('@/pages/ClassList'));
+const ClassManagement = lazy(() => import('@/pages/ClassManagement'));
+const ClassDetail = lazy(() => import('@/pages/ClassDetail'));
 const TestList = lazy(() => import('@/pages/TestList'));
 const TestResults = lazy(() => import('@/pages/TestResults'));
 const TestEdit = lazy(() => import('@/pages/TestEdit'));
@@ -36,6 +38,8 @@ const router = createBrowserRouter([
       { path: 'students/:studentId', element: withSuspense(<StudentInsights />) },
       { path: 'question-bank', element: withSuspense(<QuestionBank />) },
       { path: 'class-list', element: withSuspense(<ClassList />) },
+      { path: 'classes', element: withSuspense(<ClassManagement />) },
+      { path: 'classes/:classId', element: withSuspense(<ClassDetail />) },
       { path: 'tests', element: withSuspense(<TestList />) },
       { path: 'tests/:testId/results', element: withSuspense(<TestResults />) },
       { path: 'tests/:testId/edit', element: withSuspense(<TestEdit />) },
