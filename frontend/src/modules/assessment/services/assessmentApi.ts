@@ -1,4 +1,5 @@
 import { withMockDelay } from '@/services/mockClient';
+import type { AssessmentDraft, Question, QuestionDifficulty, QuestionOptionKey } from '../types';
 import { calcAccuracy } from '@/utils/format';
 import type {
   Assessment,
@@ -37,40 +38,6 @@ function hashToRange(value: string, min: number, max: number) {
   let hash = 0;
   for (let i = 0; i < value.length; i += 1) hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
   return min + (hash % (max - min + 1));
-}
-
-function buildQuestion(order: number, subject: string): Question {
-  const difficulty = DIFFICULTY_CYCLE[(order - 1) % DIFFICULTY_CYCLE.length];
-  const options: Question['options'] = [
-    { key: 'A', text: `Phương án A cho câu ${order}` },
-    { key: 'B', text: `Phương án B cho câu ${order}` },
-    { key: 'C', text: `Phương án C cho câu ${order}` },
-    { key: 'D', text: `Phương án D cho câu ${order}` },
-  ];
-  const correctOption: QuestionOptionKey = (['A', 'B', 'C', 'D'] as const)[order % 4];
-  return {
-    id: `q-${order}`,
-    order,
-    prompt: `Câu ${order}: Nội dung câu hỏi ${subject} minh hoạ cho phiên kiểm tra thích ứng.`,
-    options,
-    correctOption,
-    topicTag: `${subject} · Dạng ${order}`,
-    difficulty,
-    points: pointsForDifficulty(difficulty),
-    explanation: `Giải thích ngắn gọn cho đáp án đúng của câu ${order}.`,
-  };
-}
-
-function buildAssessment(assessmentId: string): Assessment {
-  const meta = ASSESSMENT_TITLES[assessmentId] ?? { title: 'Bài kiểm tra thích ứng', subject: 'Toán' };
-  return {
-    id: assessmentId,
-    title: meta.title,
-    subject: meta.subject,
-    durationMinutes: 20,
-    sessionCode: `AS-${hashToRange(assessmentId, 1000, 9999)}`,
-    questions: Array.from({ length: 10 }, (_, i) => buildQuestion(i + 1, meta.subject)),
-  };
 }
 
 const DRAFT_ASSESSMENT: AssessmentDraft = {
