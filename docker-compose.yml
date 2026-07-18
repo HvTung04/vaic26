@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gaplens-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-gaplens}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gaplens}
+      POSTGRES_DB: ${POSTGRES_DB:-gaplens}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - gaplens_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gaplens} -d ${POSTGRES_DB:-gaplens}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    container_name: gaplens-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-gaplens}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-gaplens}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-gaplens}
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - gaplens_mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  gaplens_postgres_data:
+  gaplens_mongo_data:
