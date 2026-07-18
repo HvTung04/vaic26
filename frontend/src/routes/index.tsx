@@ -7,6 +7,7 @@ import { PageSkeleton } from '@/components/PageSkeleton';
 
 const Landing = lazy(() => import('@/pages/Landing'));
 const TeacherDashboard = lazy(() => import('@/pages/TeacherDashboard'));
+const CreateTest = lazy(() => import('@/pages/CreateTest'));
 const StudentInsights = lazy(() => import('@/pages/StudentInsights'));
 const QuestionBank = lazy(() => import('@/pages/QuestionBank'));
 const ClassList = lazy(() => import('@/pages/ClassList'));
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: withSuspense(<TeacherDashboard />) },
+      { path: 'create-test', element: withSuspense(<CreateTest />) },
       { path: 'students/:studentId', element: withSuspense(<StudentInsights />) },
       { path: 'question-bank', element: withSuspense(<QuestionBank />) },
       { path: 'class-list', element: withSuspense(<ClassList />) },

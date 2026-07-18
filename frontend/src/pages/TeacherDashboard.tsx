@@ -35,7 +35,7 @@ export default function TeacherDashboard() {
             </Badge>
             <Button
               variant="primary"
-              onClick={() => navigate("/dashboard/question-bank")}
+              onClick={() => navigate("/dashboard/create-test")}
             >
               <Plus className="h-4 w-4" /> Tạo bài kiểm tra
             </Button>

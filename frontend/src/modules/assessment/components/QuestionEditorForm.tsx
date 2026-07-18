@@ -86,6 +86,10 @@ export function QuestionEditorForm({
               placeholder="Enter option text..."
               value={option.text}
               onChange={(e) => updateOption(option.key, e.target.value)}
+              className={cn(
+                question.correctOption === option.key &&
+                  "border-forest/50 bg-[#f0faf3] focus-visible:ring-forest/30",
+              )}
             />
           </div>
         ))}
