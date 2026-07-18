@@ -17,7 +17,7 @@ export function AIInsightCard({ summary, weakTopics, strongTopics, isLoading }: 
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-lavender text-[#6B3FCB]">
           <Sparkles className="h-4 w-4" />
         </div>
-        <CardTitle className="text-base">AI Insights</CardTitle>
+        <CardTitle className="text-base">Phân tích AI</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {isLoading ? (

@@ -19,7 +19,7 @@ export function AssessmentTopBar({
       <div className="flex items-baseline gap-3">
         <p className="font-serif text-2xl font-bold text-ember">G.A.R.Y</p>
         <span className="text-xs font-semibold uppercase tracking-widest text-ink-faint">
-          Session: #{sessionCode}
+          Phiên: #{sessionCode}
         </span>
       </div>
       <div className="flex items-center gap-3">

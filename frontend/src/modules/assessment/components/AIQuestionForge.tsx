@@ -17,14 +17,14 @@ export function AIQuestionForge({ onGenerate, isGenerating, lastGeneratedCount }
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
           <Zap className="h-4 w-4" />
         </div>
-        <h3 className="font-serif text-lg font-semibold">AI Question Forge</h3>
+        <h3 className="font-serif text-lg font-semibold">AI Tạo câu hỏi</h3>
       </div>
       <p className="mb-4 text-sm leading-relaxed text-white/75">
-        Generate rigorous exam questions based on your curriculum tags or specific text snippets.
+        Tạo câu hỏi kiểm tra chất lượng dựa trên chương trình học hoặc nội dung bạn cung cấp.
       </p>
       <Textarea
         rows={3}
-        placeholder="Paste lesson summary or topic..."
+        placeholder="Dán tóm tắt bài học hoặc chủ đề..."
         value={sourceText}
         onChange={(e) => setSourceText(e.target.value)}
         className="mb-4 border-white/20 bg-white/10 text-white placeholder:text-white/40 focus:border-white/40 focus:ring-white/20"
@@ -36,11 +36,11 @@ export function AIQuestionForge({ onGenerate, isGenerating, lastGeneratedCount }
         className="flex w-full items-center justify-center gap-2 rounded-full bg-lime py-3 text-sm font-bold text-[#3F5300] transition-transform hover:scale-[1.01] disabled:opacity-60"
       >
         {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-        {isGenerating ? 'Generating...' : 'Generate 5 Questions'}
+        {isGenerating ? 'Đang tạo...' : 'Tạo 5 câu hỏi'}
       </button>
       {Boolean(lastGeneratedCount) && !isGenerating && (
         <p className="mt-3 text-center text-xs text-lime">
-          {lastGeneratedCount} new questions added to your bank.
+          {lastGeneratedCount} câu hỏi mới đã được thêm vào ngân hàng.
         </p>
       )}
     </div>

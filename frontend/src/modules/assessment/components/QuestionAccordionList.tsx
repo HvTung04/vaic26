@@ -60,7 +60,7 @@ export function QuestionAccordionList({
                   {question.order}
                 </span>
                 <span className="truncate text-sm font-medium text-ink">
-                  {question.prompt || "Untitled question"}
+                  {question.prompt || "Chưa có nội dung"}
                 </span>
                 {question.source === "ai" && (
                   <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#6B3FCB]" />
@@ -95,7 +95,7 @@ export function QuestionAccordionList({
         onClick={onAdd}
         className="self-start"
       >
-        <Plus className="h-4 w-4" /> Add Question
+        <Plus className="h-4 w-4" /> Thêm câu hỏi
       </Button>
     </div>
   );

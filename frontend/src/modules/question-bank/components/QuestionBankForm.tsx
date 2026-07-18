@@ -26,9 +26,9 @@ const DIFFICULTY_OPTIONS: {
   label: string;
   variant: "mint" | "sky" | "coral";
 }[] = [
-  { value: "easy", label: "Easy", variant: "mint" },
-  { value: "medium", label: "Medium", variant: "sky" },
-  { value: "hard", label: "Hard", variant: "coral" },
+  { value: "easy", label: "Dễ", variant: "mint" },
+  { value: "medium", label: "Trung bình", variant: "sky" },
+  { value: "hard", label: "Khó", variant: "coral" },
 ];
 
 function initialCorrectKey(item?: QuestionBankItem) {
@@ -118,7 +118,7 @@ export function QuestionBankForm({
       <CardContent className="flex flex-col gap-5 pt-6">
         <div>
           <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-ink-faint">
-            Question Type
+            Loại câu hỏi
           </label>
           <div className="flex gap-1.5">
             {(["mcq", "short_answer"] as const).map((value) => (
@@ -133,7 +133,7 @@ export function QuestionBankForm({
                     : "bg-cream-100 text-ink-soft hover:bg-ink/10",
                 )}
               >
-                {value === "mcq" ? "Multiple Choice" : "Short Answer"}
+                {value === "mcq" ? "Trắc nghiệm" : "Tự luận ngắn"}
               </button>
             ))}
           </div>
@@ -141,11 +141,11 @@ export function QuestionBankForm({
 
         <div>
           <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-ink-faint">
-            Question Text
+            Nội dung câu hỏi
           </label>
           <Textarea
             rows={3}
-            placeholder="Enter your question here..."
+            placeholder="Nhập nội dung câu hỏi..."
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
@@ -178,12 +178,12 @@ export function QuestionBankForm({
                     Option {option.key}
                     {isCorrect && (
                       <span className="ml-auto text-forest normal-case tracking-normal">
-                        Correct
+                        Đáp án đúng
                       </span>
                     )}
                   </span>
                   <Input
-                    placeholder="Enter option text..."
+                    placeholder="Nhập nội dung phương án..."
                     value={option.text}
                     onClick={(e) => e.stopPropagation()}
                     onChange={(e) => updateOption(option.key, e.target.value)}
@@ -196,10 +196,10 @@ export function QuestionBankForm({
         ) : (
           <div>
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-ink-faint">
-              Correct Answer
+              Đáp án đúng
             </label>
             <Input
-              placeholder="Enter the expected answer..."
+              placeholder="Nhập đáp án mong đợi..."
               value={shortAnswer}
               onChange={(e) => setShortAnswer(e.target.value)}
             />
@@ -209,7 +209,7 @@ export function QuestionBankForm({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-ink-faint">
-              Difficulty
+              Độ khó
             </label>
             <div className="flex flex-wrap gap-1.5">
               {DIFFICULTY_OPTIONS.map((d) => (
@@ -231,7 +231,7 @@ export function QuestionBankForm({
           </div>
           <div>
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-ink-faint">
-              Topic / Knowledge Node
+              Chủ đề / Node kiến thức
             </label>
             <NodeSearchSelect nodes={taxonomyNodes} value={nodeId} onChange={setNodeId} />
           </div>
@@ -239,12 +239,12 @@ export function QuestionBankForm({
 
         <div>
           <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-ink-faint">
-            Explanation{" "}
-            <span className="normal-case text-ink-faint/70">(optional)</span>
+            Giải thích{" "}
+            <span className="normal-case text-ink-faint/70">(tùy chọn)</span>
           </label>
           <Textarea
             rows={2}
-            placeholder="Explain why the correct answer is right..."
+            placeholder="Giải thích vì sao đáp án này đúng..."
             value={explanation}
             onChange={(e) => setExplanation(e.target.value)}
           />
@@ -252,7 +252,7 @@ export function QuestionBankForm({
 
         <div className="flex justify-end gap-2 border-t border-hairline/70 pt-5">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            Hủy
           </Button>
           <Button
             type="button"
@@ -265,7 +265,7 @@ export function QuestionBankForm({
             ) : (
               <Save className="h-4 w-4" />
             )}
-            {isEditMode ? "Save Changes" : "Create Question"}
+            {isEditMode ? "Lưu thay đổi" : "Tạo câu hỏi"}
           </Button>
         </div>
       </CardContent>

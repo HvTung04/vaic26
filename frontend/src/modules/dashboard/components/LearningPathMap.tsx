@@ -36,19 +36,19 @@ export function LearningPathMap({ path }: LearningPathMapProps) {
       <div className="mb-6 flex items-start justify-between gap-3">
         <div>
           <h3 className="font-serif text-lg font-semibold text-ink">
-            Personalized Learning Path
+            Lộ trình học tập cá nhân hóa
           </h3>
           <p className="text-sm text-ink-soft">{path.goal}</p>
         </div>
         {path.status === "verified" && (
           <Badge variant="mint" className="shrink-0 gap-1">
-            <ShieldCheck className="h-3 w-3" /> Verified by teacher
+            <ShieldCheck className="h-3 w-3" /> Giáo viên xác nhận
           </Badge>
         )}
         {path.status === "ai_suggested" && (
           <Badge variant="lavender" className="shrink-0 gap-1">
             <Sparkles className="h-3 w-3" />
-            {isVerified ? "Teacher-verified" : "AI Suggestion"}
+            {isVerified ? "Giáo viên xác nhận" : "AI đề xuất"}
           </Badge>
         )}
       </div>

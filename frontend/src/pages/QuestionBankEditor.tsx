@@ -24,18 +24,18 @@ export default function QuestionBankEditor() {
   return (
     <div>
       <DashboardHeader
-        title={isEditMode ? "Edit Question" : "Add Question"}
+        title={isEditMode ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi"}
         subtitle={
           isEditMode
-            ? "Update this question's content, answer key, and topic label."
-            : "Create a new question and add it to your question bank."
+            ? "Cập nhật nội dung, đáp án đúng và nhãn chủ đề của câu hỏi."
+            : "Tạo câu hỏi mới và thêm vào ngân hàng câu hỏi."
         }
       />
 
       {isEditMode && isLoading ? (
         <Skeleton className="h-140 w-full" />
       ) : isEditMode && (isError || !item) ? (
-        <p className="text-sm text-ink-faint">Question not found.</p>
+        <p className="text-sm text-ink-faint">Không tìm thấy câu hỏi.</p>
       ) : (
         <QuestionBankForm
           initialValue={item}

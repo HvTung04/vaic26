@@ -45,7 +45,7 @@ export function NodeSearchSelect({ nodes, value, onChange }: NodeSearchSelectPro
       <div className="relative">
         <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
         <Input
-          placeholder="Search by content, topic, or node id..."
+          placeholder="Tìm theo nội dung, chủ đề hoặc mã node..."
           value={isOpen ? query : (selected?.noiDungCuThe ?? selected?.topicName ?? "")}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => {
@@ -67,7 +67,7 @@ export function NodeSearchSelect({ nodes, value, onChange }: NodeSearchSelectPro
       {isOpen && (
         <div className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-bento-sm border border-hairline bg-white shadow-lg">
           {results.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-ink-faint">No matching nodes.</p>
+            <p className="px-4 py-3 text-sm text-ink-faint">Không tìm thấy node phù hợp.</p>
           ) : (
             results.map((node) => (
               <button

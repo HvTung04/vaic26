@@ -90,7 +90,7 @@ export default function Login() {
         </form>
 
         <p className="mt-4 text-center text-xs text-ink-faint">
-          Demo: teacher1 / student1 — mật khẩu <span className="font-mono">gary123</span>
+          Demo: teacher1 / student1 — mật khẩu <span className="font-mono">gaplens123</span>
         </p>
       </div>
     </div>

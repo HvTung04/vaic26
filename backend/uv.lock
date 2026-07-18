@@ -462,7 +462,7 @@ wheels = [
 ]
 
 [[package]]
-name = "gaplens-backend"
+name = "gary-backend"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

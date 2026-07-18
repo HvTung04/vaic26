@@ -24,7 +24,7 @@ export function QuestionListPreview({ questions, activeQuestionId, onSelect }: Q
                 {question.order}
               </span>
               <span className="truncate text-sm font-medium text-ink">
-                {question.prompt || 'Untitled question'}
+                {question.prompt || 'Chưa có nội dung'}
               </span>
             </span>
             <ChevronDown className="h-4 w-4 shrink-0 text-ink-faint" />

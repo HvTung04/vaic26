@@ -17,7 +17,7 @@ export function PathEditorPanel({ studentId }: PathEditorPanelProps) {
     <div className="flex flex-col gap-3 pt-6">
       <Textarea
         rows={3}
-        placeholder="Make suggestion to the learning path..."
+        placeholder="Đề xuất chỉnh sửa lộ trình học tập..."
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
@@ -35,7 +35,7 @@ export function PathEditorPanel({ studentId }: PathEditorPanelProps) {
           ) : (
             <Sparkles className="h-4 w-4" />
           )}
-          AI Update Path
+          AI Cập nhật lộ trình
         </Button>
         <Button
           variant="outline"
@@ -48,7 +48,7 @@ export function PathEditorPanel({ studentId }: PathEditorPanelProps) {
           ) : (
             <CheckCircle2 className="h-4 w-4" />
           )}
-          Verify &amp; Assign
+          Xác nhận &amp; Giao bài
         </Button>
       </div>
       {verifyMutation.isSuccess && (

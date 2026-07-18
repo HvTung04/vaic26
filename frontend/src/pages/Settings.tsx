@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function Settings() {
   return (
     <div>
-      <DashboardHeader title="Settings" subtitle="Educator console preferences" />
+      <DashboardHeader title="Cài đặt" subtitle="Tùy chỉnh bảng điều khiển giáo viên" />
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Đang phát triển</CardTitle>

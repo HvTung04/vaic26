@@ -32,8 +32,8 @@ import type {
 } from "../types";
 
 const TYPE_LABEL: Record<QuestionBankType, string> = {
-  mcq: "Multiple Choice",
-  short_answer: "Short Answer",
+  mcq: "Trắc nghiệm",
+  short_answer: "Tự luận ngắn",
 };
 
 const DIFFICULTY_BADGE_VARIANT: Record<
@@ -46,19 +46,19 @@ const DIFFICULTY_BADGE_VARIANT: Record<
 };
 
 const TYPE_FILTERS: { value: QuestionBankType | "all"; label: string }[] = [
-  { value: "all", label: "All Types" },
-  { value: "mcq", label: "Multiple Choice" },
-  { value: "short_answer", label: "Short Answer" },
+  { value: "all", label: "Tất cả loại" },
+  { value: "mcq", label: "Trắc nghiệm" },
+  { value: "short_answer", label: "Tự luận ngắn" },
 ];
 
 const DIFFICULTY_FILTERS: {
   value: QuestionBankDifficulty | "all";
   label: string;
 }[] = [
-  { value: "all", label: "All Difficulties" },
-  { value: "easy", label: "Easy" },
-  { value: "medium", label: "Medium" },
-  { value: "hard", label: "Hard" },
+  { value: "all", label: "Tất cả độ khó" },
+  { value: "easy", label: "Dễ" },
+  { value: "medium", label: "Trung bình" },
+  { value: "hard", label: "Khó" },
 ];
 
 const SORTABLE_COLUMNS: {
@@ -66,10 +66,10 @@ const SORTABLE_COLUMNS: {
   label: string;
   className?: string;
 }[] = [
-  { field: "text", label: "Question", className: "w-[40%]" },
-  { field: "type", label: "Type" },
-  { field: "difficulty", label: "Difficulty" },
-  { field: "created_at", label: "Created" },
+  { field: "text", label: "Câu hỏi", className: "w-[40%]" },
+  { field: "type", label: "Loại" },
+  { field: "difficulty", label: "Độ khó" },
+  { field: "created_at", label: "Ngày tạo" },
 ];
 
 export interface QuestionBankTableProps {
@@ -111,7 +111,7 @@ export function QuestionBankTable({
         <div className="relative flex-1 min-w-[220px]">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
           <Input
-            placeholder="Search questions..."
+            placeholder="Tìm kiếm câu hỏi..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -122,7 +122,7 @@ export function QuestionBankTable({
           onChange={(e) => setTopicFilter(e.target.value)}
           className="h-11 rounded-bento-sm border border-hairline bg-white px-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40"
         >
-          <option value="all">All Topics</option>
+          <option value="all">Tất cả chủ đề</option>
           {taxonomyTopics?.map((topic) => (
             <option key={topic.id} value={topic.id}>
               {topic.topicName}
@@ -130,12 +130,12 @@ export function QuestionBankTable({
           ))}
         </select>
         <Button variant="primary" onClick={onAddQuestion}>
-          <Plus className="h-4 w-4" /> Add Question
+          <Plus className="h-4 w-4" /> Thêm câu hỏi
         </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <span className="text-sm font-semibold text-ink-faint">Type:</span>
+        <span className="text-sm font-semibold text-ink-faint">Loại:</span>
         <div className="flex flex-wrap items-center gap-1.5">
           {TYPE_FILTERS.map((f) => (
             <button
@@ -155,7 +155,7 @@ export function QuestionBankTable({
         </div>
         <div className="h-4 w-px bg-hairline" />
         <span className="text-sm font-semibold text-ink-faint">
-          Difficulty:
+          Độ khó:
         </span>
         <div className="flex flex-wrap items-center gap-1.5">
           {DIFFICULTY_FILTERS.map((f) => (
@@ -203,8 +203,8 @@ export function QuestionBankTable({
                     </button>
                   </TableHead>
                 ))}
-                <TableHead>Topic</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Chủ đề</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -214,7 +214,7 @@ export function QuestionBankTable({
                     colSpan={6}
                     className="py-10 text-center text-ink-faint"
                   >
-                    No questions match your filters.
+                    Không có câu hỏi phù hợp với bộ lọc.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -257,7 +257,7 @@ export function QuestionBankTable({
                           onEditQuestion(question.id);
                         }}
                         className="rounded-bento-sm p-2 text-ink-faint transition-colors hover:bg-ink/5 hover:text-ink"
-                        aria-label="Edit question"
+                        aria-label="Chỉnh sửa câu hỏi"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
@@ -270,8 +270,8 @@ export function QuestionBankTable({
 
           <div className="flex items-center justify-between text-sm text-ink-soft">
             <p>
-              Showing {pageRangeStart}-{pageRangeEnd} of {filteredCount}{" "}
-              question{filteredCount === 1 ? "" : "s"}
+              Hiển thị {pageRangeStart}-{pageRangeEnd} trong số {filteredCount}{" "}
+              câu hỏi
             </p>
             <div className="flex items-center gap-2">
               <Button
@@ -283,7 +283,7 @@ export function QuestionBankTable({
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <span className="text-xs font-semibold text-ink-faint">
-                Page {page} / {totalPages}
+                Trang {page} / {totalPages}
               </span>
               <Button
                 variant="outline"

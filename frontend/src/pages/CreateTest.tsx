@@ -47,6 +47,7 @@ const SUBJECTS = ["Toán", "Vật Lý", "Hóa Học", "Sinh Học", "Ngữ Văn"
 const AVAILABLE_GRADES = [...new Set(MOCK_CLASSES.map((c) => `Khối ${c.grade}`))].sort();
 
 const DIFFICULTY_CYCLE: QuestionDifficulty[] = ["Easy", "Medium", "Hard"];
+const DIFFICULTY_LABELS: Record<QuestionDifficulty, string> = { Easy: "Dễ", Medium: "Trung bình", Hard: "Khó" };
 
 const BANK_QUESTIONS: Question[] = [
   {
@@ -309,7 +310,7 @@ function BankSource({
               <p className="truncate text-sm font-medium text-ink">{q.prompt}</p>
               <div className="mt-0.5 flex items-center gap-2">
                 <Badge variant={q.difficulty === "Easy" ? "mint" : q.difficulty === "Hard" ? "coral" : "neutral"} className="text-[10px]">
-                  {q.difficulty}
+                  {DIFFICULTY_LABELS[q.difficulty] ?? q.difficulty}
                 </Badge>
                 <span className="text-[11px] text-ink-faint">{q.topicTag}</span>
               </div>

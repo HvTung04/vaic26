@@ -18,9 +18,9 @@ export function StudentTaskList({ tasks, isLoading }: StudentTaskListProps) {
   return (
     <Card className="h-full">
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle className="text-base">Incoming Exercises</CardTitle>
+        <CardTitle className="text-base">Bài tập sắp đến hạn</CardTitle>
         {!isLoading && tasks && tasks.length > 0 && (
-          <Badge variant="urgent">Required</Badge>
+          <Badge variant="urgent">Bắt buộc</Badge>
         )}
       </CardHeader>
       <CardContent className="flex flex-col gap-3">

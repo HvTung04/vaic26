@@ -38,8 +38,8 @@ export default function TestBuilder() {
   return (
     <div>
       <DashboardHeader
-        title="Create New Assessment"
-        subtitle={`Drafting: ${draft.title} · ${draft.questions.length} question${draft.questions.length === 1 ? "" : "s"}`}
+        title="Tạo bài kiểm tra mới"
+        subtitle={`Soạn: ${draft.title} · ${draft.questions.length} câu hỏi`}
         actions={
           <Button
             variant="primary"
@@ -49,7 +49,7 @@ export default function TestBuilder() {
             {publishMutation.isPending && (
               <Loader2 className="h-4 w-4 animate-spin" />
             )}
-            {publishMutation.isSuccess ? "Published" : "Publish Test"}
+            {publishMutation.isSuccess ? "Đã xuất bản" : "Xuất bản bài kiểm tra"}
           </Button>
         }
       />

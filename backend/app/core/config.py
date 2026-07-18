@@ -10,7 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str = "postgresql+asyncpg://gary:gary@localhost:5432/gary"
+    database_url: str = "postgresql+asyncpg://gaplens:gaplens@localhost:5432/gaplens"
     mongo_url: str = "mongodb://gary:gary@localhost:27017"
     mongo_db: str = "gary"
 

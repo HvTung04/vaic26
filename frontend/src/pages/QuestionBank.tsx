@@ -8,8 +8,8 @@ export default function QuestionBank() {
   return (
     <div>
       <DashboardHeader
-        title="Question Bank"
-        subtitle="Browse, search, and manage every question available to your tests."
+        title="Ngân hàng câu hỏi"
+        subtitle="Xem, tìm kiếm và quản lý tất cả câu hỏi có sẵn cho bài kiểm tra."
       />
       <QuestionBankTable
         onAddQuestion={() => navigate("/dashboard/question-bank/new")}

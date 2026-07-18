@@ -4,15 +4,15 @@ services:
     container_name: gary-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: gary
-      POSTGRES_PASSWORD: gary
-      POSTGRES_DB: gary
+      POSTGRES_USER: gaplens
+      POSTGRES_PASSWORD: gaplens
+      POSTGRES_DB: gaplens
     ports:
       - "5432:5432"
     volumes:
       - gary_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gary -d gary"]
+      test: ["CMD-SHELL", "pg_isready -U gaplens -d gaplens"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -47,7 +47,7 @@ services:
       mongo:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://gary:gary@postgres:5432/gary
+      DATABASE_URL: postgresql+asyncpg://gaplens:gaplens@postgres:5432/gaplens
       MONGO_URL: mongodb://gary:gary@mongo:27017/?authSource=admin
       MONGO_DB: gary
       JWT_SECRET: change-me-in-prod

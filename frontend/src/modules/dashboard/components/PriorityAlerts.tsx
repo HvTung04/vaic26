@@ -92,7 +92,7 @@ export function PriorityAlertsCard({
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="flex items-center gap-2 text-base">
           <AlertTriangle className="h-4 w-4 text-primary" />
-          Priority Queue
+          Hàng đợi ưu tiên
         </CardTitle>
         {isLoading ? (
           <Skeleton className="h-6 w-20 rounded-full" />
@@ -104,7 +104,7 @@ export function PriorityAlertsCard({
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-bento-sm bg-coral-soft/50 p-3">
             <p className="mb-2 flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-ink-soft">
-              <Gauge className="h-3 w-3" /> Academic Performance
+              <Gauge className="h-3 w-3" /> Kết quả học tập
             </p>
             {isLoading ? (
               <div className="space-y-2">
@@ -125,7 +125,7 @@ export function PriorityAlertsCard({
           </div>
           <div className="rounded-bento-sm bg-lavender-soft/50 p-3">
             <p className="mb-2 flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-ink-soft">
-              <Ban className="h-3 w-3" /> Academic Engagement
+              <Ban className="h-3 w-3" /> Mức độ tham gia
             </p>
             {isLoading ? (
               <div className="space-y-2">

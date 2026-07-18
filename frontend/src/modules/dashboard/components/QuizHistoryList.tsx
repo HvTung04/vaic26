@@ -38,7 +38,7 @@ export function QuizHistoryList({ attempts, isLoading }: QuizHistoryListProps) {
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle className="text-base">Test Results</CardTitle>
+        <CardTitle className="text-base">Kết quả bài kiểm tra</CardTitle>
         <History className="h-4 w-4 text-ink-faint" />
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
@@ -81,7 +81,7 @@ export function QuizHistoryList({ attempts, isLoading }: QuizHistoryListProps) {
           })
         )}
         <button className="pt-1 text-center text-sm font-semibold text-primary transition-colors hover:text-primary/80">
-          View All &rarr;
+          Xem tất cả &rarr;
         </button>
       </CardContent>
     </Card>

@@ -36,12 +36,12 @@ export function QuestionFileImportCard({
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-base">Import Questions from File</CardTitle>
+        <CardTitle className="text-base">Nhập câu hỏi từ tệp</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <p className="text-xs leading-relaxed text-ink-soft">
-          Upload an existing test document. Questions are extracted and auto-labeled to a topic /
-          knowledge node for you to review.
+          Tải lên tài liệu bài kiểm tra có sẵn. Câu hỏi sẽ được trích xuất và gắn nhãn chủ đề /
+          node kiến thức để bạn xem xét.
         </p>
         <button
           type="button"
@@ -64,9 +64,9 @@ export function QuestionFileImportCard({
             <FileUp className="h-6 w-6 text-ink-faint" />
           )}
           <span className="text-xs font-semibold text-ink">
-            {isUploading ? "Parsing & labeling questions..." : "Click or drop a file to upload"}
+            {isUploading ? "Đang phân tích & gắn nhãn câu hỏi..." : "Nhấn hoặc kéo thả tệp để tải lên"}
           </span>
-          <span className="text-[11px] text-ink-faint">PDF, DOC, DOCX or TXT</span>
+          <span className="text-[11px] text-ink-faint">PDF, DOC, DOCX hoặc TXT</span>
         </button>
         <input
           ref={inputRef}
@@ -81,8 +81,8 @@ export function QuestionFileImportCard({
         {Boolean(lastImportedCount) && !isUploading && (
           <p className="flex items-center gap-1.5 text-xs text-forest-soft">
             <CheckCircle2 className="h-3.5 w-3.5" />
-            {lastImportedCount} question{lastImportedCount === 1 ? "" : "s"} imported from{" "}
-            {lastFileName} and labeled by topic.
+            {lastImportedCount} câu hỏi đã nhập từ{" "}
+            {lastFileName} và gắn nhãn chủ đề.
           </p>
         )}
       </CardContent>
