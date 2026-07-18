@@ -27,7 +27,7 @@ try:
     for d in drafts:
         print(f"[{d.index}] {d.text[:150]}")
         parts = []
-        parts.append(f"node={d.knowledge_node}")
+        parts.append(f"nodes={d.knowledge_nodes}")
         parts.append(f"diff={d.difficulty}")
         parts.append(f"conf={d.confidence:.2f}")
         print(f"    {', '.join(parts)}")

@@ -1,0 +1,401 @@
+[
+  {
+    "_id": "L6-t1-B01__L6-t1-B02",
+    "from": "L6-t1-B01",
+    "to": "L6-t1-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t1-B02__L6-t1-B03",
+    "from": "L6-t1-B02",
+    "to": "L6-t1-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t2-B01__L6-t2-B02",
+    "from": "L6-t2-B01",
+    "to": "L6-t2-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t3-B01__L6-t3-B02",
+    "from": "L6-t3-B01",
+    "to": "L6-t3-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t3-B02__L6-t3-B03",
+    "from": "L6-t3-B02",
+    "to": "L6-t3-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t4-B01__L6-t4-B02",
+    "from": "L6-t4-B01",
+    "to": "L6-t4-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t4-B02__L6-t4-B03",
+    "from": "L6-t4-B02",
+    "to": "L6-t4-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t4-B03__L6-t4-B04",
+    "from": "L6-t4-B03",
+    "to": "L6-t4-B04",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t4-B04__L6-t4-B05",
+    "from": "L6-t4-B04",
+    "to": "L6-t4-B05",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t5-B01__L6-t5-B02",
+    "from": "L6-t5-B01",
+    "to": "L6-t5-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t5-B02__L6-t5-B03",
+    "from": "L6-t5-B02",
+    "to": "L6-t5-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t6-B01__L6-t6-B02",
+    "from": "L6-t6-B01",
+    "to": "L6-t6-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t6-B02__L6-t6-B03",
+    "from": "L6-t6-B02",
+    "to": "L6-t6-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t6-B03__L6-t6-B04",
+    "from": "L6-t6-B03",
+    "to": "L6-t6-B04",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t6-B04__L6-t6-B05",
+    "from": "L6-t6-B04",
+    "to": "L6-t6-B05",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t1-B01__L7-t1-B02",
+    "from": "L7-t1-B01",
+    "to": "L7-t1-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t2-B01__L7-t2-B02",
+    "from": "L7-t2-B01",
+    "to": "L7-t2-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t4-B01__L7-t4-B02",
+    "from": "L7-t4-B01",
+    "to": "L7-t4-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t3-B01__L7-t3-B02",
+    "from": "L7-t3-B01",
+    "to": "L7-t3-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t7-B01__L7-t7-B02",
+    "from": "L7-t7-B01",
+    "to": "L7-t7-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t5-B01__L7-t5-B02",
+    "from": "L7-t5-B01",
+    "to": "L7-t5-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t5-B02__L7-t5-B03",
+    "from": "L7-t5-B02",
+    "to": "L7-t5-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t6-B01__L7-t6-B02",
+    "from": "L7-t6-B01",
+    "to": "L7-t6-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t8-B01__L7-t8-B02",
+    "from": "L7-t8-B01",
+    "to": "L7-t8-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t8-B02__L7-t8-B03",
+    "from": "L7-t8-B02",
+    "to": "L7-t8-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t8-B03__L7-t8-B04",
+    "from": "L7-t8-B03",
+    "to": "L7-t8-B04",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t1-B01__L8-t1-B02",
+    "from": "L8-t1-B01",
+    "to": "L8-t1-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t3-B01__L8-t3-B02",
+    "from": "L8-t3-B01",
+    "to": "L8-t3-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t5-B01__L8-t5-B02",
+    "from": "L8-t5-B01",
+    "to": "L8-t5-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t5-B02__L8-t5-B03",
+    "from": "L8-t5-B02",
+    "to": "L8-t5-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t6-B01__L8-t6-B02",
+    "from": "L8-t6-B01",
+    "to": "L8-t6-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t6-B02__L8-t6-B03",
+    "from": "L8-t6-B02",
+    "to": "L8-t6-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t8-B01__L8-t8-B02",
+    "from": "L8-t8-B01",
+    "to": "L8-t8-B02",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t8-B02__L8-t8-B03",
+    "from": "L8-t8-B02",
+    "to": "L8-t8-B03",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t8-B03__L8-t8-B04",
+    "from": "L8-t8-B03",
+    "to": "L8-t8-B04",
+    "kind": "inter_block_same_topic",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t1-B03__L6-t2-B01",
+    "from": "L6-t1-B03",
+    "to": "L6-t2-B01",
+    "kind": "bridge",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t4-B05__L6-t5-B01",
+    "from": "L6-t4-B05",
+    "to": "L6-t5-B01",
+    "kind": "bridge",
+    "cross_grade": false
+  },
+  {
+    "_id": "L6-t1-B03__L7-t1-B01",
+    "from": "L6-t1-B03",
+    "to": "L7-t1-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L6-t2-B02__L7-t1-B01",
+    "from": "L6-t2-B02",
+    "to": "L7-t1-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L6-t3-B03__L7-t1-B01",
+    "from": "L6-t3-B03",
+    "to": "L7-t1-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L6-t2-B02__L7-t3-B01",
+    "from": "L6-t2-B02",
+    "to": "L7-t3-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L6-t3-B03__L7-t3-B01",
+    "from": "L6-t3-B03",
+    "to": "L7-t3-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L6-t5-B03__L7-t5-B01",
+    "from": "L6-t5-B03",
+    "to": "L7-t5-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L6-t4-B05__L7-t7-B01",
+    "from": "L6-t4-B05",
+    "to": "L7-t7-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L6-t6-B05__L7-t8-B01",
+    "from": "L6-t6-B05",
+    "to": "L7-t8-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L7-t1-B02__L7-t2-B01",
+    "from": "L7-t1-B02",
+    "to": "L7-t2-B01",
+    "kind": "bridge",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t5-B03__L7-t6-B01",
+    "from": "L7-t5-B03",
+    "to": "L7-t6-B01",
+    "kind": "bridge",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t3-B02__L7-t4-B01",
+    "from": "L7-t3-B02",
+    "to": "L7-t4-B01",
+    "kind": "bridge",
+    "cross_grade": false
+  },
+  {
+    "_id": "L7-t3-B02__L8-t1-B01",
+    "from": "L7-t3-B02",
+    "to": "L8-t1-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L7-t3-B02__L8-t4-B01",
+    "from": "L7-t3-B02",
+    "to": "L8-t4-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L7-t4-B02__L8-t3-B01",
+    "from": "L7-t4-B02",
+    "to": "L8-t3-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L7-t6-B02__L8-t5-B01",
+    "from": "L7-t6-B02",
+    "to": "L8-t5-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L7-t6-B02__L8-t6-B01",
+    "from": "L7-t6-B02",
+    "to": "L8-t6-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L7-t7-B02__L8-t7-B01",
+    "from": "L7-t7-B02",
+    "to": "L8-t7-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L7-t8-B04__L8-t8-B01",
+    "from": "L7-t8-B04",
+    "to": "L8-t8-B01",
+    "kind": "bridge",
+    "cross_grade": true
+  },
+  {
+    "_id": "L8-t1-B02__L8-t2-B01",
+    "from": "L8-t1-B02",
+    "to": "L8-t2-B01",
+    "kind": "bridge",
+    "cross_grade": false
+  },
+  {
+    "_id": "L8-t4-B01__L8-t3-B01",
+    "from": "L8-t4-B01",
+    "to": "L8-t3-B01",
+    "kind": "bridge",
+    "cross_grade": false
+  }
+]

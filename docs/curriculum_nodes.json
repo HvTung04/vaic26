@@ -1,0 +1,1711 @@
+[
+  {
+    "_id": "L6-t1-B01",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t1",
+    "topic_name": "Số tự nhiên",
+    "noi_dung_cu_the": "Số tự nhiên và tập hợp các số tự nhiên. Thứ tự trong tập hợp các số tự nhiên",
+    "yccd": [
+      {
+        "id": "L6-t1-01",
+        "order": 1,
+        "text": "Sử dụng được thuật ngữ tập hợp, phần tử thuộc (không thuộc) một tập hợp; sử dụng được cách cho tập hợp."
+      },
+      {
+        "id": "L6-t1-02",
+        "order": 2,
+        "text": "Nhận biết được tập hợp các số tự nhiên."
+      },
+      {
+        "id": "L6-t1-03",
+        "order": 3,
+        "text": "Biểu diễn được số tự nhiên trong hệ thập phân."
+      },
+      {
+        "id": "L6-t1-04",
+        "order": 4,
+        "text": "Biểu diễn được các số tự nhiên từ 1 đến 30 bằng cách sử dụng các chữ số La Mã."
+      },
+      {
+        "id": "L6-t1-05",
+        "order": 5,
+        "text": "Nhận biết được (quan hệ) thứ tự trong tập hợp các số tự nhiên; so sánh được hai số tự nhiên cho trước."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L6-t1-B02",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t1",
+    "topic_name": "Số tự nhiên",
+    "noi_dung_cu_the": "Các phép tính với số tự nhiên. Phép tính luỹ thừa với số mũ tự nhiên",
+    "yccd": [
+      {
+        "id": "L6-t1-06",
+        "order": 1,
+        "text": "Thực hiện được các phép tính: cộng, trừ, nhân, chia trong tập hợp số tự nhiên."
+      },
+      {
+        "id": "L6-t1-07",
+        "order": 2,
+        "text": "Vận dụng được các tính chất giao hoán, kết hợp, phân phối của phép nhân đối với phép cộng trong tính toán."
+      },
+      {
+        "id": "L6-t1-08",
+        "order": 3,
+        "text": "Thực hiện được phép tính luỹ thừa với số mũ tự nhiên; thực hiện được các phép nhân và phép chia hai luỹ thừa cùng cơ số với số mũ tự nhiên."
+      },
+      {
+        "id": "L6-t1-09",
+        "order": 4,
+        "text": "Nhận biết được thứ tự thực hiện các phép tính."
+      },
+      {
+        "id": "L6-t1-10",
+        "order": 5,
+        "text": "Vận dụng được các tính chất của phép tính (kể cả phép tính luỹ thừa với số mũ tự nhiên) để tính nhẩm, tính nhanh một cách hợp lí."
+      },
+      {
+        "id": "L6-t1-11",
+        "order": 6,
+        "text": "Giải quyết được những vấn đề thực tiễn gắn với thực hiện các phép tính (ví dụ: tính tiền mua sắm, tính lượng hàng mua được từ số tiền đã có,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L6-t1-B03",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t1",
+    "topic_name": "Số tự nhiên",
+    "noi_dung_cu_the": "Tính chia hết trong tập hợp các số tự nhiên. Số nguyên tố. Ước chung và bội chung",
+    "yccd": [
+      {
+        "id": "L6-t1-12",
+        "order": 1,
+        "text": "Nhận biết được quan hệ chia hết, khái niệm ước và bội."
+      },
+      {
+        "id": "L6-t1-13",
+        "order": 2,
+        "text": "Vận dụng được dấu hiệu chia hết cho 2, 5, 9, 3 để xác định một số đã cho có chia hết cho 2, 5, 9, 3 hay không."
+      },
+      {
+        "id": "L6-t1-14",
+        "order": 3,
+        "text": "Nhận biết được khái niệm số nguyên tố, hợp số."
+      },
+      {
+        "id": "L6-t1-15",
+        "order": 4,
+        "text": "Thực hiện được việc phân tích một số tự nhiên lớn hơn 1 thành tích của các thừa số nguyên tố trong những trường hợp đơn giản."
+      },
+      {
+        "id": "L6-t1-16",
+        "order": 5,
+        "text": "Xác định được ước chung, ước chung lớn nhất; xác định được bội chung, bội chung nhỏ nhất của hai hoặc ba số tự nhiên; nhận biết được phân số tối giản; thực hiện được phép cộng, phép trừ phân số bằng cách sử dụng ước chung lớn nhất, bội chung nhỏ nhất."
+      },
+      {
+        "id": "L6-t1-17",
+        "order": 6,
+        "text": "Nhận biết được phép chia có dư, định lí về phép chia có dư."
+      },
+      {
+        "id": "L6-t1-18",
+        "order": 7,
+        "text": "Vận dụng được kiến thức số học vào giải quyết những vấn đề thực tiễn (ví dụ: tính toán tiền hay lượng hàng hoá khi mua sắm, xác định số đồ vật cần thiết để sắp xếp chúng theo những quy tắc cho trước,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L6-t2-B01",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t2",
+    "topic_name": "Số nguyên",
+    "noi_dung_cu_the": "Số nguyên âm và tập hợp các số nguyên. Thứ tự trong tập hợp các số nguyên",
+    "yccd": [
+      {
+        "id": "L6-t2-01",
+        "order": 1,
+        "text": "Nhận biết được số nguyên âm, tập hợp các số nguyên."
+      },
+      {
+        "id": "L6-t2-02",
+        "order": 2,
+        "text": "Biểu diễn được số nguyên trên trục số."
+      },
+      {
+        "id": "L6-t2-03",
+        "order": 3,
+        "text": "Nhận biết được số đối của một số nguyên."
+      },
+      {
+        "id": "L6-t2-04",
+        "order": 4,
+        "text": "Nhận biết được thứ tự trong tập hợp các số nguyên. So sánh được hai số nguyên cho trước."
+      },
+      {
+        "id": "L6-t2-05",
+        "order": 5,
+        "text": "Nhận biết được ý nghĩa của số nguyên âm trong một số bài toán thực tiễn."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L6-t2-B02",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t2",
+    "topic_name": "Số nguyên",
+    "noi_dung_cu_the": "Các phép tính với số nguyên. Tính chia hết trong tập hợp các số nguyên",
+    "yccd": [
+      {
+        "id": "L6-t2-06",
+        "order": 1,
+        "text": "Thực hiện được các phép tính: cộng, trừ, nhân, chia (chia hết) trong tập hợp các số nguyên."
+      },
+      {
+        "id": "L6-t2-07",
+        "order": 2,
+        "text": "Vận dụng được các tính chất giao hoán, kết hợp, phân phối của phép nhân đối với phép cộng, quy tắc dấu ngoặc trong tập hợp các số nguyên trong tính toán (tính viết và tính nhẩm, tính nhanh một cách hợp lí)."
+      },
+      {
+        "id": "L6-t2-08",
+        "order": 3,
+        "text": "Nhận biết được quan hệ chia hết, khái niệm ước và bội trong tập hợp các số nguyên."
+      },
+      {
+        "id": "L6-t2-09",
+        "order": 4,
+        "text": "Giải quyết được những vấn đề thực tiễn gắn với thực hiện các phép tính về số nguyên (ví dụ: tính lỗ lãi khi buôn bán,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L6-t3-B01",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t3",
+    "topic_name": "Phân số & Số thập phân",
+    "noi_dung_cu_the": "Phân số. Tính chất cơ bản của phân số. So sánh phân số",
+    "yccd": [
+      {
+        "id": "L6-t3-01",
+        "order": 1,
+        "text": "Nhận biết được phân số với tử số hoặc mẫu số là số nguyên âm."
+      },
+      {
+        "id": "L6-t3-02",
+        "order": 2,
+        "text": "Nhận biết được khái niệm hai phân số bằng nhau và nhận biết được quy tắc bằng nhau của hai phân số."
+      },
+      {
+        "id": "L6-t3-03",
+        "order": 3,
+        "text": "Nêu được hai tính chất cơ bản của phân số."
+      },
+      {
+        "id": "L6-t3-04",
+        "order": 4,
+        "text": "So sánh được hai phân số cho trước."
+      },
+      {
+        "id": "L6-t3-05",
+        "order": 5,
+        "text": "Nhận biết được số đối của một phân số."
+      },
+      {
+        "id": "L6-t3-06",
+        "order": 6,
+        "text": "Nhận biết được hỗn số dương."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L6-t3-B02",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t3",
+    "topic_name": "Phân số & Số thập phân",
+    "noi_dung_cu_the": "Các phép tính với phân số",
+    "yccd": [
+      {
+        "id": "L6-t3-07",
+        "order": 1,
+        "text": "Thực hiện được các phép tính cộng, trừ, nhân, chia với phân số."
+      },
+      {
+        "id": "L6-t3-08",
+        "order": 2,
+        "text": "Vận dụng được các tính chất giao hoán, kết hợp, phân phối của phép nhân đối với phép cộng, quy tắc dấu ngoặc với phân số trong tính toán (tính viết và tính nhẩm, tính nhanh một cách hợp lí)."
+      },
+      {
+        "id": "L6-t3-09",
+        "order": 3,
+        "text": "Tính được giá trị phân số của một số cho trước và tính được một số biết giá trị phân số của số đó."
+      },
+      {
+        "id": "L6-t3-10",
+        "order": 4,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với các phép tính về phân số (ví dụ: các bài toán liên quan đến chuyển động trong Vật lí,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L6-t3-B03",
+    "grade": 6,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t3",
+    "topic_name": "Phân số & Số thập phân",
+    "noi_dung_cu_the": "Số thập phân và các phép tính với số thập phân. Tỉ số và tỉ số phần trăm",
+    "yccd": [
+      {
+        "id": "L6-t3-11",
+        "order": 1,
+        "text": "Nhận biết được số thập phân âm, số đối của một số thập phân."
+      },
+      {
+        "id": "L6-t3-12",
+        "order": 2,
+        "text": "So sánh được hai số thập phân cho trước."
+      },
+      {
+        "id": "L6-t3-13",
+        "order": 3,
+        "text": "Thực hiện được các phép tính cộng, trừ, nhân, chia với số thập phân."
+      },
+      {
+        "id": "L6-t3-14",
+        "order": 4,
+        "text": "Vận dụng được các tính chất giao hoán, kết hợp, phân phối của phép nhân đối với phép cộng, quy tắc dấu ngoặc với số thập phân trong tính toán (tính viết và tính nhẩm, tính nhanh một cách hợp lí)."
+      },
+      {
+        "id": "L6-t3-15",
+        "order": 5,
+        "text": "Thực hiện được ước lượng và làm tròn số thập phân."
+      },
+      {
+        "id": "L6-t3-16",
+        "order": 6,
+        "text": "Tính được tỉ số và tỉ số phần trăm của hai đại lượng."
+      },
+      {
+        "id": "L6-t3-17",
+        "order": 7,
+        "text": "Tính được giá trị phần trăm của một số cho trước và tính được một số biết giá trị phần trăm của số đó."
+      },
+      {
+        "id": "L6-t3-18",
+        "order": 8,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với các phép tính về số thập phân, tỉ số và tỉ số phần trăm (ví dụ: các bài toán liên quan đến lãi suất tín dụng, liên quan đến thành phần các chất trong Hoá học,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L6-t4-B01",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t4",
+    "topic_name": "Hình học trực quan",
+    "noi_dung_cu_the": "Tam giác đều, hình vuông, lục giác đều",
+    "yccd": [
+      {
+        "id": "L6-t4-01",
+        "order": 1,
+        "text": "Nhận dạng được tam giác đều, hình vuông, lục giác đều."
+      },
+      {
+        "id": "L6-t4-02",
+        "order": 2,
+        "text": "Mô tả được một số yếu tố cơ bản (cạnh, góc, đường chéo) của: tam giác đều (ví dụ: ba cạnh bằng nhau, ba góc bằng nhau); hình vuông (ví dụ: bốn cạnh bằng nhau, mỗi góc là góc vuông, hai đường chéo bằng nhau); lục giác đều (ví dụ: sáu cạnh bằng nhau, sáu góc bằng nhau, ba đường chéo chính bằng nhau)."
+      },
+      {
+        "id": "L6-t4-03",
+        "order": 3,
+        "text": "Vẽ được tam giác đều, hình vuông bằng dụng cụ học tập."
+      },
+      {
+        "id": "L6-t4-04",
+        "order": 4,
+        "text": "Tạo lập được lục giác đều thông qua việc lắp ghép các tam giác đều."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L6-t4-B02",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t4",
+    "topic_name": "Hình học trực quan",
+    "noi_dung_cu_the": "Hình chữ nhật, hình thoi, hình bình hành, hình thang cân",
+    "yccd": [
+      {
+        "id": "L6-t4-05",
+        "order": 1,
+        "text": "Mô tả được một số yếu tố cơ bản (cạnh, góc, đường chéo) của hình chữ nhật, hình thoi, hình bình hành, hình thang cân."
+      },
+      {
+        "id": "L6-t4-06",
+        "order": 2,
+        "text": "Vẽ được hình chữ nhật, hình thoi, hình bình hành bằng các dụng cụ học tập."
+      },
+      {
+        "id": "L6-t4-07",
+        "order": 3,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với việc tính chu vi và diện tích của các hình đặc biệt nói trên (ví dụ: tính chu vi hoặc diện tích của một số đối tượng có dạng đặc biệt nói trên,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L6-t4-B03",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t4",
+    "topic_name": "Hình học trực quan",
+    "noi_dung_cu_the": "Hình có trục đối xứng",
+    "yccd": [
+      {
+        "id": "L6-t4-08",
+        "order": 1,
+        "text": "Nhận biết được trục đối xứng của một hình phẳng."
+      },
+      {
+        "id": "L6-t4-09",
+        "order": 2,
+        "text": "Nhận biết được những hình phẳng trong tự nhiên có trục đối xứng (khi quan sát trên hình ảnh 2 chiều)."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L6-t4-B04",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t4",
+    "topic_name": "Hình học trực quan",
+    "noi_dung_cu_the": "Hình có tâm đối xứng",
+    "yccd": [
+      {
+        "id": "L6-t4-10",
+        "order": 1,
+        "text": "Nhận biết được tâm đối xứng của một hình phẳng."
+      },
+      {
+        "id": "L6-t4-11",
+        "order": 2,
+        "text": "Nhận biết được những hình phẳng trong thế giới tự nhiên có tâm đối xứng (khi quan sát trên hình ảnh 2 chiều)."
+      }
+    ],
+    "diem": 100,
+    "order": 4
+  },
+  {
+    "_id": "L6-t4-B05",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t4",
+    "topic_name": "Hình học trực quan",
+    "noi_dung_cu_the": "Vai trò của đối xứng trong thế giới tự nhiên",
+    "yccd": [
+      {
+        "id": "L6-t4-12",
+        "order": 1,
+        "text": "Nhận biết được tính đối xứng trong Toán học, tự nhiên, nghệ thuật, kiến trúc, công nghệ chế tạo,..."
+      },
+      {
+        "id": "L6-t4-13",
+        "order": 2,
+        "text": "Nhận biết được vẻ đẹp của thế giới tự nhiên biểu hiện qua tính đối xứng (ví dụ: nhận biết vẻ đẹp của một số loài thực vật, động vật trong tự nhiên có tâm đối xứng hoặc có trục đối xứng)."
+      }
+    ],
+    "diem": 100,
+    "order": 5
+  },
+  {
+    "_id": "L6-t5-B01",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Hình học phẳng",
+    "noi_dung_cu_the": "Điểm, đường thẳng, tia",
+    "yccd": [
+      {
+        "id": "L6-t5-01",
+        "order": 1,
+        "text": "Nhận biết được những quan hệ cơ bản giữa điểm, đường thẳng: điểm thuộc đường thẳng, điểm không thuộc đường thẳng; tiên đề về đường thẳng đi qua hai điểm phân biệt."
+      },
+      {
+        "id": "L6-t5-02",
+        "order": 2,
+        "text": "Nhận biết được khái niệm hai đường thẳng cắt nhau, song song."
+      },
+      {
+        "id": "L6-t5-03",
+        "order": 3,
+        "text": "Nhận biết được khái niệm ba điểm thẳng hàng, ba điểm không thẳng hàng."
+      },
+      {
+        "id": "L6-t5-04",
+        "order": 4,
+        "text": "Nhận biết được khái niệm điểm nằm giữa hai điểm."
+      },
+      {
+        "id": "L6-t5-05",
+        "order": 5,
+        "text": "Nhận biết được khái niệm tia."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L6-t5-B02",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Hình học phẳng",
+    "noi_dung_cu_the": "Đoạn thẳng. Độ dài đoạn thẳng",
+    "yccd": [
+      {
+        "id": "L6-t5-06",
+        "order": 1,
+        "text": "Nhận biết được khái niệm đoạn thẳng, trung điểm của đoạn thẳng, độ dài đoạn thẳng."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L6-t5-B03",
+    "grade": 6,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Hình học phẳng",
+    "noi_dung_cu_the": "Góc. Các góc đặc biệt. Số đo góc",
+    "yccd": [
+      {
+        "id": "L6-t5-07",
+        "order": 1,
+        "text": "Nhận biết được khái niệm góc, điểm trong của góc (không đề cập đến góc lõm)."
+      },
+      {
+        "id": "L6-t5-08",
+        "order": 2,
+        "text": "Nhận biết được các góc đặc biệt (góc vuông, góc nhọn, góc tù, góc bẹt)."
+      },
+      {
+        "id": "L6-t5-09",
+        "order": 3,
+        "text": "Nhận biết được khái niệm số đo góc."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L6-t6-B01",
+    "grade": 6,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t6",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Thu thập, phân loại, biểu diễn dữ liệu theo các tiêu chí cho trước",
+    "yccd": [
+      {
+        "id": "L6-t6-01",
+        "order": 1,
+        "text": "Thực hiện được việc thu thập, phân loại dữ liệu theo các tiêu chí cho trước từ những nguồn: bảng biểu, kiến thức trong các môn học khác."
+      },
+      {
+        "id": "L6-t6-02",
+        "order": 2,
+        "text": "Nhận biết được tính hợp lí của dữ liệu theo các tiêu chí đơn giản."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L6-t6-B02",
+    "grade": 6,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t6",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Mô tả và biểu diễn dữ liệu trên các bảng, biểu đồ",
+    "yccd": [
+      {
+        "id": "L6-t6-03",
+        "order": 1,
+        "text": "Đọc và mô tả thành thạo các dữ liệu ở dạng: bảng thống kê; biểu đồ tranh; biểu đồ dạng cột/cột kép (column chart)."
+      },
+      {
+        "id": "L6-t6-04",
+        "order": 2,
+        "text": "Lựa chọn và biểu diễn được dữ liệu vào bảng, biểu đồ thích hợp ở dạng: bảng thống kê; biểu đồ tranh; biểu đồ dạng cột/cột kép (column chart)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L6-t6-B03",
+    "grade": 6,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t6",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Hình thành và giải quyết vấn đề đơn giản xuất hiện từ các số liệu và biểu đồ thống kê đã có",
+    "yccd": [
+      {
+        "id": "L6-t6-05",
+        "order": 1,
+        "text": "Nhận ra được vấn đề hoặc quy luật đơn giản dựa trên phân tích các số liệu thu được ở dạng: bảng thống kê; biểu đồ tranh; biểu đồ dạng cột/cột kép (column chart)."
+      },
+      {
+        "id": "L6-t6-06",
+        "order": 2,
+        "text": "Giải quyết được những vấn đề đơn giản liên quan đến các số liệu thu được ở dạng: bảng thống kê; biểu đồ tranh; biểu đồ dạng cột/cột kép (column chart)."
+      },
+      {
+        "id": "L6-t6-07",
+        "order": 3,
+        "text": "Nhận biết được mối liên hệ giữa thống kê với những kiến thức trong các môn học trong Chương trình lớp 6 (ví dụ: Lịch sử và Địa lí lớp 6, Khoa học tự nhiên lớp 6,...) và trong thực tiễn (ví dụ: khí hậu, giá cả thị trường,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L6-t6-B04",
+    "grade": 6,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t6",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Làm quen với một số mô hình xác suất đơn giản. Làm quen với việc mô tả xác suất (thực nghiệm) của khả năng xảy ra nhiều lần của một sự kiện trong một số mô hình xác suất đơn giản",
+    "yccd": [
+      {
+        "id": "L6-t6-08",
+        "order": 1,
+        "text": "Làm quen với mô hình xác suất trong một số trò chơi, thí nghiệm đơn giản (ví dụ: ở trò chơi tung đồng xu thì mô hình xác suất gồm hai khả năng ứng với mặt xuất hiện của đồng xu,...)."
+      },
+      {
+        "id": "L6-t6-09",
+        "order": 2,
+        "text": "Làm quen với việc mô tả xác suất (thực nghiệm) của khả năng xảy ra nhiều lần của một sự kiện trong một số mô hình xác suất đơn giản."
+      }
+    ],
+    "diem": 100,
+    "order": 4
+  },
+  {
+    "_id": "L6-t6-B05",
+    "grade": 6,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t6",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Mô tả xác suất (thực nghiệm) của khả năng xảy ra nhiều lần của một sự kiện trong một số mô hình xác suất đơn giản",
+    "yccd": [
+      {
+        "id": "L6-t6-10",
+        "order": 1,
+        "text": "Sử dụng được phân số để mô tả xác suất (thực nghiệm) của khả năng xảy ra nhiều lần thông qua kiểm đếm số lần lặp lại của khả năng đó trong một số mô hình xác suất đơn giản."
+      }
+    ],
+    "diem": 100,
+    "order": 5
+  },
+  {
+    "_id": "L7-t1-B01",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t1",
+    "topic_name": "Số hữu tỉ",
+    "noi_dung_cu_the": "Số hữu tỉ và tập hợp các số hữu tỉ. Thứ tự trong tập hợp các số hữu tỉ",
+    "yccd": [
+      {
+        "id": "L7-t1-01",
+        "order": 1,
+        "text": "Nhận biết được số hữu tỉ và lấy được ví dụ về số hữu tỉ."
+      },
+      {
+        "id": "L7-t1-02",
+        "order": 2,
+        "text": "Nhận biết được tập hợp các số hữu tỉ."
+      },
+      {
+        "id": "L7-t1-03",
+        "order": 3,
+        "text": "Biểu diễn được số hữu tỉ trên trục số."
+      },
+      {
+        "id": "L7-t1-04",
+        "order": 4,
+        "text": "Nhận biết được số đối của một số hữu tỉ."
+      },
+      {
+        "id": "L7-t1-05",
+        "order": 5,
+        "text": "Nhận biết được thứ tự trong tập hợp các số hữu tỉ. So sánh được hai số hữu tỉ."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t1-B02",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t1",
+    "topic_name": "Số hữu tỉ",
+    "noi_dung_cu_the": "Các phép tính với số hữu tỉ",
+    "yccd": [
+      {
+        "id": "L7-t1-06",
+        "order": 1,
+        "text": "Thực hiện được các phép tính: cộng, trừ, nhân, chia trong tập hợp số hữu tỉ."
+      },
+      {
+        "id": "L7-t1-07",
+        "order": 2,
+        "text": "Mô tả được phép tính luỹ thừa với số mũ tự nhiên của một số hữu tỉ và một số tính chất của phép tính đó (tích và thương của hai luỹ thừa cùng cơ số, luỹ thừa của luỹ thừa)."
+      },
+      {
+        "id": "L7-t1-08",
+        "order": 3,
+        "text": "Mô tả được thứ tự thực hiện các phép tính, quy tắc dấu ngoặc, quy tắc chuyển vế trong tập hợp số hữu tỉ."
+      },
+      {
+        "id": "L7-t1-09",
+        "order": 4,
+        "text": "Vận dụng được các tính chất giao hoán, kết hợp, phân phối của phép nhân đối với phép cộng, quy tắc dấu ngoặc với số hữu tỉ trong tính toán (tính viết và tính nhẩm, tính nhanh một cách hợp lí)."
+      },
+      {
+        "id": "L7-t1-10",
+        "order": 5,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với các phép tính về số hữu tỉ (ví dụ: các bài toán liên quan đến chuyển động trong Vật lí, trong đo đạc,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t2-B01",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t2",
+    "topic_name": "Số thực",
+    "noi_dung_cu_the": "Căn bậc hai số học",
+    "yccd": [
+      {
+        "id": "L7-t2-01",
+        "order": 1,
+        "text": "Nhận biết được khái niệm căn bậc hai số học của một số không âm."
+      },
+      {
+        "id": "L7-t2-02",
+        "order": 2,
+        "text": "Tính được giá trị (đúng hoặc gần đúng) căn bậc hai số học của một số nguyên dương bằng máy tính cầm tay."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t2-B02",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t2",
+    "topic_name": "Số thực",
+    "noi_dung_cu_the": "Số vô tỉ. Số thực",
+    "yccd": [
+      {
+        "id": "L7-t2-03",
+        "order": 1,
+        "text": "Nhận biết được số thập phân hữu hạn và số thập phân vô hạn tuần hoàn."
+      },
+      {
+        "id": "L7-t2-04",
+        "order": 2,
+        "text": "Nhận biết được số vô tỉ, số thực, tập hợp các số thực."
+      },
+      {
+        "id": "L7-t2-05",
+        "order": 3,
+        "text": "Nhận biết được trục số thực và biểu diễn được số thực trên trục số trong trường hợp thuận lợi."
+      },
+      {
+        "id": "L7-t2-06",
+        "order": 4,
+        "text": "Nhận biết được số đối của một số thực."
+      },
+      {
+        "id": "L7-t2-07",
+        "order": 5,
+        "text": "Nhận biết được thứ tự trong tập hợp các số thực."
+      },
+      {
+        "id": "L7-t2-08",
+        "order": 6,
+        "text": "Nhận biết được giá trị tuyệt đối của một số thực."
+      },
+      {
+        "id": "L7-t2-09",
+        "order": 7,
+        "text": "Thực hiện được ước lượng và làm tròn số căn cứ vào độ chính xác cho trước."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t4-B01",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t4",
+    "topic_name": "Đại lượng tỉ lệ",
+    "noi_dung_cu_the": "Tỉ lệ thức và dãy tỉ số bằng nhau",
+    "yccd": [
+      {
+        "id": "L7-t4-01",
+        "order": 1,
+        "text": "Nhận biết được tỉ lệ thức và các tính chất của tỉ lệ thức."
+      },
+      {
+        "id": "L7-t4-02",
+        "order": 2,
+        "text": "Vận dụng được tính chất của tỉ lệ thức trong giải toán."
+      },
+      {
+        "id": "L7-t4-03",
+        "order": 3,
+        "text": "Nhận biết được dãy tỉ số bằng nhau."
+      },
+      {
+        "id": "L7-t4-04",
+        "order": 4,
+        "text": "Vận dụng được tính chất của dãy tỉ số bằng nhau trong giải toán (ví dụ: chia một số thành các phần tỉ lệ với các số cho trước,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t4-B02",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t4",
+    "topic_name": "Đại lượng tỉ lệ",
+    "noi_dung_cu_the": "Giải toán về đại lượng tỉ lệ",
+    "yccd": [
+      {
+        "id": "L7-t4-05",
+        "order": 1,
+        "text": "Giải được một số bài toán đơn giản về đại lượng tỉ lệ thuận (ví dụ: bài toán về tổng sản phẩm thu được và năng suất lao động,...)."
+      },
+      {
+        "id": "L7-t4-06",
+        "order": 2,
+        "text": "Giải được một số bài toán đơn giản về đại lượng tỉ lệ nghịch (ví dụ: bài toán về thời gian hoàn thành kế hoạch và năng suất lao động,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t3-B01",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t3",
+    "topic_name": "Biểu thức đại số & Đa thức",
+    "noi_dung_cu_the": "Biểu thức đại số",
+    "yccd": [
+      {
+        "id": "L7-t3-01",
+        "order": 1,
+        "text": "Nhận biết được biểu thức số."
+      },
+      {
+        "id": "L7-t3-02",
+        "order": 2,
+        "text": "Nhận biết được biểu thức đại số."
+      },
+      {
+        "id": "L7-t3-03",
+        "order": 3,
+        "text": "Tính được giá trị của một biểu thức đại số."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t3-B02",
+    "grade": 7,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t3",
+    "topic_name": "Biểu thức đại số & Đa thức",
+    "noi_dung_cu_the": "Đa thức một biến",
+    "yccd": [
+      {
+        "id": "L7-t3-04",
+        "order": 1,
+        "text": "Nhận biết được định nghĩa đa thức một biến."
+      },
+      {
+        "id": "L7-t3-05",
+        "order": 2,
+        "text": "Nhận biết được cách biểu diễn đa thức một biến; xác định được bậc của đa thức một biến."
+      },
+      {
+        "id": "L7-t3-06",
+        "order": 3,
+        "text": "Tính được giá trị của đa thức khi biết giá trị của biến."
+      },
+      {
+        "id": "L7-t3-07",
+        "order": 4,
+        "text": "Nhận biết được khái niệm nghiệm của đa thức một biến."
+      },
+      {
+        "id": "L7-t3-08",
+        "order": 5,
+        "text": "Thực hiện được các phép tính: phép cộng, phép trừ, phép nhân, phép chia trong tập hợp các đa thức một biến; vận dụng được những tính chất của các phép tính đó trong tính toán."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t7-B01",
+    "grade": 7,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t7",
+    "topic_name": "Hình học trực quan / Hình khối",
+    "noi_dung_cu_the": "Hình hộp chữ nhật và hình lập phương",
+    "yccd": [
+      {
+        "id": "L7-t7-01",
+        "order": 1,
+        "text": "Mô tả được một số yếu tố cơ bản (đỉnh, cạnh, góc, đường chéo) của hình hộp chữ nhật và hình lập phương."
+      },
+      {
+        "id": "L7-t7-02",
+        "order": 2,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với việc tính thể tích, diện tích xung quanh của hình hộp chữ nhật, hình lập phương (ví dụ: tính thể tích hoặc diện tích xung quanh của một số đồ vật quen thuộc có dạng hình hộp chữ nhật, hình lập phương,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t7-B02",
+    "grade": 7,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t7",
+    "topic_name": "Hình học trực quan / Hình khối",
+    "noi_dung_cu_the": "Lăng trụ đứng tam giác, lăng trụ đứng tứ giác",
+    "yccd": [
+      {
+        "id": "L7-t7-03",
+        "order": 1,
+        "text": "Mô tả được hình lăng trụ đứng tam giác, hình lăng trụ đứng tứ giác (ví dụ: hai mặt đáy là song song; các mặt bên đều là hình chữ nhật) và tạo lập được hình lăng trụ đứng tam giác, hình lăng trụ đứng tứ giác."
+      },
+      {
+        "id": "L7-t7-04",
+        "order": 2,
+        "text": "Tính được diện tích xung quanh, thể tích của hình lăng trụ đứng tam giác, hình lăng trụ đứng tứ giác."
+      },
+      {
+        "id": "L7-t7-05",
+        "order": 3,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với việc tính thể tích, diện tích xung quanh của một lăng trụ đứng tam giác, hình lăng trụ đứng tứ giác (ví dụ: tính thể tích hoặc diện tích xung quanh của một số đồ vật quen thuộc có dạng lăng trụ đứng tam giác, lăng trụ đứng tứ giác,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t5-B01",
+    "grade": 7,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Góc & Đường thẳng song song",
+    "noi_dung_cu_the": "Góc ở vị trí đặc biệt. Tia phân giác của một góc",
+    "yccd": [
+      {
+        "id": "L7-t5-01",
+        "order": 1,
+        "text": "Nhận biết được các góc ở vị trí đặc biệt (hai góc kề bù, hai góc đối đỉnh)."
+      },
+      {
+        "id": "L7-t5-02",
+        "order": 2,
+        "text": "Nhận biết được tia phân giác của một góc."
+      },
+      {
+        "id": "L7-t5-03",
+        "order": 3,
+        "text": "Nhận biết được cách vẽ tia phân giác của một góc bằng dụng cụ học tập."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t5-B02",
+    "grade": 7,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Góc & Đường thẳng song song",
+    "noi_dung_cu_the": "Hai đường thẳng song song. Tiên đề Euclid về đường thẳng song song",
+    "yccd": [
+      {
+        "id": "L7-t5-04",
+        "order": 1,
+        "text": "Mô tả được một số tính chất của hai đường thẳng song song."
+      },
+      {
+        "id": "L7-t5-05",
+        "order": 2,
+        "text": "Mô tả được dấu hiệu song song của hai đường thẳng thông qua cặp góc đồng vị, cặp góc so le trong."
+      },
+      {
+        "id": "L7-t5-06",
+        "order": 3,
+        "text": "Nhận biết được tiên đề Euclid về đường thẳng song song."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t5-B03",
+    "grade": 7,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Góc & Đường thẳng song song",
+    "noi_dung_cu_the": "Khái niệm định lí, chứng minh một định lí",
+    "yccd": [
+      {
+        "id": "L7-t5-07",
+        "order": 1,
+        "text": "Nhận biết được thế nào là một định lí, chứng minh một định lí."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L7-t6-B01",
+    "grade": 7,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t6",
+    "topic_name": "Tam giác",
+    "noi_dung_cu_the": "Tam giác. Tam giác bằng nhau. Tam giác cân. Quan hệ giữa đường vuông góc và đường xiên. Các đường đồng quy của tam giác",
+    "yccd": [
+      {
+        "id": "L7-t6-01",
+        "order": 1,
+        "text": "Giải thích được định lí về tổng các góc trong một tam giác bằng 180o."
+      },
+      {
+        "id": "L7-t6-02",
+        "order": 2,
+        "text": "Nhận biết được liên hệ về độ dài của ba cạnh trong một tam giác."
+      },
+      {
+        "id": "L7-t6-03",
+        "order": 3,
+        "text": "Nhận biết được khái niệm hai tam giác bằng nhau."
+      },
+      {
+        "id": "L7-t6-04",
+        "order": 4,
+        "text": "Giải thích được các trường hợp bằng nhau của hai tam giác, của hai tam giác vuông."
+      },
+      {
+        "id": "L7-t6-05",
+        "order": 5,
+        "text": "Mô tả được tam giác cân và giải thích được tính chất của tam giác cân (ví dụ: hai cạnh bên bằng nhau; hai góc đáy bằng nhau)."
+      },
+      {
+        "id": "L7-t6-06",
+        "order": 6,
+        "text": "Nhận biết được khái niệm: đường vuông góc và đường xiên; khoảng cách từ một điểm đến một đường thẳng. Giải thích được quan hệ giữa đường vuông góc và đường xiên dựa trên mối quan hệ giữa cạnh và góc đối trong tam giác (đối diện với góc lớn hơn là cạnh lớn hơn và ngược lại)."
+      },
+      {
+        "id": "L7-t6-07",
+        "order": 7,
+        "text": "Nhận biết được đường trung trực của một đoạn thẳng và tính chất cơ bản của đường trung trực."
+      },
+      {
+        "id": "L7-t6-08",
+        "order": 8,
+        "text": "Nhận biết được: các đường đặc biệt trong tam giác (đường trung tuyến, đường cao, đường phân giác, đường trung trực); sự đồng quy của các đường đặc biệt đó."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t6-B02",
+    "grade": 7,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t6",
+    "topic_name": "Tam giác",
+    "noi_dung_cu_the": "Giải bài toán có nội dung hình học và vận dụng giải quyết vấn đề thực tiễn liên quan đến hình học",
+    "yccd": [
+      {
+        "id": "L7-t6-09",
+        "order": 1,
+        "text": "Diễn đạt được lập luận và chứng minh hình học trong những trường hợp đơn giản (ví dụ: lập luận và chứng minh được các đoạn thẳng bằng nhau, các góc bằng nhau từ các điều kiện ban đầu liên quan đến tam giác,...)."
+      },
+      {
+        "id": "L7-t6-10",
+        "order": 2,
+        "text": "Giải quyết được một số vấn đề thực tiễn liên quan đến ứng dụng của hình học như: đo, vẽ, tạo dựng các hình đã học."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t8-B01",
+    "grade": 7,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Thu thập, phân loại, biểu diễn dữ liệu theo các tiêu chí cho trước",
+    "yccd": [
+      {
+        "id": "L7-t8-01",
+        "order": 1,
+        "text": "Thực hiện và lí giải được việc thu thập, phân loại dữ liệu theo các tiêu chí cho trước từ những nguồn: văn bản, bảng biểu, kiến thức trong các môn học khác và trong thực tiễn."
+      },
+      {
+        "id": "L7-t8-02",
+        "order": 2,
+        "text": "Giải thích được tính hợp lí của dữ liệu theo các tiêu chí toán học đơn giản (ví dụ: tính hợp lí, tính đại diện của một kết luận trong phỏng vấn; tính hợp lí của các quảng cáo;...)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L7-t8-B02",
+    "grade": 7,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Mô tả và biểu diễn dữ liệu trên các bảng, biểu đồ",
+    "yccd": [
+      {
+        "id": "L7-t8-03",
+        "order": 1,
+        "text": "Đọc và mô tả thành thạo các dữ liệu ở dạng biểu đồ thống kê: biểu đồ hình quạt tròn (pie chart); biểu đồ đoạn thẳng (line graph)."
+      },
+      {
+        "id": "L7-t8-04",
+        "order": 2,
+        "text": "Lựa chọn và biểu diễn được dữ liệu vào bảng, biểu đồ thích hợp ở dạng: biểu đồ hình quạt tròn (cho sẵn) (pie chart); biểu đồ đoạn thẳng (line graph)."
+      },
+      {
+        "id": "L7-t8-05",
+        "order": 3,
+        "text": "Nhận biết được những dạng biểu diễn khác nhau cho một tập dữ liệu."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L7-t8-B03",
+    "grade": 7,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Hình thành và giải quyết vấn đề đơn giản xuất hiện từ các số liệu và biểu đồ thống kê đã có",
+    "yccd": [
+      {
+        "id": "L7-t8-06",
+        "order": 1,
+        "text": "Nhận ra được vấn đề hoặc quy luật đơn giản dựa trên phân tích các số liệu thu được ở dạng: biểu đồ hình quạt tròn (cho sẵn) (pie chart); biểu đồ đoạn thẳng (line graph)."
+      },
+      {
+        "id": "L7-t8-07",
+        "order": 2,
+        "text": "Giải quyết được những vấn đề đơn giản liên quan đến các số liệu thu được ở dạng: biểu đồ hình quạt tròn (cho sẵn) (pie chart); biểu đồ đoạn thẳng (line graph)."
+      },
+      {
+        "id": "L7-t8-08",
+        "order": 3,
+        "text": "Nhận biết được mối liên hệ giữa thống kê với những kiến thức trong các môn học khác trong Chương trình lớp 7 (ví dụ: Lịch sử và Địa lí lớp 7, Khoa học tự nhiên lớp 7,...) và trong thực tiễn (ví dụ: môi trường, y học, tài chính,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L7-t8-B04",
+    "grade": 7,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Làm quen với biến cố ngẫu nhiên. Làm quen với xác suất của biến cố ngẫu nhiên trong một số ví dụ đơn giản",
+    "yccd": [
+      {
+        "id": "L7-t8-09",
+        "order": 1,
+        "text": "Làm quen với các khái niệm mở đầu về biến cố ngẫu nhiên và xác suất của biến cố ngẫu nhiên trong các ví dụ đơn giản."
+      },
+      {
+        "id": "L7-t8-10",
+        "order": 2,
+        "text": "Nhận biết được xác suất của một biến cố ngẫu nhiên trong một số ví dụ đơn giản (ví dụ: lấy bóng trong túi, tung xúc xắc,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 4
+  },
+  {
+    "_id": "L8-t1-B01",
+    "grade": 8,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t1",
+    "topic_name": "Đa thức & Hằng đẳng thức",
+    "noi_dung_cu_the": "Đa thức nhiều biến. Các phép toán cộng, trừ, nhân, chia các đa thức nhiều biến",
+    "yccd": [
+      {
+        "id": "L8-t1-01",
+        "order": 1,
+        "text": "Nhận biết được các khái niệm về đơn thức, đa thức nhiều biến."
+      },
+      {
+        "id": "L8-t1-02",
+        "order": 2,
+        "text": "Tính được giá trị của đa thức khi biết giá trị của các biến."
+      },
+      {
+        "id": "L8-t1-03",
+        "order": 3,
+        "text": "Thực hiện được việc thu gọn đơn thức, đa thức."
+      },
+      {
+        "id": "L8-t1-04",
+        "order": 4,
+        "text": "Thực hiện được phép nhân đơn thức với đa thức và phép chia hết một đơn thức cho một đơn thức."
+      },
+      {
+        "id": "L8-t1-05",
+        "order": 5,
+        "text": "Thực hiện được các phép tính: phép cộng, phép trừ, phép nhân các đa thức nhiều biến trong những trường hợp đơn giản."
+      },
+      {
+        "id": "L8-t1-06",
+        "order": 6,
+        "text": "Thực hiện được phép chia hết một đa thức cho một đơn thức trong những trường hợp đơn giản."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t1-B02",
+    "grade": 8,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t1",
+    "topic_name": "Đa thức & Hằng đẳng thức",
+    "noi_dung_cu_the": "Hằng đẳng thức đáng nhớ",
+    "yccd": [
+      {
+        "id": "L8-t1-07",
+        "order": 1,
+        "text": "Nhận biết được các khái niệm: đồng nhất thức, hằng đẳng thức."
+      },
+      {
+        "id": "L8-t1-08",
+        "order": 2,
+        "text": "Mô tả được các hằng đẳng thức: bình phương của tổng và hiệu; hiệu hai bình phương; lập phương của tổng và hiệu; tổng và hiệu hai lập phương."
+      },
+      {
+        "id": "L8-t1-09",
+        "order": 3,
+        "text": "Vận dụng được các hằng đẳng thức để phân tích đa thức thành nhân tử ở dạng: vận dụng trực tiếp hằng đẳng thức; vận dụng hằng đẳng thức thông qua nhóm hạng tử và đặt nhân tử chung."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L8-t2-B01",
+    "grade": 8,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t2",
+    "topic_name": "Phân thức đại số",
+    "noi_dung_cu_the": "Phân thức đại số. Tính chất cơ bản của phân thức đại số. Các phép toán cộng, trừ, nhân, chia các phân thức đại số",
+    "yccd": [
+      {
+        "id": "L8-t2-01",
+        "order": 1,
+        "text": "Nhận biết được các khái niệm cơ bản về phân thức đại số: định nghĩa; điều kiện xác định; giá trị của phân thức đại số; hai phân thức bằng nhau."
+      },
+      {
+        "id": "L8-t2-02",
+        "order": 2,
+        "text": "Mô tả được những tính chất cơ bản của phân thức đại số."
+      },
+      {
+        "id": "L8-t2-03",
+        "order": 3,
+        "text": "Thực hiện được các phép tính: phép cộng, phép trừ, phép nhân, phép chia đối với hai phân thức đại số."
+      },
+      {
+        "id": "L8-t2-04",
+        "order": 4,
+        "text": "Vận dụng được các tính chất giao hoán, kết hợp, phân phối của phép nhân đối với phép cộng, quy tắc dấu ngoặc với phân thức đại số trong tính toán."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t3-B01",
+    "grade": 8,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t3",
+    "topic_name": "Hàm số & Đồ thị",
+    "noi_dung_cu_the": "Hàm số và đồ thị",
+    "yccd": [
+      {
+        "id": "L8-t3-01",
+        "order": 1,
+        "text": "Nhận biết được những mô hình thực tế dẫn đến khái niệm hàm số."
+      },
+      {
+        "id": "L8-t3-02",
+        "order": 2,
+        "text": "Tính được giá trị của hàm số khi hàm số đó xác định bởi công thức."
+      },
+      {
+        "id": "L8-t3-03",
+        "order": 3,
+        "text": "Xác định được toạ độ của một điểm trên mặt phẳng toạ độ; xác định được một điểm trên mặt phẳng toạ độ khi biết toạ độ của nó."
+      },
+      {
+        "id": "L8-t3-04",
+        "order": 4,
+        "text": "Nhận biết được đồ thị hàm số."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t3-B02",
+    "grade": 8,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t3",
+    "topic_name": "Hàm số & Đồ thị",
+    "noi_dung_cu_the": "Hàm số bậc nhất y = ax + b (a ≠ 0) và đồ thị. Hệ số góc của đường thẳng y = ax + b (a ≠ 0).",
+    "yccd": [
+      {
+        "id": "L8-t3-05",
+        "order": 1,
+        "text": "Thiết lập được bảng giá trị của hàm số bậc nhất y = ax + b (a ≠ 0)."
+      },
+      {
+        "id": "L8-t3-06",
+        "order": 2,
+        "text": "Vẽ được đồ thị của hàm số bậc nhất y = ax + b (a ≠ 0)."
+      },
+      {
+        "id": "L8-t3-07",
+        "order": 3,
+        "text": "Nhận biết được khái niệm hệ số góc của đường thẳng y = ax + b (a ≠ 0)."
+      },
+      {
+        "id": "L8-t3-08",
+        "order": 4,
+        "text": "Sử dụng được hệ số góc của đường thẳng để nhận biết và giải thích được sự cắt nhau hoặc song song của hai đường thẳng cho trước."
+      },
+      {
+        "id": "L8-t3-09",
+        "order": 5,
+        "text": "Vận dụng được hàm số bậc nhất và đồ thị vào giải quyết một số bài toán thực tiễn (ví dụ: bài toán về chuyển động đều trong Vật lí,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L8-t4-B01",
+    "grade": 8,
+    "mach": "SỐ VÀ ĐẠI SỐ",
+    "topic_id": "t4",
+    "topic_name": "Phương trình bậc nhất",
+    "noi_dung_cu_the": "Phương trình bậc nhất",
+    "yccd": [
+      {
+        "id": "L8-t4-01",
+        "order": 1,
+        "text": "Hiểu được khái niệm phương trình bậc nhất một ẩn và cách giải."
+      },
+      {
+        "id": "L8-t4-02",
+        "order": 2,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với phương trình bậc nhất (ví dụ: các bài toán liên quan đến chuyển động trong Vật lí, các bài toán liên quan đến Hoá học,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t7-B01",
+    "grade": 8,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t7",
+    "topic_name": "Hình học trực quan / Hình khối",
+    "noi_dung_cu_the": "Hình chóp tam giác đều, hình chóp tứ giác đều",
+    "yccd": [
+      {
+        "id": "L8-t7-01",
+        "order": 1,
+        "text": "Mô tả (đỉnh, mặt đáy, mặt bên, cạnh bên), tạo lập được hình chóp tam giác đều và hình chóp tứ giác đều."
+      },
+      {
+        "id": "L8-t7-02",
+        "order": 2,
+        "text": "Tính được diện tích xung quanh, thể tích của một hình chóp tam giác đều và hình chóp tứ giác đều."
+      },
+      {
+        "id": "L8-t7-03",
+        "order": 3,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với việc tính thể tích, diện tích xung quanh của hình chóp tam giác đều và hình chóp tứ giác đều (ví dụ: tính thể tích hoặc diện tích xung quanh của một số đồ vật quen thuộc có dạng hình chóp tam giác đều và hình chóp tứ giác đều,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t5-B01",
+    "grade": 8,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Tứ giác & Định lí Pythagore",
+    "noi_dung_cu_the": "Định lí Pythagore",
+    "yccd": [
+      {
+        "id": "L8-t5-01",
+        "order": 1,
+        "text": "Giải thích được định lí Pythagore."
+      },
+      {
+        "id": "L8-t5-02",
+        "order": 2,
+        "text": "Tính được độ dài cạnh trong tam giác vuông bằng cách sử dụng định lí Pythagore."
+      },
+      {
+        "id": "L8-t5-03",
+        "order": 3,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với việc vận dụng định lí Pythagore (ví dụ: tính khoảng cách giữa hai vị trí)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t5-B02",
+    "grade": 8,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Tứ giác & Định lí Pythagore",
+    "noi_dung_cu_the": "Tứ giác",
+    "yccd": [
+      {
+        "id": "L8-t5-04",
+        "order": 1,
+        "text": "Mô tả được tứ giác, tứ giác lồi."
+      },
+      {
+        "id": "L8-t5-05",
+        "order": 2,
+        "text": "Giải thích được định lí về tổng các góc trong một tứ giác lồi bằng 360o."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L8-t5-B03",
+    "grade": 8,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t5",
+    "topic_name": "Tứ giác & Định lí Pythagore",
+    "noi_dung_cu_the": "Tính chất và dấu hiệu nhận biết các tứ giác đặc biệt",
+    "yccd": [
+      {
+        "id": "L8-t5-06",
+        "order": 1,
+        "text": "Giải thích được tính chất về góc kề một đáy, cạnh bên, đường chéo của hình thang cân."
+      },
+      {
+        "id": "L8-t5-07",
+        "order": 2,
+        "text": "Nhận biết được dấu hiệu để một hình thang là hình thang cân (ví dụ: hình thang có hai đường chéo bằng nhau là hình thang cân)."
+      },
+      {
+        "id": "L8-t5-08",
+        "order": 3,
+        "text": "Giải thích được tính chất về cạnh đối, góc đối, đường chéo của hình bình hành."
+      },
+      {
+        "id": "L8-t5-09",
+        "order": 4,
+        "text": "Nhận biết được dấu hiệu để một tứ giác là hình bình hành (ví dụ: tứ giác có hai đường chéo cắt nhau tại trung điểm của mỗi đường là hình bình hành)."
+      },
+      {
+        "id": "L8-t5-10",
+        "order": 5,
+        "text": "Giải thích được tính chất về hai đường chéo của hình chữ nhật."
+      },
+      {
+        "id": "L8-t5-11",
+        "order": 6,
+        "text": "Nhận biết được dấu hiệu để một hình bình hành là hình chữ nhật (ví dụ: hình bình hành có hai đường chéo bằng nhau là hình chữ nhật)."
+      },
+      {
+        "id": "L8-t5-12",
+        "order": 7,
+        "text": "Giải thích được tính chất về đường chéo của hình thoi."
+      },
+      {
+        "id": "L8-t5-13",
+        "order": 8,
+        "text": "Nhận biết được dấu hiệu để một hình bình hành là hình thoi (ví dụ: hình bình hành có hai đường chéo vuông góc với nhau là hình thoi)."
+      },
+      {
+        "id": "L8-t5-14",
+        "order": 9,
+        "text": "Giải thích được tính chất về hai đường chéo của hình vuông."
+      },
+      {
+        "id": "L8-t5-15",
+        "order": 10,
+        "text": "Nhận biết được dấu hiệu để một hình chữ nhật là hình vuông (ví dụ: hình chữ nhật có hai đường chéo vuông góc với nhau là hình vuông)."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L8-t6-B01",
+    "grade": 8,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t6",
+    "topic_name": "Thales & Tam giác đồng dạng",
+    "noi_dung_cu_the": "Định lí Thalès trong tam giác",
+    "yccd": [
+      {
+        "id": "L8-t6-01",
+        "order": 1,
+        "text": "Giải thích được định lí Thalès trong tam giác (định lí thuận và đảo)."
+      },
+      {
+        "id": "L8-t6-02",
+        "order": 2,
+        "text": "Mô tả được định nghĩa đường trung bình của tam giác. Giải thích được tính chất đường trung bình của tam giác (đường trung bình của tam giác thì song song với cạnh thứ ba và bằng nửa cạnh đó)."
+      },
+      {
+        "id": "L8-t6-03",
+        "order": 3,
+        "text": "Giải thích được tính chất đường phân giác trong của tam giác."
+      },
+      {
+        "id": "L8-t6-04",
+        "order": 4,
+        "text": "Tính được độ dài đoạn thẳng bằng cách sử dụng định lí Thalès."
+      },
+      {
+        "id": "L8-t6-05",
+        "order": 5,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với việc vận dụng định lí Thalès (ví dụ: tính khoảng cách giữa hai vị trí)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t6-B02",
+    "grade": 8,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t6",
+    "topic_name": "Thales & Tam giác đồng dạng",
+    "noi_dung_cu_the": "Tam giác đồng dạng",
+    "yccd": [
+      {
+        "id": "L8-t6-06",
+        "order": 1,
+        "text": "Mô tả được định nghĩa của hai tam giác đồng dạng."
+      },
+      {
+        "id": "L8-t6-07",
+        "order": 2,
+        "text": "Giải thích được các trường hợp đồng dạng của hai tam giác, của hai tam giác vuông."
+      },
+      {
+        "id": "L8-t6-08",
+        "order": 3,
+        "text": "Giải quyết được một số vấn đề thực tiễn gắn với việc vận dụng kiến thức về hai tam giác đồng dạng (ví dụ: tính độ dài đường cao hạ xuống cạnh huyền trong tam giác vuông bằng cách sử dụng mối quan hệ giữa đường cao đó với tích của hai hình chiếu của hai cạnh góc vuông lên cạnh huyền; đo gián tiếp chiều cao của vật; tính khoảng cách giữa hai vị trí trong đó có một vị trí không thể tới được,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L8-t6-B03",
+    "grade": 8,
+    "mach": "HÌNH HỌC VÀ ĐO LƯỜNG",
+    "topic_id": "t6",
+    "topic_name": "Thales & Tam giác đồng dạng",
+    "noi_dung_cu_the": "Hình đồng dạng",
+    "yccd": [
+      {
+        "id": "L8-t6-09",
+        "order": 1,
+        "text": "Nhận biết được hình đồng dạng phối cảnh (hình vị tự), hình đồng dạng qua các hình ảnh cụ thể."
+      },
+      {
+        "id": "L8-t6-10",
+        "order": 2,
+        "text": "Nhận biết được vẻ đẹp trong tự nhiên, nghệ thuật, kiến trúc, công nghệ chế tạo,... biểu hiện qua hình đồng dạng."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L8-t8-B01",
+    "grade": 8,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Thu thập, phân loại, tổ chức dữ liệu theo các tiêu chí cho trước",
+    "yccd": [
+      {
+        "id": "L8-t8-01",
+        "order": 1,
+        "text": "Thực hiện và lí giải được việc thu thập, phân loại dữ liệu theo các tiêu chí cho trước từ nhiều nguồn khác nhau: văn bản; bảng biểu; kiến thức trong các lĩnh vực giáo dục khác (Địa lí, Lịch sử, Giáo dục môi trường, Giáo dục tài chính,...); phỏng vấn, truyền thông, Internet; thực tiễn (môi trường, tài chính, y tế, giá cả thị trường,...)."
+      },
+      {
+        "id": "L8-t8-02",
+        "order": 2,
+        "text": "Chứng tỏ được tính hợp lí của dữ liệu theo các tiêu chí toán học đơn giản (ví dụ: tính hợp lí trong các số liệu điều tra; tính hợp lí của các quảng cáo,...)."
+      }
+    ],
+    "diem": 100,
+    "order": 1
+  },
+  {
+    "_id": "L8-t8-B02",
+    "grade": 8,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Mô tả và biểu diễn dữ liệu trên các bảng, biểu đồ",
+    "yccd": [
+      {
+        "id": "L8-t8-03",
+        "order": 1,
+        "text": "Lựa chọn và biểu diễn được dữ liệu vào bảng, biểu đồ thích hợp ở dạng: bảng thống kê; biểu đồ tranh; biểu đồ dạng cột/cột kép (column chart), biểu đồ hình quạt tròn (cho sẵn) (pie chart); biểu đồ đoạn thẳng (line graph)."
+      },
+      {
+        "id": "L8-t8-04",
+        "order": 2,
+        "text": "Nhận biết được mối liên hệ toán học đơn giản giữa các số liệu đã được biểu diễn. Từ đó, nhận biết được số liệu không chính xác trong những ví dụ đơn giản."
+      },
+      {
+        "id": "L8-t8-05",
+        "order": 3,
+        "text": "So sánh được các dạng biểu diễn khác nhau cho một tập dữ liệu."
+      },
+      {
+        "id": "L8-t8-06",
+        "order": 4,
+        "text": "Mô tả được cách chuyển dữ liệu từ dạng biểu diễn này sang dạng biểu diễn khác."
+      }
+    ],
+    "diem": 100,
+    "order": 2
+  },
+  {
+    "_id": "L8-t8-B03",
+    "grade": 8,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Hình thành và giải quyết vấn đề đơn giản xuất hiện từ các số liệu và biểu đồ thống kê đã có",
+    "yccd": [
+      {
+        "id": "L8-t8-07",
+        "order": 1,
+        "text": "Phát hiện được vấn đề hoặc quy luật đơn giản dựa trên phân tích các số liệu thu được ở dạng: bảng thống kê; biểu đồ tranh; biểu đồ dạng cột/cột kép (column chart), biểu đồ hình quạt tròn (pie chart); biểu đồ đoạn thẳng (line graph)."
+      },
+      {
+        "id": "L8-t8-08",
+        "order": 2,
+        "text": "Giải quyết được những vấn đề đơn giản liên quan đến các số liệu thu được ở dạng: bảng thống kê; biểu đồ tranh; biểu đồ dạng cột/cột kép (column chart), biểu đồ hình quạt tròn (pie chart); biểu đồ đoạn thẳng (line graph)."
+      },
+      {
+        "id": "L8-t8-09",
+        "order": 3,
+        "text": "Nhận biết được mối liên hệ giữa thống kê với những kiến thức trong các môn học khác trong Chương trình lớp 8 (ví dụ: Lịch sử và Địa lí lớp 8, Khoa học tự nhiên lớp 8,...) và trong thực tiễn."
+      }
+    ],
+    "diem": 100,
+    "order": 3
+  },
+  {
+    "_id": "L8-t8-B04",
+    "grade": 8,
+    "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT",
+    "topic_id": "t8",
+    "topic_name": "Thống kê & Xác suất",
+    "noi_dung_cu_the": "Mô tả xác suất của biến cố ngẫu nhiên trong một số ví dụ đơn giản. Mối liên hệ giữa xác suất thực nghiệm của một biến cố với xác suất của biến cố đó",
+    "yccd": [
+      {
+        "id": "L8-t8-10",
+        "order": 1,
+        "text": "Sử dụng được tỉ số để mô tả xác suất của một biến cố ngẫu nhiên trong một số ví dụ đơn giản."
+      },
+      {
+        "id": "L8-t8-11",
+        "order": 2,
+        "text": "Nhận biết được mối liên hệ giữa xác suất thực nghiệm của một biến cố với xác suất của biến cố đó thông qua một số ví dụ đơn giản."
+      }
+    ],
+    "diem": 100,
+    "order": 4
+  }
+]

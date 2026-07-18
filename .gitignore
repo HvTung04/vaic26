@@ -7,8 +7,6 @@ __pycache__/
 venv/
 *.local.json
 bank.local.json
-__pycache__/*
-*.pyc
 
 # Env / secrets
 .env
@@ -26,3 +24,6 @@ Thumbs.db
 dist/
 build/
 *.log
+
+# Office temp files
+~$*

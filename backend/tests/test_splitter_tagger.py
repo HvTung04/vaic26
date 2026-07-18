@@ -37,7 +37,7 @@ def test_tag_off_enum_flagged(monkeypatch):
 
 
 def test_tag_valid_node_passthrough(monkeypatch):
-    node = "math-g5-fraction-equivalent"
+    node = "L6-t1-B01"
     monkeypatch.setattr(tagger, "structured_completion", lambda **k: {
         "knowledge_nodes": [node], "difficulty": 2, "confidence": 0.8
     })
@@ -47,7 +47,7 @@ def test_tag_valid_node_passthrough(monkeypatch):
 
 
 def test_tag_multi_node(monkeypatch):
-    n1, n2 = "math-g5-fraction-equivalent", "math-g5-fraction-divide"
+    n1, n2 = "L6-t1-B01", "L6-t1-B02"
     monkeypatch.setattr(tagger, "structured_completion", lambda **k: {
         "knowledge_nodes": [n1, n2], "difficulty": 2, "confidence": 0.75
     })

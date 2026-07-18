@@ -16,7 +16,7 @@ def test_draft_defaults():
 
 
 def test_taxonomy_placeholder_valid():
-    assert is_valid_node("math-g5-fraction-equivalent")
+    assert is_valid_node("L6-t1-B01")
     assert not is_valid_node("nonexistent-node")
 
 

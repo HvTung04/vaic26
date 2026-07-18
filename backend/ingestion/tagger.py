@@ -6,12 +6,15 @@ from __future__ import annotations
 
 from .llm_client import structured_completion
 from .models import Difficulty, SplitQuestion, TagResponse
-from .taxonomy import load_taxonomy_nodes
+from .taxonomy import load_taxonomy_nodes, load_taxonomy_context
 
 _TAG_SYSTEM = (
-    "You tag a Vietnamese exam question. Choose knowledge_nodes from the given "
-    "node list — one or more nodes the question touches. Set difficulty 1=easy/2=medium/3=hard. "
-    "Give confidence 0..1. Output strict JSON. If unsure, set low confidence; never invent a node."
+    "You tag a Vietnamese math exam question against the 2018 curriculum knowledge graph.\n"
+    "Choose one or more knowledge_nodes from the provided node list.\n"
+    "Each node is: ID | Grade | Topic | Content description | Learning outcome IDs.\n"
+    "Pick nodes whose content matches what the question tests.\n"
+    "Set difficulty 1=easy/2=medium/3=hard. Give confidence 0..1.\n"
+    "Output strict JSON. If unsure, set low confidence; never invent a node."
 )
 
 _TAG_SCHEMA = {
@@ -32,8 +35,9 @@ _TAG_SCHEMA = {
 
 def _build_user(q: SplitQuestion, nodes: list[str]) -> str:
     opts = "\n".join(q.options)
+    ctx = load_taxonomy_context()
     return (
-        f"NODE LIST (enum): {nodes}\n\n"
+        f"TAXONOMY NODES:\n{ctx}\n\n"
         f"QUESTION: {q.text}\nOPTIONS:\n{opts}\n"
     )
 
@@ -51,7 +55,7 @@ def tag_question(q: SplitQuestion) -> TagResponse:
     invalid = [n for n in tag.knowledge_nodes if n not in nodes]
     if invalid:
         data = structured_completion(
-            system=_TAG_SYSTEM + f" Invalid nodes rejected: {invalid}. Pick only from the list.",
+            system=_TAG_SYSTEM + f"\nInvalid nodes rejected: {invalid}. Pick only from the taxonomy list above.",
             user=_build_user(q, nodes),
             json_schema=_TAG_SCHEMA,
             schema_name="TagResponse",
