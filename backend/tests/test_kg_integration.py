@@ -6,14 +6,14 @@ Simulates: student answers exam → mastery update → root-cause → revision �
 import os
 import json
 
-from kg.graph import load_graph
-from kg.mastery import batch_update, get_weak_nodes
-from kg.root_cause import diagnose_all_wrong
-from kg.revision import select_revision_questions
-from kg.learning_path import _template_path
-from kg.dashboard import priority_queue, gap_radar, interventions
-from kg.client import save_mastery, load_mastery
-from kg.models import MasteryRecord
+from app.kg.graph import load_graph
+from app.kg.mastery import batch_update, get_weak_nodes
+from app.kg.root_cause import diagnose_all_wrong
+from app.kg.revision import select_revision_questions
+from app.kg.learning_path import _template_path
+from app.kg.dashboard import priority_queue, gap_radar, interventions
+from app.kg.client import save_mastery, load_mastery
+from app.kg.models import MasteryRecord
 
 
 # --- Setup ---

@@ -1,7 +1,7 @@
 """Tests for revision test selector."""
 
-from kg.revision import select_revision_questions, get_answered_question_ids
-from kg.models import MasteryRecord
+from app.kg.revision import select_revision_questions, get_answered_question_ids
+from app.kg.models import MasteryRecord
 
 
 def test_select_weak_nodes():

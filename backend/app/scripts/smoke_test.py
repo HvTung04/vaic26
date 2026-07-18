@@ -3,18 +3,18 @@ import os, sys
 from pathlib import Path
 
 # Load .env
-env_path = Path(__file__).resolve().parents[2] / ".env"
+env_path = Path(__file__).resolve().parents[3] / ".env"
 for line in env_path.read_text().splitlines():
     if "=" in line and not line.startswith("#"):
         k, v = line.split("=", 1)
         os.environ[k.strip()] = v.strip()
 
 # Ensure backend package importable
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from ingestion.pipeline import intake_file
+from app.ingestion.pipeline import intake_file
 
-test_pdf = Path(__file__).resolve().parents[2] / "docs" / "test.pdf"
+test_pdf = Path(__file__).resolve().parents[3] / "docs" / "test.pdf"
 print(f"model: {os.environ.get('GAPLENS_LLM_MODEL', 'gpt-4o')}")
 print(f"key present: {bool(os.environ.get('OPENAI_API_KEY'))}")
 print(f"input: {test_pdf} ({test_pdf.stat().st_size // 1024} KB)")

@@ -3,8 +3,8 @@
 import json
 import os
 
-from kg.client import save_mastery, load_mastery
-from kg.models import MasteryRecord
+from app.kg.client import save_mastery, load_mastery
+from app.kg.models import MasteryRecord
 
 
 def test_save_load_roundtrip(tmp_path, monkeypatch):

@@ -5,7 +5,7 @@ background job so the submit endpoint can return `status=grading` immediately.
 
 from __future__ import annotations
 
-from kg.root_cause import diagnose_root_cause
+from app.kg.root_cause import diagnose_root_cause
 
 from app.db.mongodb import get_database
 from app.db.postgres import async_session_factory

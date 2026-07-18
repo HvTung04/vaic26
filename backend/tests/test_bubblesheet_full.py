@@ -6,10 +6,10 @@ import tempfile
 import cv2
 import numpy as np
 
-from bubblesheet.generate import generate_bubble_sheet, generate_bubble_sheet_bytes
-from bubblesheet.calibrate import calibrate, _sort_markers
-from bubblesheet.detect import detect_answers, detect_answers_from_image
-from bubblesheet.template import DEFAULT_TEMPLATE
+from app.bubblesheet.generate import generate_bubble_sheet, generate_bubble_sheet_bytes
+from app.bubblesheet.calibrate import calibrate, _sort_markers
+from app.bubblesheet.detect import detect_answers, detect_answers_from_image
+from app.bubblesheet.template import DEFAULT_TEMPLATE
 
 
 # ---------- generate ----------

@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from kg.dashboard import gap_radar, need_groups, priority_queue
+from app.kg.dashboard import gap_radar, need_groups, priority_queue
 
 from app.api.deps import MongoDB
 from app.core.errors import api_error

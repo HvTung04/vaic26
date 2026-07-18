@@ -11,9 +11,9 @@ from datetime import datetime, timezone
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from kg.dashboard import gap_radar, interventions, need_groups, priority_queue
-from kg.models import Graph
-from kg.revision import get_answered_question_ids, select_revision_questions
+from app.kg.dashboard import gap_radar, interventions, need_groups, priority_queue
+from app.kg.models import Graph
+from app.kg.revision import get_answered_question_ids, select_revision_questions
 
 from app.agents.learning_path_graph import run as run_learning_path_agent
 from app.models.test import TestType

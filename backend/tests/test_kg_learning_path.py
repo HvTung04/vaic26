@@ -1,8 +1,8 @@
 """Tests for learning path (template fallback only — no LLM in tests)."""
 
-from kg.learning_path import _template_path, _build_mastery_summary
-from kg.models import MasteryRecord, Graph
-from kg.graph import load_graph
+from app.kg.learning_path import _template_path, _build_mastery_summary
+from app.kg.models import MasteryRecord, Graph
+from app.kg.graph import load_graph
 
 
 def test_template_path_weak():

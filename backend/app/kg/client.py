@@ -13,7 +13,7 @@ import httpx
 from .models import MasteryRecord
 
 _API_BASE = os.environ.get("GAPLENS_API_BASE", "").rstrip("/")
-_MASTERY_FILE = Path(__file__).resolve().parents[1] / "mastery.local.json"
+_MASTERY_FILE = Path(__file__).resolve().parents[2] / "mastery.local.json"
 
 
 def _mastery_path() -> Path:
