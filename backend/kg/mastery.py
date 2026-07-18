@@ -40,12 +40,27 @@ def update_mastery(
         return max(0.0, current * (1 - weight))
 
 
+def _parse_node_id(node_id: str) -> tuple[int, int, int] | None:
+    """Parse 'L6-t1-B02' -> (grade=6, topic=1, block=2). Returns None on parse fail."""
+    try:
+        parts = node_id.split("-")
+        grade = int(parts[0][1:])  # L6 -> 6
+        topic = int(parts[1][1:])  # t1 -> 1
+        block = int(parts[2][1:])  # B02 -> 2
+        return (grade, topic, block)
+    except (IndexError, ValueError):
+        return None
+
+
 def unit_proximity(
     node_id: str,
     current_unit: tuple[int, int],
     graph: Graph,
 ) -> float:
     """Compute proximity of node to current teaching unit.
+
+    Proximity = grade/topic/block distance (not graph BFS).
+    Same grade + close topic/block = high. Different grade = low.
 
     Args:
         node_id: knowledge node
@@ -59,25 +74,31 @@ def unit_proximity(
     if not node:
         return 0.5  # unknown node, medium proximity
 
-    # Find the current unit node
-    target_id = None
-    for nid, n in graph.nodes.items():
-        if n.grade == current_unit[0] and n.order == current_unit[1]:
-            target_id = nid
-            break
-
-    if target_id is None:
+    parsed = _parse_node_id(node_id)
+    if not parsed:
         return 0.5
 
-    if node_id == target_id:
-        return 1.0
+    node_grade, node_topic, node_block = parsed
+    current_grade, current_topic = current_unit
 
-    from .graph import graph_distance
+    grade_diff = abs(node_grade - current_grade)
+    topic_diff = abs(node_topic - current_topic)
+    block_diff = abs(node_block - 1)  # distance from first block of current topic
 
-    dist = graph_distance(graph, node_id, target_id)
-    if dist < 0:
-        return 0.2  # unreachable, low proximity
-    return max(0.2, 1.0 - dist * 0.25)
+    if grade_diff == 0 and topic_diff == 0 and block_diff == 0:
+        return 1.0  # exact match (first block of current topic)
+    elif grade_diff == 0 and topic_diff == 0:
+        # Same topic, different block: very close
+        return max(0.8, 1.0 - block_diff * 0.1)
+    elif grade_diff == 0:
+        # Same grade, different topic: topic distance matters
+        return max(0.5, 0.9 - topic_diff * 0.15)
+    elif grade_diff == 1:
+        # Adjacent grade: always lower than same-grade nodes
+        return max(0.2, 0.45 - topic_diff * 0.05)
+    else:
+        # 2+ grades away: floor
+        return 0.2
 
 
 def update_student_mastery(
@@ -134,11 +155,26 @@ def batch_update(
 def get_weak_nodes(
     mastery_map: dict[str, MasteryRecord],
     threshold: float = 0.7,
+    current_unit: tuple[int, int] | None = None,
+    graph: Graph | None = None,
 ) -> list[tuple[str, float]]:
-    """Return nodes below threshold, sorted by mastery ASC (weakest first)."""
+    """Return nodes below threshold, sorted by mastery ASC then grade proximity.
+
+    Within same mastery tier, current-grade nodes rank higher.
+    """
     weak = [
         (nid, rec.mastery_level)
         for nid, rec in mastery_map.items()
         if rec.mastery_level < threshold
     ]
-    return sorted(weak, key=lambda x: x[1])
+
+    def _sort_key(item: tuple[str, float]) -> tuple[float, int]:
+        nid, mastery = item
+        grade_penalty = 0
+        if current_unit and graph:
+            node = graph.nodes.get(nid)
+            if node:
+                grade_penalty = abs(node.grade - current_unit[0])
+        return (mastery, grade_penalty)
+
+    return sorted(weak, key=_sort_key)
