@@ -1,0 +1,551 @@
+Domain,API Endpoint,Description,Schema Input,Schema Output
+Auth,POST /api/v1/auth/register,"Đăng ký tài khoản giáo viên hoặc học sinh, tự động đăng nhập luôn sau khi tạo","{
+  ""username"": ""string"",
+  ""password"": ""string"",
+  ""full_name"": ""string"",
+  ""role"": ""enum(student,teacher)"",
+  ""email?"": ""string""
+}","{
+  ""access_token"": ""string"",
+  ""token_type"": ""bearer"",
+  ""expires_in"": ""number"",
+  ""user"": {
+    ""id"": ""string"",
+    ""username"": ""string"",
+    ""full_name"": ""string"",
+    ""role"": ""string"",
+    ""created_at"": ""timestamp""
+  }
+}"
+Auth,POST /api/v1/auth/login,Đăng nhập bằng tài khoản có sẵn (kể cả 2 tài khoản seed sẵn cho demo),"{
+  ""username"": ""string"",
+  ""password"": ""string""
+}","{
+  ""access_token"": ""string"",
+  ""token_type"": ""bearer"",
+  ""expires_in"": ""number"",
+  ""user"": {
+    ""id"": ""string"",
+    ""username"": ""string"",
+    ""full_name"": ""string"",
+    ""role"": ""string""
+  }
+}"
+Auth,GET /api/v1/auth/me,Lấy thông tin user đang đăng nhập,,"{
+  ""id"": ""string"",
+  ""username"": ""string"",
+  ""full_name"": ""string"",
+  ""role"": ""string"",
+  ""class_ids"": [
+    ""string""
+  ]
+}"
+Users,GET /api/v1/users/{user_id},Lấy hồ sơ 1 user,,"{
+  ""id"": ""string"",
+  ""username"": ""string"",
+  ""full_name"": ""string"",
+  ""role"": ""string"",
+  ""email?"": ""string"",
+  ""created_at"": ""timestamp""
+}"
+Classes,GET /api/v1/classes/{class_id},Chi tiết lớp,,"{
+  ""id"": ""string"",
+  ""name"": ""string"",
+  ""subject"": ""string"",
+  ""grade"": ""number"",
+  ""teacher_id"": ""string"",
+  ""student_count"": ""number""
+}"
+Classes,GET /api/v1/classes/{class_id}/students,Danh sách học sinh trong lớp,,"{
+  ""items"": [
+    {
+      ""id"": ""string"",
+      ""full_name"": ""string"",
+      ""username"": ""string""
+    }
+  ],
+  ""total"": ""number""
+}"
+Knowledge Graph,GET /api/v1/graph/students/{student_id}/state,Toàn bộ trạng thái mastery của học sinh trên graph,,"{
+  ""student_id"": ""string"",
+  ""nodes"": [
+    {
+      ""node_id"": ""string"",
+      ""node_name"": ""string"",
+      ""mastery"": ""number (0-1)"",
+      ""confidence"": ""number (0-1)"",
+      ""attempts"": ""number"",
+      ""last_updated"": ""timestamp"",
+      ""needs_review"": ""boolean""
+    }
+  ]
+}"
+Knowledge Graph,GET /api/v1/graph/students/{student_id}/nodes/{node_id}/history,Lịch sử thay đổi trọng số 1 node — phục vụ audit + UI biểu đồ tiến bộ,,"{
+  ""node_id"": ""string"",
+  ""items"": [
+    {
+      ""mastery"": ""number"",
+      ""confidence"": ""number"",
+      ""reason"": ""enum(submission_scoring,revision_result)"",
+      ""source_submission_id?"": ""string"",
+      ""changed_at"": ""timestamp""
+    }
+  ]
+}"
+Content,POST /api/v1/content/uploads,"Giáo viên upload file đề (pdf/docx/ảnh) để pipeline OCR + tách câu + gắn nhãn (tagging chạy nội bộ, không qua HTTP riêng)","multipart/form-data: 
+{
+  ""file"": ""binary"",
+  ""class_id?"": ""string"",
+  ""subject"": ""string"",
+  ""grade"": ""number""
+}","{
+  ""upload_id"": ""string"",
+  ""status"": ""enum(queued,processing,done,failed)"",
+  ""created_at"": ""timestamp""
+}"
+Content,GET /api/v1/content/uploads/{upload_id},"Trạng thái xử lý + danh sách câu hỏi đã bóc tách & gợi ý nhãn, chờ giáo viên duyệt",,"{
+  ""upload_id"": ""string"",
+  ""status"": ""string"",
+  ""parsed_questions"": [
+    {
+      ""draft_id"": ""string"",
+      ""text"": ""string"",
+      ""type"": ""enum(mcq,short_answer)"",
+      ""options?"": [
+        ""string""
+      ],
+      ""answer?"": ""string"",
+      ""suggested_node_id"": ""string"",
+      ""suggested_difficulty"": ""string"",
+      ""confidence"": ""number (0-1)""
+    }
+  ],
+  ""error?"": ""string""
+}"
+Content,POST /api/v1/content/uploads/{upload_id}/approve,Giáo viên duyệt (có thể sửa nhãn/nội dung) một hoặc nhiều draft -> commit thành câu hỏi thật trong ngân hàng [MỚI THÊM],"{
+  ""questions"": [
+    {
+      ""draft_id"": ""string"",
+      ""text?"": ""string"",
+      ""options?"": [
+        ""string""
+      ],
+      ""answer?"": ""string"",
+      ""node_id"": ""string"",
+      ""difficulty"": ""string""
+    }
+  ]
+}","{
+  ""upload_id"": ""string"",
+  ""created_question_ids"": [
+    ""string""
+  ],
+  ""approved_count"": ""number""
+}"
+Content,GET /api/v1/questions/{question_id},"Chi tiết 1 câu hỏi (kèm đáp án, giải thích — chỉ trả cho teacher)",,"{
+  ""id"": ""string"",
+  ""text"": ""string"",
+  ""type"": ""string"",
+  ""options?"": [
+    ""string""
+  ],
+  ""answer"": ""string"",
+  ""explanation?"": ""string"",
+  ""difficulty"": ""string"",
+  ""node_id"": ""string"",
+  ""source_upload_id?"": ""string"",
+  ""created_at"": ""timestamp""
+}"
+Content,POST /api/v1/tests,Tạo bài test — auto-compose từ ngân hàng theo node + độ khó (không chọn tay từng câu),"{
+  ""title"": ""string"",
+  ""class_id"": ""string"",
+  ""type"": ""enum(weekly,revision,practice)"",
+  ""auto_compose"": {
+    ""node_ids"": [
+      ""string""
+    ],
+    ""count"": ""number"",
+    ""difficulty_mix?"": {
+      ""easy"": ""number"",
+      ""medium"": ""number"",
+      ""hard"": ""number""
+    }
+  }
+}","{
+  ""id"": ""string"",
+  ""title"": ""string"",
+  ""type"": ""string"",
+  ""class_id"": ""string"",
+  ""question_ids"": [
+    ""string""
+  ],
+  ""created_at"": ""timestamp""
+}"
+Content,GET /api/v1/tests/{test_id},"Chi tiết bài test (teacher view, có đáp án)",,"{
+  ""id"": ""string"",
+  ""title"": ""string"",
+  ""type"": ""string"",
+  ""class_id"": ""string"",
+  ""questions"": [
+    {
+      ""id"": ""string"",
+      ""text"": ""string"",
+      ""difficulty"": ""string"",
+      ""node_id"": ""string"",
+      ""answer"": ""string""
+    }
+  ],
+  ""assigned_student_ids"": [
+    ""string""
+  ]
+}"
+Content,GET /api/v1/tests?class_id=,Danh sách bài test của giáo viên/lớp,_(query filter)_,"{
+  ""items"": [
+    {
+      ""id"": ""string"",
+      ""title"": ""string"",
+      ""type"": ""string"",
+      ""class_id"": ""string"",
+      ""created_at"": ""timestamp""
+    }
+  ],
+  ""total"": ""number""
+}"
+Content,POST /api/v1/tests/{test_id}/assign,Giao bài test cho lớp hoặc danh sách học sinh cụ thể,"{
+  ""class_id?"": ""string"",
+  ""student_ids?"": [
+    ""string""
+  ],
+  ""due_at?"": ""timestamp""
+}","{
+  ""test_id"": ""string"",
+  ""assigned_student_ids"": [
+    ""string""
+  ],
+  ""due_at?"": ""timestamp""
+}"
+Agent: Learning Path,POST /api/v1/agents/learning-path,Sinh lộ trình học cá nhân từ graph state hiện tại + lộ trình tuần trước,"{
+  ""student_id"": ""string"",
+  ""previous_path_id?"": ""string""
+}","{
+  ""path_id"": ""string"",
+  ""student_id"": ""string"",
+  ""tiers"": [
+    {
+      ""tier"": ""enum(foundation,bridge,application)"",
+      ""node_ids"": [
+        ""string""
+      ],
+      ""recommended_question_ids"": [
+        ""string""
+      ],
+      ""rationale"": ""string""
+    }
+  ],
+  ""generated_at"": ""timestamp"",
+  ""grounded_on"": {
+    ""graph_snapshot_id"": ""string""
+  }
+}"
+Agent: Revision Test,POST /api/v1/agents/revision-test,"Sinh đề revision test dựa trên learning path gần nhất + comment giáo viên, tạo luôn 1 test (type=revision) để học sinh làm qua flow chung ở mục Test Taking","{
+  ""student_id"": ""string"",
+  ""learning_path_id"": ""string"",
+  ""teacher_note?"": ""string"",
+  ""question_count?"": ""number""
+}","{
+  ""test_id"": ""string"",
+  ""student_id"": ""string"",
+  ""question_ids"": [
+    ""string""
+  ],
+  ""difficulty_mix"": {
+    ""easy"": ""number"",
+    ""medium"": ""number"",
+    ""hard"": ""number""
+  },
+  ""target_node_ids"": [
+    ""string""
+  ]
+}"
+Agent: Dashboard Insight,GET /api/v1/agents/dashboard-insights?class_id=,"Sinh gợi ý cho teacher dashboard: priority queue, nhóm học sinh, class gap, can thiệp đề xuất",_(query `class_id`)_,"{
+  ""class_id"": ""string"",
+  ""priority_students"": [
+    {
+      ""student_id"": ""string"",
+      ""urgency"": ""number (0-1)"",
+      ""reason"": ""string""
+    }
+  ],
+  ""groups"": [
+    {
+      ""group_id"": ""string"",
+      ""node_ids"": [
+        ""string""
+      ],
+      ""student_ids"": [
+        ""string""
+      ]
+    }
+  ],
+  ""class_gap_nodes"": [
+    {
+      ""node_id"": ""string"",
+      ""weak_ratio"": ""number""
+    }
+  ],
+  ""interventions"": [
+    {
+      ""id"": ""string"",
+      ""type"": ""enum(re_teach,mini_group,peer_support,extra_practice)"",
+      ""node_id"": ""string"",
+      ""target_student_ids"": [
+        ""string""
+      ],
+      ""rationale"": ""string""
+    }
+  ],
+  ""generated_at"": ""timestamp""
+}"
+OCR [CUT-LINE],POST /api/v1/ocr/scan,Giáo viên upload ảnh chụp bài làm giấy để số hóa (cut-line giờ 9 theo PLAN.md nếu trễ),"multipart/form-data: 
+{
+  ""image"": ""binary"",
+  ""test_id"": ""string"",
+  ""student_id?"": ""string""
+}","{
+  ""scan_id"": ""string"",
+  ""status"": ""enum(queued,processing,done,failed)"",
+  ""created_at"": ""timestamp""
+}"
+OCR [CUT-LINE],GET /api/v1/ocr/scan/{scan_id},"Kết quả OCR: câu trả lời đã bóc tách, chờ xác nhận",,"{
+  ""scan_id"": ""string"",
+  ""status"": ""string"",
+  ""test_id"": ""string"",
+  ""detected_student_id?"": ""string"",
+  ""answers"": [
+    {
+      ""question_id"": ""string"",
+      ""detected_answer"": ""string"",
+      ""confidence"": ""number""
+    }
+  ],
+  ""low_confidence_flags"": [
+    ""string""
+  ]
+}"
+OCR [CUT-LINE],POST /api/v1/ocr/scan/{scan_id}/confirm,Giáo viên xác nhận/sửa kết quả OCR -> tạo submission (dùng chung pipeline chấm + graph update với Test Taking),"{
+  ""student_id"": ""string"",
+  ""answers"": [
+    {
+      ""question_id"": ""string"",
+      ""final_answer"": ""string""
+    }
+  ]
+}","{
+  ""scan_id"": ""string"",
+  ""submission_id"": ""string"",
+  ""status"": ""enum(confirmed)""
+}"
+Test Taking,GET /api/v1/students/{student_id}/tests?status=,Danh sách bài test được giao cho học sinh (status: pending/done),_(query filter)_,"{
+  ""items"": [
+    {
+      ""test_id"": ""string"",
+      ""title"": ""string"",
+      ""type"": ""string"",
+      ""due_at?"": ""timestamp"",
+      ""status"": ""enum(pending,in_progress,submitted)""
+    }
+  ],
+  ""total"": ""number""
+}"
+Test Taking,GET /api/v1/tests/{test_id}/attempt,Lấy đề để làm bài (ẩn đáp án đúng),,"{
+  ""test_id"": ""string"",
+  ""title"": ""string"",
+  ""questions"": [
+    {
+      ""id"": ""string"",
+      ""text"": ""string"",
+      ""type"": ""string"",
+      ""options?"": [
+        ""string""
+      ]
+    }
+  ]
+}"
+Test Taking,POST /api/v1/tests/{test_id}/submissions,Học sinh nộp bài. Trigger nội bộ ngay sau khi nộp: chấm đúng/sai -> diagnosis root-cause cho từng câu sai -> ghi log + cập nhật mastery cho các node liên quan,"{
+  ""student_id"": ""string"",
+  ""answers"": [
+    {
+      ""question_id"": ""string"",
+      ""answer"": ""string"",
+      ""time_spent_seconds"": ""number""
+    }
+  ]
+}","{
+  ""submission_id"": ""string"",
+  ""test_id"": ""string"",
+  ""student_id"": ""string"",
+  ""status"": ""enum(grading,graded)"",
+  ""submitted_at"": ""timestamp""
+}"
+Test Taking,GET /api/v1/submissions/{submission_id},"Kết quả chấm: đúng/sai, giải thích, chuỗi root-cause, graph update đã áp dụng. status=grading nếu diagnosis + graph update chưa chạy xong — FE nên poll tới khi graded",,"{
+  ""submission_id"": ""string"",
+  ""status"": ""enum(grading,graded)"",
+  ""score"": ""number"",
+  ""total"": ""number"",
+  ""results"": [
+    {
+      ""question_id"": ""string"",
+      ""is_correct"": ""boolean"",
+      ""correct_answer"": ""string"",
+      ""explanation?"": ""string"",
+      ""root_cause_node_id?"": ""string"",
+      ""root_cause_chain"": [
+        ""string""
+      ],
+      ""confidence?"": ""number (0-1)""
+    }
+  ],
+  ""graph_updates"": [
+    {
+      ""node_id"": ""string"",
+      ""mastery_before"": ""number"",
+      ""mastery_after"": ""number""
+    }
+  ]
+}"
+Learning Path,GET /api/v1/students/{student_id}/learning-path,Lộ trình học hiện tại của học sinh,,"{
+  ""path_id"": ""string"",
+  ""generated_at"": ""timestamp"",
+  ""tiers"": [
+    {
+      ""tier"": ""string"",
+      ""node_ids"": [
+        ""string""
+      ],
+      ""recommended_question_ids"": [
+        ""string""
+      ],
+      ""rationale"": ""string""
+    }
+  ],
+  ""status"": ""enum(active,completed,superseded)""
+}"
+Progress,GET /api/v1/students/{student_id}/progress?range=weekly,Tiến trình học theo tuần/chủ đề cho học sinh tự xem,_(query `range`)_,"{
+  ""student_id"": ""string"",
+  ""timeline"": [
+    {
+      ""period"": ""string"",
+      ""avg_mastery"": ""number"",
+      ""nodes_improved"": ""number"",
+      ""tests_taken"": ""number""
+    }
+  ]
+}"
+Dashboard,GET /api/v1/teacher/classes/{class_id}/priority-queue,"Danh sách học sinh cần hỗ trợ trước, xếp theo mức khẩn cấp",,"{
+  ""items"": [
+    {
+      ""student_id"": ""string"",
+      ""full_name"": ""string"",
+      ""urgency"": ""number"",
+      ""reason"": ""string"",
+      ""weak_node_ids"": [
+        ""string""
+      ]
+    }
+  ]
+}"
+Dashboard,GET /api/v1/teacher/classes/{class_id}/groups,Nhóm học sinh theo lỗ hổng kiến thức chung,,"{
+  ""items"": [
+    {
+      ""group_id"": ""string"",
+      ""node_ids"": [
+        ""string""
+      ],
+      ""node_names"": [
+        ""string""
+      ],
+      ""student_ids"": [
+        ""string""
+      ]
+    }
+  ]
+}"
+Dashboard,GET /api/v1/teacher/classes/{class_id}/gap-radar,Các node kiến thức mà số đông lớp đang yếu (dữ liệu cho radar chart),,"{
+  ""items"": [
+    {
+      ""node_id"": ""string"",
+      ""node_name"": ""string"",
+      ""weak_ratio"": ""number (0-1)"",
+      ""avg_mastery"": ""number""
+    }
+  ]
+}"
+Dashboard,GET /api/v1/teacher/classes/{class_id}/interventions,"Gợi ý can thiệp hiện có (re-teach, mini-group, peer support, giao bài phụ đạo)",,"{
+  ""items"": [
+    {
+      ""id"": ""string"",
+      ""type"": ""string"",
+      ""node_id"": ""string"",
+      ""target_student_ids"": [
+        ""string""
+      ],
+      ""rationale"": ""string"",
+      ""status"": ""enum(suggested,applied,dismissed)""
+    }
+  ]
+}"
+Dashboard,POST /api/v1/teacher/interventions/{intervention_id}/apply,"Giáo viên áp dụng một can thiệp (đổi trạng thái, log lại để audit)","{
+  ""note?"": ""string""
+}","{
+  ""id"": ""string"",
+  ""status"": ""enum(applied)"",
+  ""applied_at"": ""timestamp""
+}"
+Dashboard,GET /api/v1/teacher/classes/{class_id}/results?test_id=,Overview kết quả 1 bài test cho cả lớp,_(query `test_id`)_,"{
+  ""test_id"": ""string"",
+  ""class_avg_score"": ""number"",
+  ""distribution"": [
+    {
+      ""score_range"": ""string"",
+      ""count"": ""number""
+    }
+  ],
+  ""per_node_accuracy"": [
+    {
+      ""node_id"": ""string"",
+      ""accuracy"": ""number""
+    }
+  ],
+  ""students"": [
+    {
+      ""student_id"": ""string"",
+      ""score"": ""number"",
+      ""status"": ""enum(submitted,pending)""
+    }
+  ]
+}"
+Dashboard,GET /api/v1/teacher/students/{student_id}/results,Kết quả chi tiết của 1 học sinh qua các bài test,,"{
+  ""student_id"": ""string"",
+  ""tests"": [
+    {
+      ""test_id"": ""string"",
+      ""title"": ""string"",
+      ""score"": ""number"",
+      ""submitted_at"": ""timestamp"",
+      ""weak_node_ids"": [
+        ""string""
+      ]
+    }
+  ]
+}"
+Dashboard,GET /api/v1/teacher/classes/{class_id}/progress-timeline?range=weekly,Tiến bộ của cả lớp theo tuần/chủ đề,_(query `range`)_,"{
+  ""class_id"": ""string"",
+  ""timeline"": [
+    {
+      ""period"": ""string"",
+      ""avg_mastery"": ""number"",
+      ""tests_completed"": ""number"",
+      ""students_improved"": ""number""
+    }
+  ]
+}"
