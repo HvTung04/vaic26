@@ -17,6 +17,16 @@ const ASSESSMENT_TITLES: Record<string, { title: string; subject: string }> = {
 
 const DIFFICULTY_CYCLE: QuestionDifficulty[] = ['Easy', 'Medium', 'Hard'];
 
+/** Knowledge-graph nodes the file-parsing service can auto-label extracted questions against. */
+const KNOWLEDGE_NODES: { id: string; label: string }[] = [
+  { id: 'kg-cell-organelles', label: 'Cell Organelles' },
+  { id: 'kg-photosynthesis', label: 'Photosynthesis' },
+  { id: 'kg-cell-cycle', label: 'Cell Cycle' },
+  { id: 'kg-cell-transport', label: 'Cell Transport' },
+  { id: 'kg-genetics', label: 'Genetics & Heredity' },
+  { id: 'kg-evolution', label: 'Evolution' },
+];
+
 function pointsForDifficulty(difficulty: QuestionDifficulty) {
   if (difficulty === 'Easy') return 10;
   if (difficulty === 'Medium') return 15;
@@ -122,8 +132,49 @@ export async function generateAiQuestions(sourceText: string, subject: string): 
     ],
     correctOption: 'A',
     explanation: 'Generated explanation pending teacher review.',
+    source: 'ai',
   }));
   return withMockDelay(generated, 1400);
+}
+
+export interface ParsedQuestionFileResult {
+  fileName: string;
+  questions: Question[];
+}
+
+/**
+ * Sends an uploaded test file (PDF/DOCX/TXT) to the question-extraction API, which OCRs/parses
+ * the document and auto-labels each extracted question against a knowledge-graph node.
+ * Mocked here: derives a deterministic-but-varied set of "extracted" questions from the file.
+ */
+export async function parseQuestionFile(file: File): Promise<ParsedQuestionFileResult> {
+  const count = hashToRange(`${file.name}-${file.size}-count`, 3, 6);
+  const questions: Question[] = Array.from({ length: count }, (_, i) => {
+    const node = KNOWLEDGE_NODES[hashToRange(`${file.name}-${i}-node`, 0, KNOWLEDGE_NODES.length - 1)];
+    const difficulty = DIFFICULTY_CYCLE[i % DIFFICULTY_CYCLE.length];
+    const correctOption: QuestionOptionKey = (['A', 'B', 'C', 'D'] as const)[
+      hashToRange(`${file.name}-${i}-correct`, 0, 3)
+    ];
+    return {
+      id: `import-${Date.now()}-${i}`,
+      order: 0,
+      prompt: `[Imported from "${file.name}"] Question ${i + 1} — review extracted prompt text.`,
+      options: [
+        { key: 'A', text: '' },
+        { key: 'B', text: '' },
+        { key: 'C', text: '' },
+        { key: 'D', text: '' },
+      ],
+      correctOption,
+      topicTag: node.label,
+      knowledgeNodeId: node.id,
+      difficulty,
+      points: pointsForDifficulty(difficulty),
+      explanation: 'Auto-extracted; verify wording and answer key before publishing.',
+      source: 'import',
+    };
+  });
+  return withMockDelay({ fileName: file.name, questions }, 1600);
 }
 
 export async function saveQuestionDraft(question: Question): Promise<Question> {
