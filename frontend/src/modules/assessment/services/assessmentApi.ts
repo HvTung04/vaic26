@@ -1,10 +1,19 @@
 import { withMockDelay } from "@/services/mockClient";
+import { calcAccuracy } from "@/utils/format";
 import type {
+  Assessment,
   AssessmentDraft,
   Question,
   QuestionDifficulty,
   QuestionOptionKey,
+  ScoreReportData,
+  TestAttemptSubmission,
 } from "../types";
+
+const ASSESSMENT_TITLES: Record<string, { title: string; subject: string }> = {
+  "giai-tich-12": { title: "Giải tích 12: Khảo sát hàm số", subject: "Toán" },
+  "song-co-hoc": { title: "Vật Lý: Sóng cơ học", subject: "Vật Lý" },
+};
 
 const DIFFICULTY_CYCLE: QuestionDifficulty[] = ["Easy", "Medium", "Hard"];
 

@@ -35,7 +35,7 @@ export default function TeacherDashboard() {
             </Badge>
             <Button
               variant="primary"
-              onClick={() => navigate("/dashboard/tests/new")}
+              onClick={() => navigate("/dashboard/create-test")}
             >
               <Plus className="h-4 w-4" /> Tạo bài kiểm tra
             </Button>
@@ -51,10 +51,33 @@ export default function TeacherDashboard() {
         className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
       >
         {[
-          { label: "Cần hỗ trợ ngay", value: needSupport, accent: "bg-coral-soft/60 text-ember" },
-          { label: "Lớp đang dạy", value: "Khối 8 · Tỉ lệ", accent: "bg-lavender-soft text-ink" },
-          { label: "Vùng kiến thức yếu", value: isLoading ? "…" : (data?.knowledgeGaps?.filter(t => t.severity === "critical").length ?? 0), accent: "bg-[#6d1f1a]/10 text-[#6d1f1a]" },
-          { label: "Học sinh đạt yêu cầu", value: isLoading ? "…" : (data?.knowledgeGaps?.some(t => t.severity === "onTrack") ? "Có" : "—"), accent: "bg-[#234d2f]/10 text-[#234d2f]" },
+          {
+            label: "Cần hỗ trợ ngay",
+            value: needSupport,
+            accent: "bg-coral-soft/60 text-ember",
+          },
+          {
+            label: "Lớp đang dạy",
+            value: "Khối 8 · Tỉ lệ",
+            accent: "bg-lavender-soft text-ink",
+          },
+          {
+            label: "Vùng kiến thức yếu",
+            value: isLoading
+              ? "…"
+              : (data?.knowledgeGaps?.filter((t) => t.severity === "critical")
+                  .length ?? 0),
+            accent: "bg-[#6d1f1a]/10 text-[#6d1f1a]",
+          },
+          {
+            label: "Học sinh đạt yêu cầu",
+            value: isLoading
+              ? "…"
+              : data?.knowledgeGaps?.some((t) => t.severity === "onTrack")
+                ? "Có"
+                : "—",
+            accent: "bg-[#234d2f]/10 text-[#234d2f]",
+          },
         ].map((s, i) => (
           <motion.div
             key={s.label}
@@ -63,7 +86,9 @@ export default function TeacherDashboard() {
             transition={{ duration: 0.45, ease: EASE, delay: 0.08 + i * 0.07 }}
             className="rounded-bento border border-hairline/60 bg-white px-4 py-3"
           >
-            <div className={`mb-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${s.accent}`}>
+            <div
+              className={`mb-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${s.accent}`}
+            >
               {s.label}
             </div>
             <div className="font-display text-2xl font-semibold text-ink">
