@@ -67,3 +67,8 @@ class QuestionDetail(BaseModel):
     node_id: str
     source_upload_id: str | None = None
     created_at: datetime
+
+
+class QuestionListResponse(BaseModel):
+    items: list[QuestionDetail]
+    total: int

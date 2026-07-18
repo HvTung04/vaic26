@@ -5,12 +5,14 @@ from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, UploadFile
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.core.errors import api_error
 from app.core.security import CurrentUser
 from app.db.postgres import get_db
+from app.models.question import Difficulty
 from app.models.user import UserRole
 from app.repositories import question_repo
 from app.schemas.content import (
@@ -18,6 +20,7 @@ from app.schemas.content import (
     ApproveResponse,
     ParsedQuestion,
     QuestionDetail,
+    QuestionListResponse,
     QuestionOption,
     UploadCreateResponse,
     UploadStatusResponse,
@@ -128,6 +131,37 @@ async def approve_drafts(
     return ApproveResponse(upload_id=upload_id, created_question_ids=created_ids, approved_count=len(created_ids))
 
 
+@router.get("/questions", response_model=QuestionListResponse)
+async def list_questions(
+    current_user: CurrentUser,
+    db: DbSession,
+    node_id: str | None = None,
+    difficulty: str | None = None,
+    search: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> QuestionListResponse:
+    items, total = await question_repo.list_questions(
+        db, node_id=node_id, difficulty=difficulty, search=search, limit=limit, offset=offset,
+    )
+    questions = [
+        QuestionDetail(
+            id=str(q.id),
+            text=q.text,
+            type=q.type,
+            options=[QuestionOption(**o) for o in q.options] if q.options else None,
+            answer=q.answer,
+            explanation=q.explanation,
+            difficulty=q.difficulty,
+            node_id=q.node_id,
+            source_upload_id=str(q.source_upload_id) if q.source_upload_id else None,
+            created_at=q.created_at,
+        )
+        for q in items
+    ]
+    return QuestionListResponse(items=questions, total=total)
+
+
 @router.get("/questions/{question_id}", response_model=QuestionDetail)
 async def get_question(question_id: str, current_user: CurrentUser, db: DbSession) -> QuestionDetail:
     if current_user.role != UserRole.TEACHER:
@@ -136,6 +170,60 @@ async def get_question(question_id: str, current_user: CurrentUser, db: DbSessio
     question = await question_repo.get_question(db, question_id)
     if question is None:
         raise api_error(404, "not_found", "Question not found")
+
+    options = [QuestionOption(**o) for o in question.options] if question.options else None
+    return QuestionDetail(
+        id=str(question.id),
+        text=question.text,
+        type=question.type,
+        options=options,
+        answer=question.answer,
+        explanation=question.explanation,
+        difficulty=question.difficulty,
+        node_id=question.node_id,
+        source_upload_id=str(question.source_upload_id) if question.source_upload_id else None,
+        created_at=question.created_at,
+    )
+
+
+class QuestionUpdateRequest(BaseModel):
+    text: str | None = None
+    options: list[QuestionOption] | None = None
+    answer: str | None = None
+    explanation: str | None = None
+    difficulty: Difficulty | None = None
+    node_id: str | None = None
+
+
+@router.patch("/questions/{question_id}", response_model=QuestionDetail)
+async def update_question(
+    question_id: str,
+    payload: QuestionUpdateRequest,
+    current_user: CurrentUser,
+    db: DbSession,
+) -> QuestionDetail:
+    if current_user.role != UserRole.TEACHER:
+        raise api_error(403, "forbidden", "Only teachers can edit questions")
+
+    question = await question_repo.get_question(db, question_id)
+    if question is None:
+        raise api_error(404, "not_found", "Question not found")
+
+    if payload.text is not None:
+        question.text = payload.text
+    if payload.options is not None:
+        question.options = [o.model_dump() for o in payload.options]
+    if payload.answer is not None:
+        question.answer = payload.answer
+    if payload.explanation is not None:
+        question.explanation = payload.explanation
+    if payload.difficulty is not None:
+        question.difficulty = payload.difficulty
+    if payload.node_id is not None:
+        question.node_id = payload.node_id
+
+    await db.commit()
+    await db.refresh(question)
 
     options = [QuestionOption(**o) for o in question.options] if question.options else None
     return QuestionDetail(

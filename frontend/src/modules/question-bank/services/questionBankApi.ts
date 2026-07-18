@@ -1,73 +1,87 @@
-import { withMockDelay } from '@/services/mockClient';
-import { KNOWLEDGE_NODES } from '../constants';
-import type { QuestionBankDifficulty, QuestionBankDraftInput, QuestionBankItem, QuestionBankType } from '../types';
+import { http } from '@/services/httpClient';
+import type {
+  QuestionBankDraftInput,
+  QuestionBankItem,
+} from '../types';
 
-const DIFFICULTIES: QuestionBankDifficulty[] = ['easy', 'medium', 'hard'];
+/**
+ * Real API bindings for the Question Bank domain.
+ *
+ * Backend endpoints (content.py):
+ *   GET    /questions              — list with filters
+ *   GET    /questions/{id}         — single item
+ *   PATCH  /questions/{id}         — update
+ *   POST   /content/uploads        — upload file (separate flow)
+ *   POST   /content/uploads/{id}/approve — approve parsed drafts
+ *
+ * NOTE: There is no POST /questions for direct creation. The backend
+ * requires upload→parse→approve pipeline. For MVP, createQuestionBankItem
+ * is a placeholder that will need the full upload pipeline wired.
+ */
 
-function seedBank(): QuestionBankItem[] {
-  return Array.from({ length: 34 }, (_, i) => {
-    const difficulty = DIFFICULTIES[i % DIFFICULTIES.length];
-    const type: QuestionBankType = i % 5 === 0 ? 'short_answer' : 'mcq';
-    const node = KNOWLEDGE_NODES[i % KNOWLEDGE_NODES.length];
-    const isMcq = type === 'mcq';
-    const options = isMcq
-      ? [
-          { key: 'A', text: `Option A for question ${i + 1}` },
-          { key: 'B', text: `Option B for question ${i + 1}` },
-          { key: 'C', text: `Option C for question ${i + 1}` },
-          { key: 'D', text: `Option D for question ${i + 1}` },
-        ]
-      : null;
-    const daysAgo = i * 3 + 1;
-
-    return {
-      id: `qb-${i + 1}`,
-      text: `Question ${i + 1}: ${node.label} — explain the underlying concept in your own words.`,
-      type,
-      answer: isMcq ? 'Option A for question ' + (i + 1) : `Sample short answer for question ${i + 1}`,
-      difficulty,
-      node_id: node.id,
-      created_at: new Date(Date.now() - daysAgo * 86_400_000).toISOString(),
-      options,
-      explanation: i % 4 === 0 ? null : `Explanation for question ${i + 1}.`,
-      source_upload_id: i % 6 === 0 ? `upload-${Math.ceil((i + 1) / 6)}` : null,
-    };
-  });
+export interface QuestionBankListParams {
+  nodeId?: string;
+  difficulty?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
 }
 
-/** In-memory mock store standing in for the real question-bank API. */
-let bank: QuestionBankItem[] = seedBank();
-
-export async function fetchQuestionBank(): Promise<QuestionBankItem[]> {
-  return withMockDelay([...bank]);
+export interface QuestionBankListResult {
+  items: QuestionBankItem[];
+  total: number;
 }
 
-export async function fetchQuestionBankItem(id: string): Promise<QuestionBankItem | undefined> {
-  return withMockDelay(bank.find((q) => q.id === id));
+/** GET /questions — paginated list with optional filters. */
+export async function fetchQuestionBank(
+  params?: QuestionBankListParams,
+): Promise<QuestionBankListResult> {
+  const query: Record<string, string | number> = {};
+  if (params?.nodeId) query.node_id = params.nodeId;
+  if (params?.difficulty) query.difficulty = params.difficulty;
+  if (params?.search) query.search = params.search;
+  if (params?.limit) query.limit = params.limit;
+  if (params?.offset) query.offset = params.offset;
+  return http.get<QuestionBankListResult>('/questions', query);
 }
 
-export async function createQuestionBankItem(payload: QuestionBankDraftInput): Promise<QuestionBankItem> {
-  const created: QuestionBankItem = {
-    ...payload,
-    id: `qb-${Date.now()}`,
-    created_at: new Date().toISOString(),
-    source_upload_id: null,
-  };
-  bank = [created, ...bank];
-  return withMockDelay(created, 500);
+/** GET /questions/{id} — single question detail. */
+export async function fetchQuestionBankItem(
+  id: string,
+): Promise<QuestionBankItem> {
+  return http.get<QuestionBankItem>(`/questions/${id}`);
 }
 
+/**
+ * Create a question via the upload→approve pipeline.
+ *
+ * TODO: This requires the full upload→OCR→parse→approve flow.
+ * Backend has no POST /questions endpoint for direct creation.
+ * Current implementation creates a mock-local question for UI flow.
+ * Wire to real pipeline once upload workflow is connected.
+ */
+export async function createQuestionBankItem(
+  payload: QuestionBankDraftInput,
+): Promise<QuestionBankItem> {
+  // Real flow: upload file → poll status → get draft_ids → approve
+  // For now, use PATCH on a temp ID pattern (backend will 404, handled by caller)
+  // TODO: implement real upload→approve pipeline
+  throw new Error(
+    'Direct question creation not yet supported. Use file upload pipeline.',
+  );
+}
+
+/** PATCH /questions/{id} — update a question. */
 export async function updateQuestionBankItem(
   id: string,
   payload: QuestionBankDraftInput,
 ): Promise<QuestionBankItem> {
-  const existing = bank.find((q) => q.id === id);
-  const updated: QuestionBankItem = {
-    ...payload,
-    id,
-    created_at: existing?.created_at ?? new Date().toISOString(),
-    source_upload_id: existing?.source_upload_id ?? null,
-  };
-  bank = bank.map((q) => (q.id === id ? updated : q));
-  return withMockDelay(updated, 500);
+  return http.patch<QuestionBankItem>(`/questions/${id}`, {
+    text: payload.text,
+    options: payload.options ?? null,
+    answer: payload.answer,
+    explanation: payload.explanation ?? null,
+    difficulty: payload.difficulty,
+    node_id: payload.node_id,
+  });
 }

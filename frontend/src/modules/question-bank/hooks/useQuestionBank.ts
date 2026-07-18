@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useGetQuestionBank } from './queries/useGetQuestionBank';
 import type {
   QuestionBankDifficulty,
+  QuestionBankItem,
   QuestionBankSortField,
   QuestionBankType,
   SortDirection,
@@ -9,7 +10,7 @@ import type {
 
 const PAGE_SIZE = 8;
 
-const EMPTY_ITEMS: never[] = [];
+const EMPTY_ITEMS: QuestionBankItem[] = [];
 
 const DIFFICULTY_RANK: Record<QuestionBankDifficulty, number> = { easy: 0, medium: 1, hard: 2 };
 
@@ -33,7 +34,7 @@ export function useQuestionBank() {
     }
   }
 
-  const items = query.data ?? EMPTY_ITEMS;
+  const items = query.data?.items ?? EMPTY_ITEMS;
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();

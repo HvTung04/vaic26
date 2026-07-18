@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGetAssessment } from './queries/useGetAssessment';
 import { useTestTelemetry } from './useTestTelemetry';
 import { clampNumber } from '@/utils/format';
-import type { QuestionOptionKey, TestAttemptSubmission, WaveredAnswer } from '../types';
+import type { Question, QuestionOptionKey, TestAttemptSubmission, WaveredAnswer } from '../types';
 
 export function useTestExecution(assessmentId: string) {
   const assessmentQuery = useGetAssessment(assessmentId);
@@ -45,7 +45,7 @@ export function useTestExecution(assessmentId: string) {
       .filter((t) => t.answerChanges.length > 0)
       .map((t) => ({
         questionId: t.questionId,
-        questionOrder: questions.find((q) => q.id === t.questionId)?.order ?? 0,
+        questionOrder: questions.find((q: Question) => q.id === t.questionId)?.order ?? 0,
         changes: t.answerChanges,
       }));
     return {

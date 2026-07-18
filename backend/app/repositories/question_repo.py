@@ -106,6 +106,41 @@ async def get_question(db: AsyncSession, question_id: str | uuid.UUID) -> Questi
     return await db.get(Question, question_id)
 
 
+async def list_questions(
+    db: AsyncSession,
+    *,
+    node_id: str | None = None,
+    difficulty: str | None = None,
+    search: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> tuple[list[Question], int]:
+    """List questions with optional filters. Returns (items, total)."""
+    from sqlalchemy import func
+
+    base = select(Question)
+    count_q = select(func.count()).select_from(Question)
+
+    if node_id:
+        base = base.where(Question.node_id == node_id)
+        count_q = count_q.where(Question.node_id == node_id)
+    if difficulty:
+        base = base.where(Question.difficulty == difficulty)
+        count_q = count_q.where(Question.difficulty == difficulty)
+    if search:
+        like = f"%{search}%"
+        base = base.where(Question.text.ilike(like))
+        count_q = count_q.where(Question.text.ilike(like))
+
+    total_result = await db.execute(count_q)
+    total = total_result.scalar() or 0
+
+    base = base.order_by(Question.created_at.desc()).limit(limit).offset(offset)
+    result = await db.execute(base)
+    items = list(result.scalars().all())
+    return items, total
+
+
 async def get_questions(db: AsyncSession, question_ids: list[str | uuid.UUID]) -> list[Question]:
     if not question_ids:
         return []

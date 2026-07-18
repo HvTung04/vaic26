@@ -218,3 +218,51 @@ export async function fetchSubmissionDetail(submissionId: string): Promise<Submi
     results,
   };
 }
+
+// =============================================================================
+// Test creation + assignment (Phase 4)
+// =============================================================================
+
+export interface CreateTestPayload {
+  title: string;
+  classId: string;
+  type: TestListItem['type'];
+  nodeIds: string[];
+  count: number;
+  difficultyMix?: { easy: number; medium: number; hard: number };
+}
+
+export interface CreateTestResult {
+  id: string;
+  title: string;
+  type: string;
+  classId: string;
+  questionIds: string[];
+  createdAt: string;
+}
+
+/** POST /tests — auto-compose from question bank. */
+export async function createTest(payload: CreateTestPayload): Promise<CreateTestResult> {
+  return http.post<CreateTestResult>('/tests', {
+    title: payload.title,
+    class_id: payload.classId,
+    type: payload.type,
+    auto_compose: {
+      node_ids: payload.nodeIds,
+      count: payload.count,
+      difficulty_mix: payload.difficultyMix ?? null,
+    },
+  });
+}
+
+/** POST /tests/{testId}/assign — assign test to class or specific students. */
+export async function assignTest(
+  testId: string,
+  classId: string,
+  studentIds?: string[],
+): Promise<{ testId: string; assignedStudentIds: string[] }> {
+  return http.post(`/tests/${testId}/assign`, {
+    class_id: classId,
+    student_ids: studentIds ?? null,
+  });
+}

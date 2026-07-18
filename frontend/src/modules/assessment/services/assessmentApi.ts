@@ -30,6 +30,17 @@ function hashToRange(value: string, min: number, max: number) {
   return min + (hash % (max - min + 1));
 }
 
+const KNOWLEDGE_NODES = [
+  { id: "g6-arith-1", label: "Phép tính cơ bản" },
+  { id: "g6-fraction-1", label: "Phân số" },
+  { id: "g6-decimal-1", label: "Số thập phân" },
+  { id: "g7-eq-1", label: "Phương trình bậc nhất" },
+  { id: "g7-geometry-1", label: "Hình học phẳng" },
+  { id: "g8-function-1", label: "Hàm số" },
+  { id: "g8-quadratic-1", label: "Phương trình bậc hai" },
+  { id: "g8-triangle-1", label: "Tam giác" },
+];
+
 const DRAFT_ASSESSMENT: AssessmentDraft = {
   id: "biology-midterm-unit-4",
   title: "Biology Mid-term Unit 4",
@@ -210,4 +221,53 @@ export async function publishAssessment(
   draftId: string,
 ): Promise<{ id: string; status: "published" }> {
   return withMockDelay({ id: draftId, status: "published" as const }, 900);
+}
+
+export async function fetchAssessment(assessmentId: string): Promise<Assessment> {
+  const draft = DRAFT_ASSESSMENT;
+  const assessment: Assessment = {
+    id: assessmentId,
+    title: ASSESSMENT_TITLES[assessmentId]?.title ?? "Bài kiểm tra",
+    subject: ASSESSMENT_TITLES[assessmentId]?.subject ?? "Toán",
+    questions: draft.questions,
+    durationMinutes: draft.context.estimatedMinutes,
+    sessionCode: assessmentId,
+  };
+  return withMockDelay(assessment);
+}
+
+export async function submitTestAttempt(
+  assessment: Assessment,
+  submission: TestAttemptSubmission,
+): Promise<ScoreReportData> {
+  const correctCount = submission.answers
+    ? Object.entries(submission.answers).filter(([qId, ans]) => {
+        const q = assessment.questions.find((qq) => qq.id === qId);
+        return q && ans === q.correctOption;
+      }).length
+    : 0;
+  const totalQuestions = assessment.questions.length;
+  const report: ScoreReportData = {
+    assessmentId: assessment.id,
+    assessmentTitle: assessment.title,
+    accuracy: calcAccuracy(correctCount, totalQuestions),
+    correctCount,
+    totalQuestions,
+    durationSeconds: submission.totalDurationSeconds,
+    classRank: 3,
+    classSize: 12,
+    pointsEarned: correctCount * 15,
+    totalPossiblePoints: totalQuestions * 15,
+    finalScorePercent: calcAccuracy(correctCount, totalQuestions),
+    questionResults: assessment.questions.map((q) => ({
+      question: q,
+      selectedOption: submission.answers[q.id] ?? null,
+      isCorrect: submission.answers[q.id] === q.correctOption,
+      timeSpentSeconds: 20,
+      pointsEarned: submission.answers[q.id] === q.correctOption ? q.points : 0,
+      reviewNeeded: false,
+      waverCount: 0,
+    })),
+  };
+  return withMockDelay(report, 800);
 }
