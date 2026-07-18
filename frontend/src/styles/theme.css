@@ -1,0 +1,51 @@
+@theme {
+  /* Typography */
+  --font-serif: "Fraunces", "Georgia", serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Base surface */
+  --color-cream: #fdfbf7;
+  --color-cream-100: #f7f3ea;
+  --color-ink: #1c1a24;
+  --color-ink-soft: #52505c;
+  --color-ink-faint: #8c8a94;
+  --color-hairline: #eae6db;
+  --color-primary: #3b82f6;
+  --color-secondary: #c084fc;
+  --color-tertiary: #a3e635;
+  --color-neutral: #757780;
+
+  /* Accents */
+  --color-primary-soft: #ffe4d9;
+  --color-lavender: #dbc6ff;
+  --color-lavender-soft: #f1e9ff;
+  --color-lime: #e2f784;
+  --color-lime-soft: #f3fad0;
+  --color-coral: #ffcfc2;
+  --color-coral-soft: #ffe9e2;
+  --color-mint: #c9f2e0;
+  --color-sky: #cfe4ff;
+
+  /* Saturated treemap tiles for the Knowledge Gaps heatmap */
+  --color-maroon: #6d1f1a;
+  --color-maroon-soft: #8a2c22;
+  --color-forest: #234d2f;
+  --color-forest-soft: #2f6b3d;
+
+  /* Warm rust accent for the immersive assessment (test-taking / results) flow */
+  --color-ember: #c1440e;
+  --color-ember-dark: #9a3412;
+
+  /* Radius */
+  --radius-bento: 1.25rem;
+  --radius-bento-lg: 1.75rem;
+  --radius-bento-sm: 0.85rem;
+
+  /* Shadows */
+  --shadow-bento:
+    0 2px 10px rgba(28, 26, 36, 0.04), 0 12px 32px -12px rgba(28, 26, 36, 0.08);
+  --shadow-bento-hover:
+    0 4px 16px rgba(28, 26, 36, 0.06), 0 20px 40px -16px rgba(28, 26, 36, 0.12);
+  --shadow-floating:
+    0 8px 24px rgba(28, 26, 36, 0.08), 0 24px 56px -20px rgba(28, 26, 36, 0.16);
+}
