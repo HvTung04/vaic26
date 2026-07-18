@@ -17,17 +17,6 @@ export default function StudentHub() {
   const { data: results, isLoading: isResultsLoading } = useStudentResults();
   const { data: graphState, isLoading: isGraphLoading } = useMyKnowledgeState();
   const { tiers, path, isLoading: isPathLoading } = useLearningPathProgress();
-import { TrendingUp } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useGetStudentHub } from "@/modules/dashboard/hooks/queries/useGetStudentHub";
-import { PerformanceChart } from "@/modules/dashboard/components/PerformanceChart";
-import { StudentTaskList } from "@/modules/dashboard/components/StudentTaskList";
-import { QuizHistoryList } from "@/modules/dashboard/components/QuizHistoryList";
-import { LearningPathMap } from "@/modules/dashboard/components/LearningPathMap";
-
-export default function StudentHub() {
-  const { data, isLoading } = useGetStudentHub();
 
   return (
     <div className="flex flex-col gap-6">

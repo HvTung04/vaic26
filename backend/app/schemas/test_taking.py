@@ -51,22 +51,31 @@ class SubmitResponse(BaseModel):
 
 class GraphUpdate(BaseModel):
     node_id: str
+    node_name: str | None = None
     mastery_before: float
     mastery_after: float
 
 
 class QuestionResult(BaseModel):
     question_id: str
+    question_text: str | None = None
     is_correct: bool
+    student_answer: str | None = None
     correct_answer: str
     explanation: str | None = None
     root_cause_node_id: str | None = None
+    root_cause_node_name: str | None = None
     root_cause_chain: list[str] = []
     confidence: float | None = None
 
 
 class SubmissionResultResponse(BaseModel):
     submission_id: str
+    test_id: str | None = None
+    test_title: str | None = None
+    student_id: str | None = None
+    student_name: str | None = None
+    submitted_at: datetime | None = None
     status: SubmissionStatus
     score: float
     total: int

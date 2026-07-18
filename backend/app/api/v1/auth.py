@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.errors import api_error
 from app.core.security import CurrentUser, create_access_token, hash_password, verify_password
 from app.db.postgres import get_db
+from app.models.user import UserRole
 from app.repositories import class_repo, user_repo
 from app.schemas.auth import LoginRequest, MeResponse, RegisterRequest, TokenResponse, UserPublic
 
@@ -60,7 +61,11 @@ async def login(payload: LoginRequest, db: DbSession) -> TokenResponse:
 
 @router.get("/me", response_model=MeResponse)
 async def me(current_user: CurrentUser, db: DbSession) -> MeResponse:
-    class_ids = await class_repo.list_class_ids_for_student(db, current_user.id)
+    # Teachers get the classes they own; students get the classes they belong to.
+    if current_user.role == UserRole.TEACHER:
+        class_ids = await class_repo.list_class_ids_for_teacher(db, current_user.id)
+    else:
+        class_ids = await class_repo.list_class_ids_for_student(db, current_user.id)
     return MeResponse(
         id=str(current_user.id),
         username=current_user.username,

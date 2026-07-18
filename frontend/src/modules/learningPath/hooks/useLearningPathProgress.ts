@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { useAuth } from '@/modules/auth/AuthContext';
 import { useMyKnowledgeState } from '@/modules/knowledgeGraph/hooks/useMyKnowledgeState';
 import { fetchMyLearningPath } from '../services/learningPathApi';
 import type { TierProgress } from '../types';
@@ -7,7 +8,12 @@ import type { TierProgress } from '../types';
 const MASTERED_THRESHOLD = 0.75;
 
 export function useLearningPathProgress() {
-  const pathQuery = useQuery({ queryKey: ['learning-path', 'me'], queryFn: fetchMyLearningPath });
+  const studentId = useAuth().user?.id ?? '';
+  const pathQuery = useQuery({
+    queryKey: ['learning-path', studentId],
+    queryFn: () => fetchMyLearningPath(studentId),
+    enabled: Boolean(studentId),
+  });
   const graphQuery = useMyKnowledgeState();
 
   const tiers = useMemo<TierProgress[]>(() => {

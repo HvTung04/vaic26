@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useClassTests } from '@/modules/tests/hooks/useClassTests';
 import { TestStatusBadge } from '@/modules/tests/components/TestStatusBadge';
+import { useAuth } from '@/modules/auth/AuthContext';
 import type { TestKind } from '@/modules/tests/types';
 
 const TYPE_LABEL: Record<TestKind, string> = {
@@ -21,7 +22,9 @@ function formatDate(iso: string) {
 
 export default function TestList() {
   const navigate = useNavigate();
-  const { data: tests, isLoading } = useClassTests();
+  const { user } = useAuth();
+  const classId = user?.classIds[0] ?? '';
+  const { data: tests, isLoading } = useClassTests(classId);
 
   return (
     <div>
