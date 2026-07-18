@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import api_error
-from app.core.security import CurrentUser
+from app.core.security import CurrentUser, ensure_self_or_teacher
 from app.db.postgres import get_db
 from app.repositories import learning_path_repo, submission_repo, test_repo
 from app.schemas.agents import PathTier
@@ -26,6 +26,7 @@ DbSession = Annotated[AsyncSession, Depends(get_db)]
 
 @router.get("/students/{student_id}/learning-path", response_model=StudentLearningPathResponse)
 async def get_learning_path(student_id: str, current_user: CurrentUser, db: DbSession) -> StudentLearningPathResponse:
+    ensure_self_or_teacher(current_user, student_id)
     path = await learning_path_repo.get_active_for_student(db, student_id)
     if path is None:
         raise api_error(404, "not_found", "No learning path generated yet for this student")
@@ -45,6 +46,7 @@ async def get_progress(
     db: DbSession,
     range: Annotated[str, Query()] = "weekly",  # noqa: A002 - matches API_SPEC.md query param name
 ) -> StudentProgressResponse:
+    ensure_self_or_teacher(current_user, student_id)
     submissions = await submission_repo.list_submissions_for_student(db, student_id)
 
     buckets: dict[str, list] = {}
