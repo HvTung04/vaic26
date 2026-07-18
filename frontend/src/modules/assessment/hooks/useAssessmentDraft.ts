@@ -1,69 +1,85 @@
-import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  fetchAssessmentDraft,
-  generateAiQuestions,
-  publishAssessment,
-  saveQuestionDraft,
-} from '../services/assessmentApi';
+import { useQueryClient } from '@tanstack/react-query';
+import { useGetAssessmentDraft, ASSESSMENT_DRAFT_QUERY_KEY } from './queries/useGetAssessmentDraft';
+import { useMutateSaveQuestion } from './queries/useMutateSaveQuestion';
+import { useMutateGenerateQuestions } from './queries/useMutateGenerateQuestions';
+import { useMutateImportQuestions } from './queries/useMutateImportQuestions';
+import { useMutatePublishAssessment } from './queries/useMutatePublishAssessment';
+import { renumberQuestions } from '../utils';
 import type { AssessmentDraft, Question } from '../types';
 
-const DRAFT_QUERY_KEY = ['assessment', 'draft', 'biology-midterm-unit-4'];
+function blankQuestion(order: number): Question {
+  return {
+    id: `q-new-${Date.now()}`,
+    order,
+    prompt: '',
+    options: [
+      { key: 'A', text: '' },
+      { key: 'B', text: '' },
+      { key: 'C', text: '' },
+      { key: 'D', text: '' },
+    ],
+    correctOption: 'A',
+    topicTag: 'Untitled',
+    difficulty: 'Easy',
+    points: 10,
+    source: 'manual',
+  };
+}
 
 export function useAssessmentDraft() {
   const queryClient = useQueryClient();
-  const [activeQuestionId, setActiveQuestionId] = useState<string>('q-4');
 
-  const draftQuery = useQuery({
-    queryKey: DRAFT_QUERY_KEY,
-    queryFn: fetchAssessmentDraft,
-  });
+  const draftQuery = useGetAssessmentDraft();
+  const saveQuestionMutation = useMutateSaveQuestion();
+  const generateMutation = useMutateGenerateQuestions();
+  const importMutation = useMutateImportQuestions();
+  const publishMutation = useMutatePublishAssessment();
 
-  const saveQuestionMutation = useMutation({
-    mutationFn: saveQuestionDraft,
-    onSuccess: (savedQuestion) => {
-      queryClient.setQueryData<AssessmentDraft>(DRAFT_QUERY_KEY, (prev) => {
-        if (!prev) return prev;
-        const exists = prev.questions.some((q) => q.id === savedQuestion.id);
-        const questions = exists
-          ? prev.questions.map((q) => (q.id === savedQuestion.id ? savedQuestion : q))
-          : [...prev.questions, savedQuestion];
-        return { ...prev, questions };
-      });
-    },
-  });
+  function setQuestions(updater: (questions: Question[]) => Question[]) {
+    queryClient.setQueryData<AssessmentDraft>(ASSESSMENT_DRAFT_QUERY_KEY, (prev) =>
+      prev ? { ...prev, questions: updater(prev.questions) } : prev,
+    );
+  }
 
-  const generateMutation = useMutation({
-    mutationFn: ({ sourceText, subject }: { sourceText: string; subject: string }) =>
-      generateAiQuestions(sourceText, subject),
-    onSuccess: (generatedQuestions: Question[]) => {
-      queryClient.setQueryData<AssessmentDraft>(DRAFT_QUERY_KEY, (prev) =>
-        prev ? { ...prev, questions: [...prev.questions, ...generatedQuestions] } : prev,
-      );
-    },
-  });
+  function updateQuestion(updated: Question) {
+    setQuestions((questions) => questions.map((q) => (q.id === updated.id ? updated : q)));
+  }
 
-  const publishMutation = useMutation({
-    mutationFn: () => publishAssessment(draftQuery.data?.id ?? ''),
-    onSuccess: () => {
-      queryClient.setQueryData<AssessmentDraft>(DRAFT_QUERY_KEY, (prev) =>
-        prev ? { ...prev, status: 'published' } : prev,
-      );
-    },
-  });
+  function addQuestion() {
+    const questions = draftQuery.data?.questions ?? [];
+    const created = blankQuestion(questions.length + 1);
+    setQuestions((prev) => [...prev, created]);
+  }
+
+  function duplicateQuestion(id: string) {
+    const questions = draftQuery.data?.questions ?? [];
+    const source = questions.find((q) => q.id === id);
+    if (!source) return;
+    const clone: Question = { ...source, id: `q-copy-${Date.now()}`, source: 'manual' };
+    const index = questions.findIndex((q) => q.id === id);
+    setQuestions((prev) => renumberQuestions([...prev.slice(0, index + 1), clone, ...prev.slice(index + 1)]));
+  }
+
+  function deleteQuestion(id: string) {
+    const questions = draftQuery.data?.questions ?? [];
+    if (questions.length <= 1) return;
+    setQuestions((prev) => renumberQuestions(prev.filter((q) => q.id !== id)));
+  }
 
   const draft = draftQuery.data;
-  const activeQuestion = draft?.questions.find((q) => q.id === activeQuestionId) ?? draft?.questions[0];
   const completion = draft ? Math.round((draft.questions.length / 20) * 100) : 0;
 
   return {
     draft,
     isLoading: draftQuery.isLoading,
-    activeQuestion,
-    setActiveQuestionId,
     completion,
+    updateQuestion,
+    addQuestion,
+    duplicateQuestion,
+    deleteQuestion,
     saveQuestionMutation,
     generateMutation,
+    importMutation,
     publishMutation,
   };
 }

@@ -25,8 +25,30 @@ async def list_students(db: AsyncSession, class_id: str | uuid.UUID) -> list[Use
     return list(result.scalars().all())
 
 
+async def list_by_teacher(db: AsyncSession, teacher_id: str | uuid.UUID) -> list[ClassGroup]:
+    result = await db.execute(
+        select(ClassGroup).where(ClassGroup.teacher_id == teacher_id).order_by(ClassGroup.name)
+    )
+    return list(result.scalars().all())
+
+
+async def list_by_student(db: AsyncSession, student_id: str | uuid.UUID) -> list[ClassGroup]:
+    result = await db.execute(
+        select(ClassGroup)
+        .join(ClassStudent, ClassStudent.class_id == ClassGroup.id)
+        .where(ClassStudent.student_id == student_id)
+        .order_by(ClassGroup.name)
+    )
+    return list(result.scalars().all())
+
+
 async def list_class_ids_for_student(db: AsyncSession, student_id: str | uuid.UUID) -> list[str]:
     result = await db.execute(select(ClassStudent.class_id).where(ClassStudent.student_id == student_id))
+    return [str(cid) for cid in result.scalars().all()]
+
+
+async def list_class_ids_for_teacher(db: AsyncSession, teacher_id: str | uuid.UUID) -> list[str]:
+    result = await db.execute(select(ClassGroup.id).where(ClassGroup.teacher_id == teacher_id))
     return [str(cid) for cid in result.scalars().all()]
 
 

@@ -80,3 +80,15 @@ def require_role(*roles: UserRole):
         return user
 
     return _check
+
+
+def ensure_self_or_teacher(current_user: User, student_id: str) -> None:
+    """Guard for /students/{student_id}/... routes: teachers may view any
+    student, but a student may only view their own data."""
+    if current_user.role == UserRole.TEACHER:
+        return
+    if str(current_user.id) != student_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"error": {"code": "forbidden", "message": "Cannot access another student's data"}},
+        )

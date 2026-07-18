@@ -2,7 +2,6 @@ import { withMockDelay } from "@/services/mockClient";
 import type {
   TeacherOverview,
   StudentInsight,
-  StudentHubData,
   LearningPath,
   HeatmapTopic,
   HeatmapStudentRow,
@@ -272,7 +271,7 @@ const STUDENT_INSIGHTS: Record<string, StudentInsight> = {
         title: "Ôn tập Phân số",
         dueLabel: "Hết hạn trong 3 giờ",
         urgency: "high",
-        assessmentId: "on-tap-phan-so",
+        assessmentId: "assess-1",
       },
       {
         id: "task-2",
@@ -280,7 +279,7 @@ const STUDENT_INSIGHTS: Record<string, StudentInsight> = {
         title: "Tỷ lệ thức nâng cao",
         dueLabel: "Hết hạn ngày mai",
         urgency: "normal",
-        assessmentId: "ty-le-thuc",
+        assessmentId: "assess-2",
       },
     ],
     quizHistory: [
@@ -347,98 +346,6 @@ function fallbackInsight(studentId: string): StudentInsight {
   return { ...base, studentId, name: studentId };
 }
 
-const STUDENT_HUB: StudentHubData = {
-  studentId: "minh-anh",
-  name: "Nguyễn Minh Anh",
-  className: "Học sinh lớp 12A1",
-  points: 1250,
-  dailyStreak: 12,
-  performanceHistory: [
-    { month: "T11", score: 72, classAverage: 70 },
-    { month: "T12", score: 76, classAverage: 71 },
-    { month: "T1", score: 79, classAverage: 72 },
-    { month: "T2", score: 81, classAverage: 72 },
-    { month: "T3", score: 85, classAverage: 73 },
-    { month: "T4", score: 88, classAverage: 74 },
-    { month: "T5", score: 90, classAverage: 74 },
-    { month: "T6", score: 92, classAverage: 75 },
-  ],
-  tasks: [
-    {
-      id: "task-1",
-      subject: "Toán",
-      title: "Giải tích 12",
-      dueLabel: "Hết hạn trong 2 giờ",
-      urgency: "high",
-      assessmentId: "giai-tich-12",
-    },
-    {
-      id: "task-2",
-      subject: "Vật Lý",
-      title: "Sóng cơ học",
-      dueLabel: "Hết hạn ngày mai",
-      urgency: "normal",
-      assessmentId: "song-co-hoc",
-    },
-  ],
-  quizHistory: [
-    {
-      id: "quiz-1",
-      subject: "TOÁN HỌC",
-      title: "Khảo sát chất lượng Tháng 10",
-      date: "15/10/2023",
-      score: 9.5,
-      maxScore: 10,
-    },
-    {
-      id: "quiz-2",
-      subject: "VẬT LÝ",
-      title: "Kiểm tra Giữa kỳ I",
-      date: "12/10/2023",
-      score: 8.2,
-      maxScore: 10,
-    },
-    {
-      id: "quiz-3",
-      subject: "HÓA HỌC",
-      title: "Kiểm tra 15 phút - Este",
-      date: "05/10/2023",
-      score: 7.0,
-      maxScore: 10,
-    },
-  ],
-  learningPath: {
-    goal: "Dựa trên mục tiêu Đại học Bách Khoa",
-    status: "verified",
-    steps: [
-      {
-        id: "basic",
-        label: "Cơ bản",
-        sublabel: "Hoàn thành",
-        status: "completed",
-      },
-      {
-        id: "applied",
-        label: "Vận dụng",
-        sublabel: "Đang học",
-        status: "active",
-      },
-      {
-        id: "advanced",
-        label: "Vận dụng cao",
-        sublabel: "Khoá",
-        status: "locked",
-      },
-      {
-        id: "target",
-        label: "Luyện đề",
-        sublabel: "Mục tiêu",
-        status: "target",
-      },
-    ],
-  },
-};
-
 export async function fetchTeacherOverview(): Promise<TeacherOverview> {
   return withMockDelay(TEACHER_OVERVIEW);
 }
@@ -448,10 +355,6 @@ export async function fetchStudentInsight(
 ): Promise<StudentInsight> {
   const insight = STUDENT_INSIGHTS[studentId] ?? fallbackInsight(studentId);
   return withMockDelay(insight);
-}
-
-export async function fetchStudentHub(): Promise<StudentHubData> {
-  return withMockDelay(STUDENT_HUB);
 }
 
 export async function verifyStudentPath(

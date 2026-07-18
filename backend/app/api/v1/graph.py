@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.api.deps import MongoDB
-from app.core.security import CurrentUser
+from app.core.security import CurrentUser, ensure_self_or_teacher
 from app.schemas.graph import GraphStateResponse, MasteryHistoryItem, NodeHistoryResponse, NodeState
 from app.services import kg_service
 
@@ -12,6 +12,7 @@ router = APIRouter(prefix="/graph", tags=["graph"])
 
 @router.get("/students/{student_id}/state", response_model=GraphStateResponse)
 async def get_student_state(student_id: str, current_user: CurrentUser, mongo_db: MongoDB) -> GraphStateResponse:
+    ensure_self_or_teacher(current_user, student_id)
     graph = await kg_service.load_graph(mongo_db)
     mastery_docs = await kg_service.get_mastery_docs(mongo_db, student_id)
 
@@ -39,6 +40,7 @@ async def get_student_state(student_id: str, current_user: CurrentUser, mongo_db
 async def get_node_history(
     student_id: str, node_id: str, current_user: CurrentUser, mongo_db: MongoDB
 ) -> NodeHistoryResponse:
+    ensure_self_or_teacher(current_user, student_id)
     history = await kg_service.get_node_history(mongo_db, student_id, node_id)
     items = [
         MasteryHistoryItem(

@@ -32,8 +32,6 @@ export function CurrentLessonCard({ lesson, isLoading }: CurrentLessonCardProps)
 
             <div className="mt-auto flex flex-col gap-2 pt-4">
               <div className="flex items-center gap-2 text-[11px] text-ink-soft">
-                <Users className="h-3 w-3" />
-                <span>Sẵn sàng: <span className="font-bold text-ink">{lesson?.readyPct ?? 0}%</span></span>
               </div>
               <div className="flex items-center gap-2 text-[11px] text-ink-soft">
                 <Clock className="h-3 w-3" />

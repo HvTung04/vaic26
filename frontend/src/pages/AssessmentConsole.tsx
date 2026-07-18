@@ -1,55 +1,62 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ImmersiveLayout } from '@/layouts/ImmersiveLayout';
-import { Button } from '@/components/ui/button';
-import { useTestExecution } from '@/modules/assessment/hooks/useTestExecution';
-import { useSubmitAttempt } from '@/modules/assessment/hooks/useSubmitAttempt';
-import { useExamTimer } from '@/modules/assessment/hooks/useExamTimer';
-import { AssessmentTopBar } from '@/modules/assessment/components/AssessmentTopBar';
-import { QuestionNavigator } from '@/modules/assessment/components/QuestionNavigator';
-import { QuestionConsole } from '@/modules/assessment/components/QuestionConsole';
-import { ScoreReport } from '@/modules/assessment/components/ScoreReport';
-import type { ScoreReportData } from '@/modules/assessment/types';
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ImmersiveLayout } from "@/layouts/ImmersiveLayout";
+import { Button } from "@/components/ui/button";
+import { useAttemptExecution } from "@/modules/testTaking/hooks/useAttemptExecution";
+import { useSubmitAttempt } from "@/modules/testTaking/hooks/useSubmitAttempt";
+import { useSubmissionResult } from "@/modules/testTaking/hooks/useSubmissionResult";
+import { useExamTimer } from "@/modules/assessment/hooks/useExamTimer";
+import { AssessmentTopBar } from "@/modules/assessment/components/AssessmentTopBar";
+import { QuestionNavigator } from "@/modules/testTaking/components/QuestionNavigator";
+import { QuestionConsole } from "@/modules/testTaking/components/QuestionConsole";
+import { ScoreReport } from "@/modules/testTaking/components/ScoreReport";
+
+const DEFAULT_DURATION_MINUTES = 20;
 
 export default function AssessmentConsole() {
-  const { assessmentId = '' } = useParams();
+  const { assessmentId: testId = "" } = useParams();
   const navigate = useNavigate();
-  const [report, setReport] = useState<ScoreReportData | null>(null);
+  const [submissionId, setSubmissionId] = useState<string | null>(null);
 
   const {
-    assessment,
+    attempt,
     isLoading,
     questions,
     currentQuestion,
     currentIndex,
     answers,
-    selectOption,
+    setAnswer,
     goToIndex,
     goNext,
     goPrev,
-    buildSubmission,
-  } = useTestExecution(assessmentId);
+    buildAnswers,
+  } = useAttemptExecution(testId);
 
-  const timer = useExamTimer((assessment?.durationMinutes ?? 0) * 60, !report);
-  const submitMutation = useSubmitAttempt();
+  const timer = useExamTimer(DEFAULT_DURATION_MINUTES * 60, !submissionId);
+  const submitMutation = useSubmitAttempt(testId);
+  const resultQuery = useSubmissionResult(submissionId ?? "");
 
-  const handleSubmit = () => {
-    if (!assessment) return;
-    const submission = buildSubmission();
-    submitMutation.mutate(
-      { assessment, submission },
-      { onSuccess: (result) => setReport(result) },
-    );
-  };
+  const handleSubmit = useCallback(() => {
+    if (!attempt || submitMutation.isPending) return;
+    submitMutation.mutate(buildAnswers(), {
+      onSuccess: (result) => setSubmissionId(result.submissionId),
+    });
+  }, [attempt, submitMutation, buildAnswers]);
 
-  const handleContinue = useCallback(() => navigate('/student'), [navigate]);
+  const handleContinue = useCallback(() => navigate("/student"), [navigate]);
 
   useEffect(() => {
-    if (timer.isExpired && assessment && !report && !submitMutation.isPending) handleSubmit();
+    if (
+      timer.isExpired &&
+      attempt &&
+      !submissionId &&
+      !submitMutation.isPending
+    )
+      handleSubmit();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer.isExpired]);
 
-  if (isLoading || !currentQuestion || !assessment) {
+  if (isLoading || !currentQuestion || !attempt) {
     return (
       <ImmersiveLayout>
         <div className="flex flex-1 items-center justify-center">
@@ -59,10 +66,16 @@ export default function AssessmentConsole() {
     );
   }
 
-  if (report) {
+  if (submissionId) {
     return (
       <ImmersiveLayout>
-        <ScoreReport report={report} onContinue={handleContinue} />
+        {resultQuery.data ? (
+          <ScoreReport report={resultQuery.data} onContinue={handleContinue} />
+        ) : (
+          <div className="flex flex-1 items-center justify-center">
+            <p className="text-sm text-ink-faint">Đang nộp bài...</p>
+          </div>
+        )}
       </ImmersiveLayout>
     );
   }
@@ -70,7 +83,7 @@ export default function AssessmentConsole() {
   return (
     <ImmersiveLayout>
       <AssessmentTopBar
-        sessionCode={assessment.sessionCode}
+        sessionCode={testId}
         remainingSeconds={timer.remainingSeconds}
         isPaused={timer.isPaused}
         onTogglePause={timer.togglePause}
@@ -85,9 +98,10 @@ export default function AssessmentConsole() {
         <div className="relative">
           <QuestionConsole
             question={currentQuestion}
+            index={currentIndex}
             totalQuestions={questions.length}
-            selected={answers[currentQuestion.id] ?? null}
-            onSelect={selectOption}
+            answer={answers[currentQuestion.id] ?? ""}
+            onAnswer={setAnswer}
             onPrev={goPrev}
             onNext={goNext}
             onSubmit={handleSubmit}
@@ -97,7 +111,9 @@ export default function AssessmentConsole() {
           />
           {timer.isPaused && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-bento-lg bg-cream/90 backdrop-blur-sm">
-              <p className="font-serif text-xl font-semibold text-ink">Đã tạm dừng</p>
+              <p className="font-serif text-xl font-semibold text-ink">
+                Đã tạm dừng
+              </p>
               <Button variant="ember" onClick={timer.togglePause}>
                 Tiếp tục làm bài
               </Button>

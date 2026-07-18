@@ -5,11 +5,14 @@ from typing import Annotated
 from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import MongoDB
 from app.core.errors import api_error
-from app.core.security import CurrentUser
+from app.core.security import CurrentUser, ensure_self_or_teacher
 from app.db.postgres import get_db
 from app.models.test import AssignmentStatus
-from app.repositories import question_repo, submission_repo, test_repo
+from app.repositories import question_repo, submission_repo, test_repo, user_repo
+from app.schemas.dashboard import StudentResultsResponse
+from app.services import kg_service
 from app.schemas.test_taking import (
     AttemptQuestion,
     AttemptResponse,
@@ -20,6 +23,7 @@ from app.schemas.test_taking import (
     SubmitRequest,
     SubmitResponse,
 )
+from app.services import results_service
 from app.services.grading_service import grade_submission
 
 router = APIRouter(tags=["test-taking"])
@@ -34,6 +38,7 @@ async def list_student_tests(
     db: DbSession,
     status: Annotated[str | None, Query()] = None,
 ) -> list[StudentTestListItem]:
+    ensure_self_or_teacher(current_user, student_id)
     assignments = await test_repo.list_assignments_for_student(db, student_id, status)
     return [
         StudentTestListItem(
@@ -45,6 +50,12 @@ async def list_student_tests(
         )
         for a in assignments
     ]
+
+
+@router.get("/students/{student_id}/results", response_model=StudentResultsResponse)
+async def list_student_results(student_id: str, current_user: CurrentUser, db: DbSession) -> StudentResultsResponse:
+    ensure_self_or_teacher(current_user, student_id)
+    return await results_service.get_student_results(db, student_id)
 
 
 @router.get("/tests/{test_id}/attempt", response_model=AttemptResponse)
@@ -103,11 +114,19 @@ async def submit_test(
 
 @router.get("/submissions/{submission_id}", response_model=SubmissionResultResponse)
 async def get_submission_result(
-    submission_id: str, current_user: CurrentUser, db: DbSession
+    submission_id: str, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
 ) -> SubmissionResultResponse:
     submission = await submission_repo.get_submission(db, submission_id)
     if submission is None:
         raise api_error(404, "not_found", "Submission not found")
+
+    # Node id -> human name, so results/graph updates carry names the UI can show
+    # directly instead of raw ids (FE has no standalone node-catalog endpoint).
+    graph = await kg_service.load_graph(mongo_db)
+    node_names = {nid: node.topic_name for nid, node in graph.nodes.items()}
+
+    test = await test_repo.get_test(db, submission.test_id)
+    student = await user_repo.get_by_id(db, submission.student_id)
 
     results: list[QuestionResult] = []
     if submission.status.value == "graded":
@@ -116,10 +135,13 @@ async def get_submission_result(
         results = [
             QuestionResult(
                 question_id=str(a.question_id),
+                question_text=by_id[str(a.question_id)].text if str(a.question_id) in by_id else None,
                 is_correct=bool(a.is_correct),
+                student_answer=a.answer,
                 correct_answer=by_id[str(a.question_id)].answer if str(a.question_id) in by_id else "",
                 explanation=by_id[str(a.question_id)].explanation if str(a.question_id) in by_id else None,
                 root_cause_node_id=a.root_cause_node_id,
+                root_cause_node_name=_resolve_root_cause_name(a, node_names),
                 root_cause_chain=a.root_cause_chain or [],
                 confidence=a.confidence,
             )
@@ -128,9 +150,30 @@ async def get_submission_result(
 
     return SubmissionResultResponse(
         submission_id=str(submission.id),
+        test_id=str(submission.test_id),
+        test_title=test.title if test else None,
+        student_id=str(submission.student_id),
+        student_name=student.full_name if student else None,
+        submitted_at=submission.submitted_at,
         status=submission.status,
         score=submission.score or 0,
         total=submission.total or len(submission.answers),
         results=results,
-        graph_updates=[GraphUpdate(**g) for g in (submission.graph_updates or [])],
+        graph_updates=[
+            GraphUpdate(
+                node_id=g["node_id"],
+                node_name=node_names.get(g["node_id"]),
+                mastery_before=g["mastery_before"],
+                mastery_after=g["mastery_after"],
+            )
+            for g in (submission.graph_updates or [])
+        ],
     )
+
+
+def _resolve_root_cause_name(answer, node_names: dict[str, str]) -> str | None:
+    """Prefer the explicit root-cause node; fall back to the head of the chain."""
+    node_id = answer.root_cause_node_id
+    if not node_id and answer.root_cause_chain:
+        node_id = answer.root_cause_chain[0]
+    return node_names.get(node_id) if node_id else None

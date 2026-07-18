@@ -38,7 +38,12 @@ async def get_test(db: AsyncSession, test_id: str | uuid.UUID) -> Test | None:
 
 
 async def list_tests_by_class(db: AsyncSession, class_id: str | uuid.UUID) -> list[Test]:
-    result = await db.execute(select(Test).where(Test.class_id == class_id).order_by(Test.created_at.desc()))
+    result = await db.execute(
+        select(Test)
+        .where(Test.class_id == class_id)
+        .options(selectinload(Test.assignments))
+        .order_by(Test.created_at.desc())
+    )
     return list(result.scalars().all())
 
 

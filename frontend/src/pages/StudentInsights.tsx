@@ -3,7 +3,7 @@ import { ArrowLeft, TrendingUp } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useStudentInsight } from "@/modules/dashboard/hooks/useStudentPath";
+import { useGetStudentInsight } from "@/modules/dashboard/hooks/queries/useGetStudentInsight";
 import { PerformanceChart } from "@/modules/dashboard/components/PerformanceChart";
 import { AIInsightCard } from "@/modules/dashboard/components/AIInsightCard";
 import { LearningPathMap } from "@/modules/dashboard/components/LearningPathMap";
@@ -14,7 +14,7 @@ import { QuizHistoryList } from "@/modules/dashboard/components/QuizHistoryList"
 export default function StudentInsights() {
   const { studentId = "" } = useParams();
   const navigate = useNavigate();
-  const { data, isLoading } = useStudentInsight(studentId);
+  const { data, isLoading } = useGetStudentInsight(studentId);
 
   return (
     <div className="animate-slide-in-right">
