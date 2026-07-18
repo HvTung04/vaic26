@@ -90,6 +90,7 @@ async def check_practice_answers(
         QuestionResult(
             question_id=a["question_id"],
             question_text=a["question_text"],
+            options=a["options"],
             is_correct=a["is_correct"],
             student_answer=a["student_answer"],
             correct_answer=a["correct_answer"],

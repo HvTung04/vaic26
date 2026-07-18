@@ -89,6 +89,7 @@ async def grade_answers(
             {
                 "question_id": question_id,
                 "question_text": question.text,
+                "options": [o["text"] for o in question.options] if question.options else None,
                 "student_answer": submitted_answer,
                 "is_correct": is_correct,
                 "correct_answer": question.answer,
