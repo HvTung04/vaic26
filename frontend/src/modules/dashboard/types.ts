@@ -84,9 +84,7 @@ export interface StudentTask {
   subject: string;
   title: string;
   dueLabel: string;
-  urgency: 'high' | 'normal';
   urgency: "high" | "normal";
-  assessmentId: string;
 }
 
 export interface QuizAttempt {
