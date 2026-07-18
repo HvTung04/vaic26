@@ -77,12 +77,15 @@ class NodeAccuracy(BaseModel):
 
 class StudentResultRow(BaseModel):
     student_id: str
+    full_name: str
     score: float | None = None
     status: Literal["submitted", "pending"]
+    submission_id: str | None = None
 
 
 class ClassResultsResponse(BaseModel):
     test_id: str
+    test_title: str
     class_avg_score: float
     distribution: list[ScoreDistributionBucket]
     per_node_accuracy: list[NodeAccuracy]

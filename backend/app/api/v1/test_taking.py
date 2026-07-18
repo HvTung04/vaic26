@@ -6,10 +6,11 @@ from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import api_error
-from app.core.security import CurrentUser
+from app.core.security import CurrentUser, ensure_self_or_teacher
 from app.db.postgres import get_db
 from app.models.test import AssignmentStatus
 from app.repositories import question_repo, submission_repo, test_repo
+from app.schemas.dashboard import StudentResultsResponse
 from app.schemas.test_taking import (
     AttemptQuestion,
     AttemptResponse,
@@ -20,6 +21,7 @@ from app.schemas.test_taking import (
     SubmitRequest,
     SubmitResponse,
 )
+from app.services import results_service
 from app.services.grading_service import grade_submission
 
 router = APIRouter(tags=["test-taking"])
@@ -34,6 +36,7 @@ async def list_student_tests(
     db: DbSession,
     status: Annotated[str | None, Query()] = None,
 ) -> list[StudentTestListItem]:
+    ensure_self_or_teacher(current_user, student_id)
     assignments = await test_repo.list_assignments_for_student(db, student_id, status)
     return [
         StudentTestListItem(
@@ -45,6 +48,12 @@ async def list_student_tests(
         )
         for a in assignments
     ]
+
+
+@router.get("/students/{student_id}/results", response_model=StudentResultsResponse)
+async def list_student_results(student_id: str, current_user: CurrentUser, db: DbSession) -> StudentResultsResponse:
+    ensure_self_or_teacher(current_user, student_id)
+    return await results_service.get_student_results(db, student_id)
 
 
 @router.get("/tests/{test_id}/attempt", response_model=AttemptResponse)

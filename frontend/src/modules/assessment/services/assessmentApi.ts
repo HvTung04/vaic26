@@ -1,4 +1,5 @@
 import { withMockDelay } from '@/services/mockClient';
+import type { AssessmentDraft, Question } from '../types';
 import { calcAccuracy } from '@/utils/format';
 import type {
   Assessment,
@@ -107,10 +108,6 @@ const DRAFT_ASSESSMENT: AssessmentDraft = {
   ],
 };
 
-export async function fetchAssessment(assessmentId: string): Promise<Assessment> {
-  return withMockDelay(buildAssessment(assessmentId));
-}
-
 export async function fetchAssessmentDraft(): Promise<AssessmentDraft> {
   return withMockDelay(structuredClone(DRAFT_ASSESSMENT));
 }
@@ -183,54 +180,4 @@ export async function saveQuestionDraft(question: Question): Promise<Question> {
 
 export async function publishAssessment(draftId: string): Promise<{ id: string; status: 'published' }> {
   return withMockDelay({ id: draftId, status: 'published' as const }, 900);
-}
-
-function shuffledRank(): { classRank: number; classSize: number } {
-  const classSize = 32;
-  const classRank = Math.max(1, Math.round(classSize * 0.15));
-  return { classRank, classSize };
-}
-
-export async function submitTestAttempt(
-  assessment: Assessment,
-  submission: TestAttemptSubmission,
-): Promise<ScoreReportData> {
-  const questionResults = assessment.questions.map((question) => {
-    const selectedOption = submission.answers[question.id] ?? null;
-    const telemetry = submission.telemetry.find((t) => t.questionId === question.id);
-    const isCorrect = selectedOption === question.correctOption;
-    return {
-      question,
-      selectedOption,
-      isCorrect,
-      timeSpentSeconds: telemetry?.timeSpentSeconds ?? 0,
-      pointsEarned: isCorrect ? question.points : 0,
-      reviewNeeded: !isCorrect,
-      waverCount: telemetry?.answerChanges.length ?? 0,
-    };
-  });
-
-  const correctCount = questionResults.filter((r) => r.isCorrect).length;
-  const accuracy = calcAccuracy(correctCount, assessment.questions.length);
-  const totalPossiblePoints = assessment.questions.reduce((sum, q) => sum + q.points, 0);
-  const pointsEarned = questionResults.reduce((sum, r) => sum + r.pointsEarned, 0);
-  const finalScorePercent = totalPossiblePoints > 0 ? Math.round((pointsEarned / totalPossiblePoints) * 100) : 0;
-  const { classRank, classSize } = shuffledRank();
-
-  const report: ScoreReportData = {
-    assessmentId: assessment.id,
-    assessmentTitle: assessment.title,
-    accuracy,
-    correctCount,
-    totalQuestions: assessment.questions.length,
-    durationSeconds: submission.totalDurationSeconds,
-    classRank,
-    classSize,
-    pointsEarned,
-    totalPossiblePoints,
-    finalScorePercent,
-    questionResults,
-  };
-
-  return withMockDelay(report, 900);
 }

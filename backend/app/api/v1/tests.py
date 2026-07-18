@@ -9,10 +9,11 @@ from app.core.errors import api_error
 from app.core.security import CurrentUser
 from app.db.postgres import get_db
 from app.models.user import UserRole
-from app.repositories import class_repo, question_repo, test_repo
+from app.repositories import class_repo, question_repo, submission_repo, test_repo
 from app.schemas.tests import (
     TestAssignRequest,
     TestAssignResponse,
+    TestCompletionStatus,
     TestCreateRequest,
     TestCreateResponse,
     TestDetailResponse,
@@ -83,13 +84,35 @@ async def get_test(test_id: str, current_user: CurrentUser, db: DbSession) -> Te
     )
 
 
+def _completion_status(assigned_count: int, submitted_count: int) -> TestCompletionStatus:
+    if submitted_count == 0:
+        return "not_started"
+    if assigned_count and submitted_count >= assigned_count:
+        return "completed"
+    return "in_progress"
+
+
 @router.get("", response_model=list[TestListItem])
 async def list_tests(class_id: Annotated[str, Query()], current_user: CurrentUser, db: DbSession) -> list[TestListItem]:
     tests = await test_repo.list_tests_by_class(db, class_id)
-    return [
-        TestListItem(id=str(t.id), title=t.title, type=t.type, class_id=str(t.class_id), created_at=t.created_at)
-        for t in tests
-    ]
+    submitted_counts = await submission_repo.count_submitted_students_by_test(db, [t.id for t in tests])
+    items = []
+    for t in tests:
+        assigned_count = len(t.assignments)
+        submitted_count = submitted_counts.get(str(t.id), 0)
+        items.append(
+            TestListItem(
+                id=str(t.id),
+                title=t.title,
+                type=t.type,
+                class_id=str(t.class_id),
+                created_at=t.created_at,
+                status=_completion_status(assigned_count, submitted_count),
+                assigned_count=assigned_count,
+                submitted_count=submitted_count,
+            )
+        )
+    return items
 
 
 @router.post("/{test_id}/assign", response_model=TestAssignResponse)

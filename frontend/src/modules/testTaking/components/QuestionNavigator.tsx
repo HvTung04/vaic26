@@ -1,10 +1,10 @@
 import { cn } from '@/utils/cn';
-import type { Question, QuestionOptionKey } from '../types';
+import type { AttemptQuestion } from '../types';
 
 export interface QuestionNavigatorProps {
-  questions: Question[];
+  questions: AttemptQuestion[];
   currentIndex: number;
-  answers: Record<string, QuestionOptionKey | null>;
+  answers: Record<string, string>;
   onSelect: (index: number) => void;
 }
 
@@ -12,7 +12,7 @@ export function QuestionNavigator({ questions, currentIndex, answers, onSelect }
   return (
     <nav className="flex flex-row flex-wrap gap-3 lg:flex-col lg:items-center lg:pt-1">
       {questions.map((question, index) => {
-        const isAnswered = Boolean(answers[question.id]);
+        const isAnswered = Boolean(answers[question.id]?.trim());
         const isActive = index === currentIndex;
         return (
           <button
@@ -27,7 +27,7 @@ export function QuestionNavigator({ questions, currentIndex, answers, onSelect }
               !isActive && !isAnswered && 'border border-hairline bg-white text-ink-faint hover:border-ink/20',
             )}
           >
-            {question.order}
+            {index + 1}
             {isActive && (
               <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-ember ring-2 ring-cream" />
             )}

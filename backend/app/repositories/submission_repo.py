@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -45,6 +45,20 @@ async def list_submissions_for_test(db: AsyncSession, test_id: str | uuid.UUID) 
         select(Submission).where(Submission.test_id == test_id).options(selectinload(Submission.answers))
     )
     return list(result.scalars().all())
+
+
+async def count_submitted_students_by_test(
+    db: AsyncSession, test_ids: list[str | uuid.UUID]
+) -> dict[str, int]:
+    """Distinct-student submission counts per test, keyed by test_id string."""
+    if not test_ids:
+        return {}
+    result = await db.execute(
+        select(Submission.test_id, func.count(func.distinct(Submission.student_id)))
+        .where(Submission.test_id.in_(test_ids))
+        .group_by(Submission.test_id)
+    )
+    return {str(test_id): count for test_id, count in result.all()}
 
 
 async def list_submissions_for_student(db: AsyncSession, student_id: str | uuid.UUID) -> list[Submission]:
