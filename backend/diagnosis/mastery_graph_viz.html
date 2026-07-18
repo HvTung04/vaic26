@@ -1,0 +1,295 @@
+<title>Graph tri thức — 4 học sinh × 3 lần luyện</title>
+<style>
+  :root{
+    --bg:#eaeef4; --surface:#ffffff; --surface-2:#f4f7fb; --inset:#eef2f8;
+    --ink:#1b2331; --ink-soft:#54617a; --ink-faint:#8793aa;
+    --line:#d8dfea; --line-soft:#e6ebf3;
+    --accent:#4a5fd0; --accent-soft:rgba(74,95,208,.12);
+    --m-low:#d23a4e; --m-mid:#e0a01f; --m-high:#1f9d6b;
+    --good:#1f9d6b; --warn:#e0a01f; --crit:#d23a4e;
+    --edge:#c3ccdb;
+    --shadow:0 1px 2px rgba(20,30,50,.06),0 6px 20px rgba(20,30,50,.06);
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0d131f; --surface:#151d2c; --surface-2:#1a2436; --inset:#111927;
+      --ink:#e7ecf5; --ink-soft:#9dabc4; --ink-faint:#6a7796;
+      --line:#273245; --line-soft:#1f293b;
+      --accent:#8090f2; --accent-soft:rgba(128,144,242,.16);
+      --m-low:#e6566a; --m-mid:#eab234; --m-high:#33b784;
+      --good:#33b784; --warn:#eab234; --crit:#e6566a;
+      --edge:#33415a;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#eaeef4; --surface:#ffffff; --surface-2:#f4f7fb; --inset:#eef2f8;
+    --ink:#1b2331; --ink-soft:#54617a; --ink-faint:#8793aa;
+    --line:#d8dfea; --line-soft:#e6ebf3;
+    --accent:#4a5fd0; --accent-soft:rgba(74,95,208,.12);
+    --m-low:#d23a4e; --m-mid:#e0a01f; --m-high:#1f9d6b;
+    --good:#1f9d6b; --warn:#e0a01f; --crit:#d23a4e; --edge:#c3ccdb;
+    --shadow:0 1px 2px rgba(20,30,50,.06),0 6px 20px rgba(20,30,50,.06);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d131f; --surface:#151d2c; --surface-2:#1a2436; --inset:#111927;
+    --ink:#e7ecf5; --ink-soft:#9dabc4; --ink-faint:#6a7796;
+    --line:#273245; --line-soft:#1f293b;
+    --accent:#8090f2; --accent-soft:rgba(128,144,242,.16);
+    --m-low:#e6566a; --m-mid:#eab234; --m-high:#33b784;
+    --good:#33b784; --warn:#eab234; --crit:#e6566a; --edge:#33415a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 64px}
+  header.top{margin-bottom:22px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    font-weight:600;margin:0 0 8px}
+  h1{font-size:clamp(24px,3.4vw,34px);line-height:1.15;margin:0 0 8px;font-weight:680;
+    letter-spacing:-.01em;text-wrap:balance}
+  .lede{color:var(--ink-soft);max-width:64ch;margin:0;font-size:15px}
+  .lede code{font-family:var(--mono);font-size:.9em;background:var(--inset);
+    padding:1px 5px;border-radius:5px}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow)}
+  .legend{display:flex;flex-wrap:wrap;gap:26px;align-items:center;padding:16px 20px;margin:22px 0}
+  .legend h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);
+    margin:0 12px 0 0;font-weight:600}
+  .scale{display:flex;flex-direction:column;gap:6px}
+  .scalebar{width:220px;height:12px;border-radius:6px;
+    background:linear-gradient(90deg,var(--m-low),var(--m-mid) 50%,var(--m-high));
+    position:relative;border:1px solid var(--line)}
+  .scalebar span{position:absolute;top:14px;font-size:11px;color:var(--ink-faint);transform:translateX(-50%)}
+  .scaleticks{position:relative;height:16px;width:220px}
+  .lg-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft)}
+  .swatch{width:14px;height:14px;border-radius:50%;flex:none}
+  .ring-demo{width:16px;height:16px;border-radius:50%;border:2.5px solid var(--good);flex:none}
+  .ring-demo.down{border-color:var(--warn)}
+
+  .gridwrap{overflow-x:auto;padding-bottom:6px}
+  .grid{display:grid;grid-template-columns:170px repeat(3,minmax(230px,1fr));gap:14px;min-width:900px}
+  .colhead{position:sticky;top:0;font-size:13px;font-weight:600;color:var(--ink-soft);
+    padding:4px 2px;text-align:center;letter-spacing:.02em}
+  .colhead.corner{text-align:left;color:var(--ink-faint);font-weight:600;font-size:12px;
+    text-transform:uppercase;letter-spacing:.08em}
+  .rowlabel{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:6px 4px}
+  .rowlabel .nm{font-weight:650;font-size:15px}
+  .rowlabel .trend{font-size:12px;color:var(--ink-faint);font-family:var(--mono)}
+  .rowlabel .trend b{color:var(--ink-soft);font-weight:600}
+
+  .cell{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    overflow:hidden;display:flex;flex-direction:column}
+  .cell .meta{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:9px 11px;border-bottom:1px solid var(--line-soft);background:var(--surface-2)}
+  .cell .meta .k{font-size:12px;color:var(--ink-faint);font-weight:600;letter-spacing:.03em}
+  .cell .meta .stats{display:flex;gap:6px;align-items:center}
+  .pill{font-size:11px;padding:2px 7px;border-radius:999px;font-weight:600;
+    font-variant-numeric:tabular-nums;border:1px solid transparent}
+  .pill.acc{background:var(--accent-soft);color:var(--accent)}
+  .pill.avg{background:var(--inset);color:var(--ink-soft);border-color:var(--line-soft)}
+  .cell svg{display:block;width:100%;height:auto;background:var(--inset)}
+  .col-tag{fill:var(--ink-faint);font-size:15px;font-weight:600;font-family:var(--sans)}
+  .nodelabel{fill:var(--ink-soft);font-family:var(--mono);font-size:12px;
+    pointer-events:none;opacity:0;transition:opacity .15s}
+  body.labels .nodelabel{opacity:1}
+  .node{cursor:pointer}
+  .node circle.dot{stroke:rgba(0,0,0,.18);stroke-width:1}
+  :root[data-theme="dark"] .node circle.dot{stroke:rgba(0,0,0,.4)}
+
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:2px 0 16px}
+  .btn{font:inherit;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;
+    background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 13px}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+
+  .tip{position:fixed;z-index:20;pointer-events:none;opacity:0;transition:opacity .1s;
+    background:var(--ink);color:var(--bg);padding:8px 11px;border-radius:9px;font-size:12.5px;
+    max-width:250px;box-shadow:0 8px 24px rgba(0,0,0,.28);line-height:1.45}
+  .tip .tid{font-family:var(--mono);font-weight:700;font-size:12px;display:block;margin-bottom:2px}
+  .tip .tm{font-variant-numeric:tabular-nums;font-weight:600}
+  .tip .td{display:block;margin-top:3px;font-size:11.5px;opacity:.85}
+  .note{margin-top:26px;color:var(--ink-faint);font-size:12.5px;max-width:70ch}
+  .note code{font-family:var(--mono)}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">GapLens · Chẩn đoán trên Knowledge Graph</p>
+    <h1>Graph tri thức tiến hoá qua 3 lần luyện</h1>
+    <p class="lede">Bốn học sinh cùng làm đề <code>gk1_8</code> ba lần. Mỗi lần cập nhật
+      <em>tích luỹ</em> lên graph của lần trước (mô hình mastery Beta, deterministic, offline).
+      Mỗi node là một vùng kiến thức; màu = mức thành thạo; cột = lớp; mũi tên = quan hệ tiên quyết.</p>
+  </header>
+
+  <div class="controls">
+    <button class="btn" id="toggleLabels" aria-pressed="false">Hiện nhãn node</button>
+    <button class="btn" id="toggleTheme" aria-pressed="false">Đổi nền sáng/tối</button>
+    <span style="font-size:12.5px;color:var(--ink-faint)">Di chuột lên node để xem chi tiết · vòng viền = thay đổi so với lần trước</span>
+  </div>
+
+  <div class="panel legend">
+    <div class="scale">
+      <div class="scalebar" aria-hidden="true">
+        <span style="left:0%">0</span><span style="left:40%">0.4</span>
+        <span style="left:60%">0.6</span><span style="left:100%">1.0</span>
+      </div>
+      <div style="font-size:11px;color:var(--ink-faint);margin-top:16px">
+        mastery — <b style="color:var(--crit)">gap&lt;0.4</b> ·
+        <b style="color:var(--warn)">developing</b> ·
+        <b style="color:var(--good)">mastered≥0.6</b></div>
+    </div>
+    <div class="lg-item"><span class="ring-demo"></span> tăng so với lần trước</div>
+    <div class="lg-item"><span class="ring-demo down"></span> giảm so với lần trước</div>
+    <div class="lg-item"><span class="swatch" style="background:var(--inset);border:1px solid var(--line)"></span> chưa test (node ngữ cảnh)</div>
+    <div class="lg-item"><span class="swatch" style="background:var(--edge)"></span> cạnh = tiên quyết (from → to)</div>
+  </div>
+
+  <div class="gridwrap">
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <p class="note" id="note"></p>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = {"source": "gk1_8_result.json", "n_attempts": 3, "students": [{"name": "An (giỏi)", "attempts": [{"attempt": 1, "ability": 0.8, "accuracy": 0.667, "avg_mastery": 0.491, "mastery": {"L7-t3-B01": 0.496, "L8-t1-B02": 0.812, "L8-t7-B01": 0.395, "L6-t2-B02": 0.254, "L6-t1-B02": 0.579, "L8-t5-B01": 0.636, "L8-t1-B01": 0.262}}, {"attempt": 2, "ability": 0.97, "accuracy": 1.0, "avg_mastery": 0.646, "mastery": {"L7-t3-B01": 0.693, "L8-t1-B02": 0.878, "L8-t7-B01": 0.658, "L6-t2-B02": 0.46, "L6-t1-B02": 0.636, "L8-t5-B01": 0.756, "L8-t1-B01": 0.442}}, {"attempt": 3, "ability": 0.97, "accuracy": 0.75, "avg_mastery": 0.654, "mastery": {"L7-t3-B01": 0.782, "L8-t1-B02": 0.687, "L8-t7-B01": 0.746, "L6-t2-B02": 0.349, "L6-t1-B02": 0.68, "L8-t5-B01": 0.787, "L8-t1-B01": 0.546}}]}, {"name": "Bình (khá)", "attempts": [{"attempt": 1, "ability": 0.58, "accuracy": 0.5, "avg_mastery": 0.452, "mastery": {"L7-t3-B01": 0.5, "L8-t1-B02": 0.467, "L8-t7-B01": 0.336, "L6-t2-B02": 0.278, "L6-t1-B02": 0.636, "L8-t5-B01": 0.321, "L8-t1-B01": 0.625}}, {"attempt": 2, "ability": 0.8, "accuracy": 1.0, "avg_mastery": 0.601, "mastery": {"L7-t3-B01": 0.678, "L8-t1-B02": 0.657, "L8-t7-B01": 0.552, "L6-t2-B02": 0.422, "L6-t1-B02": 0.726, "L8-t5-B01": 0.459, "L8-t1-B01": 0.715}}, {"attempt": 3, "ability": 0.97, "accuracy": 0.917, "avg_mastery": 0.678, "mastery": {"L7-t3-B01": 0.788, "L8-t1-B02": 0.661, "L8-t7-B01": 0.662, "L6-t2-B02": 0.505, "L6-t1-B02": 0.767, "L8-t5-B01": 0.572, "L8-t1-B01": 0.788}}]}, {"name": "Chi (trung bình)", "attempts": [{"attempt": 1, "ability": 0.4, "accuracy": 0.333, "avg_mastery": 0.343, "mastery": {"L7-t3-B01": 0.34, "L8-t1-B02": 0.582, "L8-t7-B01": 0.359, "L6-t2-B02": 0.309, "L6-t1-B02": 0.211, "L8-t5-B01": 0.285, "L8-t1-B01": 0.316}}, {"attempt": 2, "ability": 0.62, "accuracy": 0.333, "avg_mastery": 0.346, "mastery": {"L7-t3-B01": 0.352, "L8-t1-B02": 0.324, "L8-t7-B01": 0.228, "L6-t2-B02": 0.533, "L6-t1-B02": 0.268, "L8-t5-B01": 0.498, "L8-t1-B01": 0.219}}, {"attempt": 3, "ability": 0.84, "accuracy": 0.583, "avg_mastery": 0.424, "mastery": {"L7-t3-B01": 0.425, "L8-t1-B02": 0.311, "L8-t7-B01": 0.264, "L6-t2-B02": 0.637, "L6-t1-B02": 0.372, "L8-t5-B01": 0.603, "L8-t1-B01": 0.355}}]}, {"name": "Dũng (yếu)", "attempts": [{"attempt": 1, "ability": 0.22, "accuracy": 0.083, "avg_mastery": 0.308, "mastery": {"L7-t3-B01": 0.342, "L8-t1-B02": 0.15, "L8-t7-B01": 0.177, "L6-t2-B02": 0.265, "L6-t1-B02": 0.261, "L8-t5-B01": 0.244, "L8-t1-B01": 0.716}}, {"attempt": 2, "ability": 0.44, "accuracy": 0.583, "avg_mastery": 0.388, "mastery": {"L7-t3-B01": 0.454, "L8-t1-B02": 0.354, "L8-t7-B01": 0.355, "L6-t2-B02": 0.424, "L6-t1-B02": 0.153, "L8-t5-B01": 0.188, "L8-t1-B01": 0.789}}, {"attempt": 3, "ability": 0.66, "accuracy": 0.583, "avg_mastery": 0.417, "mastery": {"L7-t3-B01": 0.595, "L8-t1-B02": 0.324, "L8-t7-B01": 0.473, "L6-t2-B02": 0.304, "L6-t1-B02": 0.244, "L8-t5-B01": 0.138, "L8-t1-B01": 0.841}}]}], "layout": {"nodes": [{"id": "L6-t1-B01", "grade": 6, "topic": "Số tự nhiên", "x": 60, "y": 60}, {"id": "L6-t1-B02", "grade": 6, "topic": "Số tự nhiên", "x": 60, "y": 122}, {"id": "L6-t1-B03", "grade": 6, "topic": "Số tự nhiên", "x": 60, "y": 184}, {"id": "L6-t2-B01", "grade": 6, "topic": "Số nguyên", "x": 60, "y": 246}, {"id": "L6-t2-B02", "grade": 6, "topic": "Số nguyên", "x": 60, "y": 308}, {"id": "L6-t3-B02", "grade": 6, "topic": "Phân số & Số thập phân", "x": 60, "y": 370}, {"id": "L6-t3-B03", "grade": 6, "topic": "Phân số & Số thập phân", "x": 60, "y": 432}, {"id": "L7-t3-B01", "grade": 7, "topic": "Biểu thức đại số & Đa thức", "x": 360, "y": 60}, {"id": "L7-t3-B02", "grade": 7, "topic": "Biểu thức đại số & Đa thức", "x": 360, "y": 122}, {"id": "L7-t6-B01", "grade": 7, "topic": "Tam giác", "x": 360, "y": 184}, {"id": "L7-t6-B02", "grade": 7, "topic": "Tam giác", "x": 360, "y": 246}, {"id": "L7-t7-B01", "grade": 7, "topic": "Hình học trực quan / Hình khối", "x": 360, "y": 308}, {"id": "L7-t7-B02", "grade": 7, "topic": "Hình học trực quan / Hình khối", "x": 360, "y": 370}, {"id": "L8-t1-B01", "grade": 8, "topic": "Đa thức & Hằng đẳng thức", "x": 660, "y": 60}, {"id": "L8-t1-B02", "grade": 8, "topic": "Đa thức & Hằng đẳng thức", "x": 660, "y": 122}, {"id": "L8-t5-B01", "grade": 8, "topic": "Tứ giác & Định lí Pythagore", "x": 660, "y": 184}, {"id": "L8-t7-B01", "grade": 8, "topic": "Hình học trực quan / Hình khối", "x": 660, "y": 246}], "edges": [{"from": "L6-t1-B01", "to": "L6-t1-B02", "kind": "inter_block_same_topic"}, {"from": "L6-t1-B02", "to": "L6-t1-B03", "kind": "inter_block_same_topic"}, {"from": "L6-t2-B01", "to": "L6-t2-B02", "kind": "inter_block_same_topic"}, {"from": "L6-t3-B02", "to": "L6-t3-B03", "kind": "inter_block_same_topic"}, {"from": "L7-t3-B01", "to": "L7-t3-B02", "kind": "inter_block_same_topic"}, {"from": "L7-t7-B01", "to": "L7-t7-B02", "kind": "inter_block_same_topic"}, {"from": "L7-t6-B01", "to": "L7-t6-B02", "kind": "inter_block_same_topic"}, {"from": "L8-t1-B01", "to": "L8-t1-B02", "kind": "inter_block_same_topic"}, {"from": "L6-t1-B03", "to": "L6-t2-B01", "kind": "bridge"}, {"from": "L6-t2-B02", "to": "L7-t3-B01", "kind": "bridge"}, {"from": "L6-t3-B03", "to": "L7-t3-B01", "kind": "bridge"}, {"from": "L7-t3-B02", "to": "L8-t1-B01", "kind": "bridge"}, {"from": "L7-t6-B02", "to": "L8-t5-B01", "kind": "bridge"}, {"from": "L7-t7-B02", "to": "L8-t7-B01", "kind": "bridge"}], "grades": [6, 7, 8], "width": 880, "height": 554}, "thresholds": {"mastered": 0.6, "developing": 0.4}};
+
+/* ---- mastery -> màu (nội suy đỏ→hổ phách→lục) ---- */
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function hex2rgb(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');
+  return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function mix(a,b,t){return a.map((x,i)=>Math.round(x+(b[i]-x)*t));}
+function masteryColor(m){
+  const lo=hex2rgb(css('--m-low')),mid=hex2rgb(css('--m-mid')),hi=hex2rgb(css('--m-high'));
+  let c; if(m<=0.5){c=mix(lo,mid,m/0.5);}else{c=mix(mid,hi,(m-0.5)/0.5);}
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+function statusOf(m){return m>=0.6?'mastered':(m>=0.4?'developing':'gap');}
+
+const L=DATA.layout, NS='http://www.w3.org/2000/svg';
+const nodeById={}; L.nodes.forEach(n=>nodeById[n.id]=n);
+const grades=L.grades, colX={};
+grades.forEach((g,i)=>{ // nhãn cột: lấy x trung bình của các node cùng lớp
+  const xs=L.nodes.filter(n=>n.grade===g).map(n=>n.x); colX[g]=xs.reduce((a,b)=>a+b,0)/xs.length;
+});
+
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);
+  for(const k in attrs)e.setAttribute(k,attrs[k]); if(parent)parent.appendChild(e); return e;}
+
+function buildSVG(masteryMap, prevMap){
+  const svg=el('svg',{viewBox:`0 0 ${L.width} ${L.height}`,role:'img'});
+  const defs=el('defs',{},svg);
+  const mk=el('marker',{id:'arw',viewBox:'0 0 8 8',refX:'7',refY:'4',markerWidth:'6',
+    markerHeight:'6',orient:'auto-start-reverse'},defs);
+  el('path',{d:'M0 0 L8 4 L0 8 z',fill:'var(--edge)'},mk);
+  // nhãn cột lớp
+  grades.forEach(g=>{const t=el('text',{x:colX[g],y:30,'text-anchor':'middle',class:'col-tag'},svg);
+    t.textContent='Lớp '+g;});
+  // cạnh
+  L.edges.forEach(e=>{const a=nodeById[e.from],b=nodeById[e.to];if(!a||!b)return;
+    el('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'var(--edge)','stroke-width':1.5,
+      'marker-end':'url(#arw)','stroke-dasharray':e.kind==='bridge'?'5 4':'none',opacity:.9},svg);});
+  // node
+  L.nodes.forEach(n=>{
+    const m=masteryMap[n.id];
+    const g=el('g',{class:'node'},svg);
+    if(m!==undefined && prevMap && prevMap[n.id]!==undefined){
+      const d=m-prevMap[n.id];
+      if(Math.abs(d)>=0.02){
+        el('circle',{cx:n.x,cy:n.y,r:16,fill:'none',
+          stroke:d>0?'var(--good)':'var(--warn)','stroke-width':2.5,opacity:.95},g);
+      }
+    }
+    const fill = m===undefined ? 'var(--inset)' : masteryColor(m);
+    const c=el('circle',{cx:n.x,cy:n.y,r:12,fill:fill,class:'dot'},g);
+    if(m===undefined)c.setAttribute('stroke','var(--line)');
+    el('text',{x:n.x+18,y:n.y+4,class:'nodelabel'},g).textContent=n.id;
+    // dữ liệu cho tooltip
+    g.__d={id:n.id,topic:n.topic,grade:n.grade,m:m,
+      prev:prevMap?prevMap[n.id]:undefined};
+  });
+  return svg;
+}
+
+/* ---- lưới 4×3 ---- */
+const grid=document.getElementById('grid');
+function pct(x){return Math.round(x*100)+'%';}
+function render(){
+  grid.innerHTML='';
+  const corner=document.createElement('div');corner.className='colhead corner';corner.textContent='Học sinh';
+  grid.appendChild(corner);
+  for(let k=1;k<=DATA.n_attempts;k++){const h=document.createElement('div');h.className='colhead';
+    h.textContent='Lần '+k;grid.appendChild(h);}
+  DATA.students.forEach(s=>{
+    const lab=document.createElement('div');lab.className='rowlabel';
+    const accs=s.attempts.map(a=>pct(a.accuracy)).join(' → ');
+    lab.innerHTML=`<span class="nm">${s.name}</span>
+      <span class="trend">đúng: <b>${accs}</b></span>`;
+    grid.appendChild(lab);
+    s.attempts.forEach((a,i)=>{
+      const cell=document.createElement('div');cell.className='cell';
+      cell.innerHTML=`<div class="meta"><span class="k">Lần ${a.attempt}</span>
+        <span class="stats">
+          <span class="pill acc">đúng ${pct(a.accuracy)}</span>
+          <span class="pill avg">TB ${a.avg_mastery.toFixed(2)}</span></span></div>`;
+      const prev=i>0?s.attempts[i-1].mastery:null;
+      cell.appendChild(buildSVG(a.mastery,prev));
+      grid.appendChild(cell);
+    });
+  });
+  attachTips();
+}
+
+/* ---- tooltip ---- */
+const tip=document.getElementById('tip');
+function attachTips(){
+  document.querySelectorAll('.node').forEach(g=>{
+    g.addEventListener('mousemove',ev=>{
+      const d=g.__d; if(!d)return;
+      let body=`<span class="tid">${d.id}</span>${d.topic} · lớp ${d.grade}`;
+      if(d.m===undefined){body+=`<span class="td">chưa có bằng chứng</span>`;}
+      else{body+=`<br><span class="tm" style="color:${masteryColor(d.m)}">mastery ${d.m.toFixed(2)}</span> · ${statusOf(d.m)}`;
+        if(d.prev!==undefined){const dd=d.m-d.prev;const sg=dd>=0?'+':'';
+          body+=`<span class="td">Δ so với lần trước: ${sg}${dd.toFixed(2)}</span>`;}}
+      tip.innerHTML=body;tip.style.opacity='1';
+      const pad=14;let x=ev.clientX+pad,y=ev.clientY+pad;
+      const r=tip.getBoundingClientRect();
+      if(x+r.width>innerWidth)x=ev.clientX-r.width-pad;
+      if(y+r.height>innerHeight)y=ev.clientY-r.height-pad;
+      tip.style.left=x+'px';tip.style.top=y+'px';
+    });
+    g.addEventListener('mouseleave',()=>tip.style.opacity='0');
+  });
+}
+
+/* ---- controls ---- */
+const bl=document.getElementById('toggleLabels');
+bl.addEventListener('click',()=>{const on=document.body.classList.toggle('labels');
+  bl.setAttribute('aria-pressed',on);});
+const bt=document.getElementById('toggleTheme');
+bt.addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const dark=cur? cur==='dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  bt.setAttribute('aria-pressed',!dark); render(); // re-render để cập nhật màu nội suy
+});
+matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',()=>{
+  if(!document.documentElement.getAttribute('data-theme'))render();});
+
+document.getElementById('note').innerHTML=
+  'Đọc graph: mỗi lần làm bài CHỈ node được tag trực tiếp đổi màu (công thức Beta: '+
+  'đúng→tăng, sai→giảm, có trọng số độ khó + thời gian) — bước update KHÔNG dùng cạnh. '+
+  'Node xám = tiên quyết CHƯA test, chỉ đưa vào để trace ra learning path. '+
+  'Lần 2–3 nối tiếp trạng thái lần trước nên node "xanh dần" khi học sinh tiến bộ. '+
+  'Nét đứt = cạnh bridge (khác lớp).';
+
+render();
+</script>

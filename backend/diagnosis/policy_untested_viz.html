@@ -1,0 +1,221 @@
+<title>Node chưa test nên tính điểm thế nào?</title>
+<style>
+  :root{
+    --bg:#eaeef4; --surface:#ffffff; --surface-2:#f4f7fb; --inset:#eef2f8;
+    --ink:#1b2331; --ink-soft:#54617a; --ink-faint:#8793aa;
+    --line:#d8dfea; --line-soft:#e6ebf3;
+    --accent:#4a5fd0; --accent-soft:rgba(74,95,208,.12);
+    --m-low:#d23a4e; --m-mid:#e0a01f; --m-high:#1f9d6b;
+    --good:#1f9d6b; --warn:#e0a01f; --crit:#d23a4e;
+    --shadow:0 1px 2px rgba(20,30,50,.06),0 6px 20px rgba(20,30,50,.06);
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0d131f; --surface:#151d2c; --surface-2:#1a2436; --inset:#111927;
+    --ink:#e7ecf5; --ink-soft:#9dabc4; --ink-faint:#6a7796;
+    --line:#273245; --line-soft:#1f293b; --accent:#8090f2; --accent-soft:rgba(128,144,242,.16);
+    --m-low:#e6566a; --m-mid:#eab234; --m-high:#33b784;
+    --good:#33b784; --warn:#eab234; --crit:#e6566a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);}}
+  :root[data-theme="light"]{
+    --bg:#eaeef4; --surface:#ffffff; --surface-2:#f4f7fb; --inset:#eef2f8;
+    --ink:#1b2331; --ink-soft:#54617a; --ink-faint:#8793aa; --line:#d8dfea; --line-soft:#e6ebf3;
+    --accent:#4a5fd0; --accent-soft:rgba(74,95,208,.12);
+    --m-low:#d23a4e; --m-mid:#e0a01f; --m-high:#1f9d6b; --good:#1f9d6b; --warn:#e0a01f; --crit:#d23a4e;
+    --shadow:0 1px 2px rgba(20,30,50,.06),0 6px 20px rgba(20,30,50,.06);}
+  :root[data-theme="dark"]{
+    --bg:#0d131f; --surface:#151d2c; --surface-2:#1a2436; --inset:#111927;
+    --ink:#e7ecf5; --ink-soft:#9dabc4; --ink-faint:#6a7796; --line:#273245; --line-soft:#1f293b;
+    --accent:#8090f2; --accent-soft:rgba(128,144,242,.16);
+    --m-low:#e6566a; --m-mid:#eab234; --m-high:#33b784; --good:#33b784; --warn:#eab234; --crit:#e6566a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 24px 64px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 8px}
+  h1{font-size:clamp(23px,3.2vw,32px);line-height:1.15;margin:0 0 10px;font-weight:680;letter-spacing:-.01em;text-wrap:balance}
+  .lede{color:var(--ink-soft);max-width:66ch;margin:0;font-size:15px}
+  .lede b{color:var(--ink)}
+  .controls{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap}
+  .btn{font:inherit;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;
+    background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 13px}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);padding:18px 20px;margin:20px 0}
+  .card.warn{border-color:color-mix(in srgb,var(--crit) 45%,var(--line))}
+  .card.ok{border-color:color-mix(in srgb,var(--good) 45%,var(--line))}
+  .card h2{font-size:17px;margin:0 0 3px;font-weight:670;display:flex;align-items:center;gap:9px}
+  .tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.02em}
+  .tag.ok{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+  .tag.warn{background:color-mix(in srgb,var(--crit) 16%,transparent);color:var(--crit)}
+  .tag.mid{background:var(--accent-soft);color:var(--accent)}
+  .cap{color:var(--ink-soft);font-size:13.5px;margin:2px 0 14px;max-width:70ch}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+  .chip{font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;background:var(--inset);
+    color:var(--ink-soft);border:1px solid var(--line-soft)}
+  .chip b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .chip.hot{color:var(--crit)} .chip.cool{color:var(--good)}
+
+  .heatscroll{overflow-x:auto;padding-bottom:4px}
+  table.heat{border-collapse:separate;border-spacing:3px;font-size:12px}
+  table.heat th.corner{text-align:left;color:var(--ink-faint);font-weight:600;font-size:11px;
+    text-transform:uppercase;letter-spacing:.06em;padding-right:8px;vertical-align:bottom}
+  table.heat th.top{height:96px;vertical-align:bottom;padding:0}
+  table.heat th.top div{writing-mode:vertical-rl;transform:rotate(200grad);white-space:nowrap;
+    font-weight:600;color:var(--ink-soft);font-size:11px;max-height:92px;overflow:hidden;text-overflow:ellipsis}
+  table.heat th.gradeband{font-size:11px;color:var(--accent);font-weight:700;text-align:center;padding-bottom:2px}
+  table.heat td.name{font-weight:640;white-space:nowrap;padding-right:8px;font-size:12.5px}
+  .cellv{width:34px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:11px;color:#fff;font-variant-numeric:tabular-nums;cursor:default}
+  .cellv.na{background:var(--inset)!important;color:var(--ink-faint);border:1px solid var(--line)}
+  .cellv .sym{margin-right:1px;font-weight:400;opacity:.9}
+
+  .legend{display:flex;gap:22px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--ink-soft);margin:6px 0 2px}
+  .scalebar{width:180px;height:11px;border-radius:6px;border:1px solid var(--line);
+    background:linear-gradient(90deg,var(--m-low),var(--m-mid) 50%,var(--m-high))}
+  .lg{display:flex;align-items:center;gap:7px}
+  .verdict{margin-top:24px;color:var(--ink-faint);font-size:13px;max-width:74ch}
+  .tip{position:fixed;z-index:20;pointer-events:none;opacity:0;transition:opacity .1s;background:var(--ink);
+    color:var(--bg);padding:7px 10px;border-radius:8px;font-size:12px;max-width:250px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">GapLens · Câu hỏi thiết kế</p>
+  <h1>Node chưa test nên tính điểm thế nào?</h1>
+  <p class="lede">Đề <b>gk1_8</b> chỉ chạm <b id="nt"></b> node → <b id="ntopic"></b> chủ đề được đo;
+    còn lại cả chương trình (<b id="ntotal"></b> node) chưa test. Cùng một dữ liệu, đổi cách tính điểm
+    cho node chưa test sẽ cho ra dashboard rất khác. Heatmap: <b>Học sinh × Chủ đề</b> (gộp cả chương trình).</p>
+
+  <div class="legend">
+    <div class="lg"><span class="scalebar"></span></div>
+    <div class="lg">mastery: <b style="color:var(--crit)">▒ đỏ&lt;40</b> · <b style="color:var(--warn)">▓ giữa</b> · <b style="color:var(--good)">█ xanh≥60</b></div>
+    <div class="lg"><span class="cellv na" style="width:22px;height:18px">·</span> chưa test</div>
+    <div style="margin-left:auto"><button class="btn" id="theme">Đổi nền</button></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <p class="verdict" id="verdict"></p>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = {"threshold": 0.6, "n_nodes_total": 57, "topics": [{"topic": "Hình học phẳng", "grade": 6, "mach": "HÌNH HỌC VÀ ĐO LƯỜNG", "n_total": 3}, {"topic": "Hình học trực quan", "grade": 6, "mach": "HÌNH HỌC VÀ ĐO LƯỜNG", "n_total": 5}, {"topic": "Phân số & Số thập phân", "grade": 6, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 3}, {"topic": "Số nguyên", "grade": 6, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 2}, {"topic": "Số tự nhiên", "grade": 6, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 3}, {"topic": "Thống kê & Xác suất", "grade": 6, "mach": "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", "n_total": 13}, {"topic": "Biểu thức đại số & Đa thức", "grade": 7, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 2}, {"topic": "Góc & Đường thẳng song song", "grade": 7, "mach": "HÌNH HỌC VÀ ĐO LƯỜNG", "n_total": 3}, {"topic": "Hình học trực quan / Hình khối", "grade": 7, "mach": "HÌNH HỌC VÀ ĐO LƯỜNG", "n_total": 3}, {"topic": "Số hữu tỉ", "grade": 7, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 2}, {"topic": "Số thực", "grade": 7, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 2}, {"topic": "Tam giác", "grade": 7, "mach": "HÌNH HỌC VÀ ĐO LƯỜNG", "n_total": 2}, {"topic": "Đại lượng tỉ lệ", "grade": 7, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 2}, {"topic": "Hàm số & Đồ thị", "grade": 8, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 2}, {"topic": "Phân thức đại số", "grade": 8, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 1}, {"topic": "Phương trình bậc nhất", "grade": 8, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 1}, {"topic": "Thales & Tam giác đồng dạng", "grade": 8, "mach": "HÌNH HỌC VÀ ĐO LƯỜNG", "n_total": 3}, {"topic": "Tứ giác & Định lí Pythagore", "grade": 8, "mach": "HÌNH HỌC VÀ ĐO LƯỜNG", "n_total": 3}, {"topic": "Đa thức & Hằng đẳng thức", "grade": 8, "mach": "SỐ VÀ ĐẠI SỐ", "n_total": 2}], "students": [{"name": "An (giỏi)", "topics": {"Biểu thức đại số & Đa thức": {"sum_m": 0.7854, "n_tested": 1}, "Đa thức & Hằng đẳng thức": {"sum_m": 1.4656, "n_tested": 2}, "Hình học trực quan / Hình khối": {"sum_m": 0.3946, "n_tested": 1}, "Số nguyên": {"sum_m": 0.2541, "n_tested": 1}, "Số tự nhiên": {"sum_m": 0.5789, "n_tested": 1}, "Tứ giác & Định lí Pythagore": {"sum_m": 0.6361, "n_tested": 1}}}, {"name": "Bình (khá)", "topics": {"Biểu thức đại số & Đa thức": {"sum_m": 0.587, "n_tested": 1}, "Đa thức & Hằng đẳng thức": {"sum_m": 1.0924, "n_tested": 2}, "Hình học trực quan / Hình khối": {"sum_m": 0.4375, "n_tested": 1}, "Số nguyên": {"sum_m": 0.3328, "n_tested": 1}, "Số tự nhiên": {"sum_m": 0.2, "n_tested": 1}, "Tứ giác & Định lí Pythagore": {"sum_m": 0.701, "n_tested": 1}}}, {"name": "Chi (TB)", "topics": {"Biểu thức đại số & Đa thức": {"sum_m": 0.6111, "n_tested": 1}, "Đa thức & Hằng đẳng thức": {"sum_m": 1.0269, "n_tested": 2}, "Hình học trực quan / Hình khối": {"sum_m": 0.1644, "n_tested": 1}, "Số nguyên": {"sum_m": 0.2685, "n_tested": 1}, "Số tự nhiên": {"sum_m": 0.5789, "n_tested": 1}, "Tứ giác & Định lí Pythagore": {"sum_m": 0.6157, "n_tested": 1}}}, {"name": "Dũng (yếu)", "topics": {"Biểu thức đại số & Đa thức": {"sum_m": 0.3436, "n_tested": 1}, "Đa thức & Hằng đẳng thức": {"sum_m": 0.8456, "n_tested": 2}, "Hình học trực quan / Hình khối": {"sum_m": 0.1506, "n_tested": 1}, "Số nguyên": {"sum_m": 0.2408, "n_tested": 1}, "Số tự nhiên": {"sum_m": 0.2055, "n_tested": 1}, "Tứ giác & Định lí Pythagore": {"sum_m": 0.705, "n_tested": 1}}}]};
+const TH = DATA.threshold;
+
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function hex(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');
+  return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));}
+function mix(a,b,t){return a.map((x,i)=>Math.round(x+(b[i]-x)*t));}
+function color(m){const lo=hex(css('--m-low')),mid=hex(css('--m-mid')),hi=hex(css('--m-high'));
+  const c=m<=.5?mix(lo,mid,m/.5):mix(mid,hi,(m-.5)/.5);return`rgb(${c})`;}
+function sym(m){return m>=.6?'█':m>=.45?'▓':m>=.4?'▒':'░';}
+
+// topic mastery của 1 học sinh dưới 1 chính sách
+function topicVal(stu, topic, policy){
+  const rec=stu.topics[topic.topic]; const nT=topic.n_total;
+  const nTested=rec?rec.n_tested:0, sumM=rec?rec.sum_m:0;
+  if(policy==='unknown') return nTested>0 ? sumM/nTested : null;   // loại node chưa test
+  const fill=policy==='full'?1.0:0.5;
+  return (sumM + fill*(nT-nTested))/nT;                            // lấp node chưa test
+}
+
+const POLICIES=[
+  {key:'unknown',tag:'HIỆN TẠI',cls:'ok',tone:'ok',name:'Chưa test = KHÔNG tính (unknown)',
+   cap:'Chỉ tính node đã đo. Chủ đề chưa có node nào test → “·”, không đưa vào trung bình. Trung thực: chưa đo thì không kết luận.'},
+  {key:'half',tag:'TRUNG DUNG',cls:'',tone:'mid',name:'Chưa test = 0.5 (prior)',
+   cap:'Lấp node chưa test bằng 0.5. Kéo mọi thứ về giữa → chủ đề chưa đo trông “lửng lơ”, vẫn làm nhiễu trung bình.'},
+  {key:'full',tag:'NGUY HIỂM',cls:'warn',tone:'warn',name:'Chưa test = 1.0 (coi như đã giỏi)',
+   cap:'Lấp node chưa test bằng 1.0. Giả định lạc quan: “chưa đo = đã giỏi” → phần lớn chương trình hoá xanh, CHE lỗ hổng.'},
+];
+
+function classStats(policy){
+  let perStu=[], greenT=0, redT=0, shown=0;
+  DATA.topics.forEach(t=>{
+    const vals=DATA.students.map(s=>topicVal(s,t,policy)).filter(v=>v!==null);
+    if(vals.length){shown++; const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+      if(mean>=.6)greenT++; if(mean<.4)redT++;}
+  });
+  DATA.students.forEach(s=>{
+    const vs=DATA.topics.map(t=>topicVal(s,t,policy)).filter(v=>v!==null);
+    perStu.push(vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:0);
+  });
+  const avg=perStu.reduce((a,b)=>a+b,0)/perStu.length;
+  return {avg,greenT,redT,shown};
+}
+
+const tip=document.getElementById('tip');
+function cell(m,stu,topic){
+  const d=document.createElement('div'); d.className='cellv'+(m===null?' na':'');
+  if(m===null){d.textContent='·';}
+  else{d.style.background=color(m);d.innerHTML=`<span class="sym">${sym(m)}</span>${Math.round(m*100)}`;}
+  d.onmousemove=e=>{tip.style.opacity=1;
+    tip.innerHTML=`<b>${stu}</b> · ${topic.topic} (lớp ${topic.grade})<br>`+
+      (m===null?'chưa test':`${Math.round(m*100)}% mastery`);
+    let x=e.clientX+13,y=e.clientY+13,r=tip.getBoundingClientRect();
+    if(x+r.width>innerWidth)x=e.clientX-r.width-13; tip.style.left=x+'px';tip.style.top=y+'px';};
+  d.onmouseleave=()=>tip.style.opacity=0;
+  return d;
+}
+
+function render(){
+  const host=document.getElementById('sections'); host.innerHTML='';
+  POLICIES.forEach(p=>{
+    const st=classStats(p.key);
+    const card=document.createElement('div'); card.className='card '+p.cls;
+    card.innerHTML=`<h2><span class="tag ${p.tone}">${p.tag}</span>${p.name}</h2>
+      <div class="cap">${p.cap}</div>
+      <div class="chips">
+        <span class="chip">Mastery TB lớp: <b>${Math.round(st.avg*100)}%</b></span>
+        <span class="chip ${st.greenT>=10?'cool':''}">Chủ đề “xanh” (≥60): <b>${st.greenT}/${DATA.topics.length}</b></span>
+        <span class="chip ${st.redT>0?'hot':''}">Chủ đề “đỏ” (&lt;40): <b>${st.redT}/${DATA.topics.length}</b></span>
+        <span class="chip">Chủ đề hiển thị: <b>${st.shown}/${DATA.topics.length}</b></span>
+      </div>`;
+    // bảng heatmap
+    const scroll=document.createElement('div'); scroll.className='heatscroll';
+    const tbl=document.createElement('table'); tbl.className='heat';
+    // hàng grade band
+    const gr=document.createElement('tr'); gr.innerHTML='<th class="corner"></th>';
+    let prevG=null;
+    DATA.topics.forEach(t=>{const th=document.createElement('th');
+      th.className='gradeband'; th.textContent=(t.grade!==prevG)?('L'+t.grade):''; prevG=t.grade; gr.appendChild(th);});
+    tbl.appendChild(gr);
+    // hàng tên chủ đề (dọc)
+    const htr=document.createElement('tr'); htr.innerHTML='<th class="corner">Chủ đề →</th>';
+    DATA.topics.forEach(t=>{const th=document.createElement('th');th.className='top';
+      th.innerHTML=`<div title="${t.topic}">${t.topic}</div>`;htr.appendChild(th);});
+    tbl.appendChild(htr);
+    // hàng học sinh (xếp yếu -> giỏi theo policy)
+    const order=[...DATA.students].map(s=>({s,avg:(DATA.topics.map(t=>topicVal(s,t,p.key)).filter(v=>v!==null).reduce((a,b,_,arr)=>a+b/arr.length,0))}))
+      .sort((a,b)=>a.avg-b.avg);
+    order.forEach(({s})=>{
+      const tr=document.createElement('tr');
+      const nm=document.createElement('td'); nm.className='name'; nm.textContent=s.name; tr.appendChild(nm);
+      DATA.topics.forEach(t=>{const td=document.createElement('td');
+        td.appendChild(cell(topicVal(s,t,p.key),s.name,t)); tr.appendChild(td);});
+      tbl.appendChild(tr);
+    });
+    scroll.appendChild(tbl); card.appendChild(scroll); host.appendChild(card);
+  });
+}
+
+document.getElementById('nt').textContent='7';
+document.getElementById('ntopic').textContent=new Set(DATA.students.flatMap(s=>Object.keys(s.topics))).size;
+document.getElementById('ntotal').textContent=DATA.n_nodes_total;
+document.getElementById('verdict').innerHTML=
+  'Kết luận: chính sách <b>1.0 (coi như giỏi)</b> thổi mastery TB lớp lên cao và biến hầu hết chủ đề thành “xanh”, '+
+  'CHE mất lỗ hổng và giết tín hiệu chẩn đoán — “chưa đo” bị hiểu nhầm thành “đã giỏi”. '+
+  'Chính sách <b>0.5</b> đỡ hơn nhưng vẫn làm nhiễu trung bình bằng dữ liệu bịa. '+
+  'Cách <b>unknown (hiện tại)</b> chỉ báo cái đã đo, giữ đúng guardrail “chưa có bằng chứng thì không kết luận”. '+
+  'Muốn biết chủ đề chưa đo → phải RA THÊM BÀI TEST, không lấp bằng giả định.';
+
+document.getElementById('theme').onclick=()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const dark=cur?cur==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark'); render();};
+render();
+</script>
