@@ -30,9 +30,8 @@ from app.schemas.dashboard import (
     ScoreDistributionBucket,
     StudentResultRow,
     StudentResultsResponse,
-    StudentTestResult,
 )
-from app.services import kg_service
+from app.services import kg_service, results_service
 
 router = APIRouter(prefix="/teacher", tags=["teacher-dashboard"])
 
@@ -215,23 +214,7 @@ async def get_class_results(
 
 @router.get("/students/{student_id}/results", response_model=StudentResultsResponse)
 async def get_student_results(student_id: str, current_user: CurrentUser, db: DbSession) -> StudentResultsResponse:
-    submissions = await submission_repo.list_submissions_for_student(db, student_id)
-    tests_out = []
-    for s in submissions:
-        if s.status.value != "graded":
-            continue
-        test = await test_repo.get_test(db, s.test_id)
-        weak_nodes = [g["node_id"] for g in (s.graph_updates or []) if g["mastery_after"] < 0.5]
-        tests_out.append(
-            StudentTestResult(
-                test_id=str(s.test_id),
-                title=test.title if test else str(s.test_id),
-                score=(s.score or 0) / (s.total or 1) * 100,
-                submitted_at=s.submitted_at,
-                weak_node_ids=weak_nodes,
-            )
-        )
-    return StudentResultsResponse(student_id=student_id, tests=tests_out)
+    return await results_service.get_student_results(db, student_id)
 
 
 @router.get("/classes/{class_id}/progress-timeline", response_model=ClassProgressTimelineResponse)
