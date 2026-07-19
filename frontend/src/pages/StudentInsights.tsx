@@ -11,6 +11,8 @@ import { LearningPathTextSummary } from "@/modules/learningPath/components/Learn
 import { useLearningPathProgress } from "@/modules/learningPath/hooks/useLearningPathProgress";
 import { useMyKnowledgeState } from "@/modules/knowledgeGraph/hooks/useMyKnowledgeState";
 import { KnowledgeMasteryMap } from "@/modules/knowledgeGraph/components/KnowledgeMasteryMap";
+import { useStudentKnowledgeGraph } from "@/modules/knowledgeGraph/hooks/useStudentKnowledgeGraph";
+import { KnowledgeGraphExplorer } from "@/modules/knowledgeGraph/components/KnowledgeGraphExplorer";
 import { useStudentResults } from "@/modules/testTaking/hooks/useStudentResults";
 import { ResultHistoryList } from "@/modules/testTaking/components/ResultHistoryList";
 import { ScoreTrendChart } from "@/modules/testTaking/components/ScoreTrendChart";
@@ -26,6 +28,7 @@ export default function StudentInsights() {
   const { data: profile, isLoading: isProfileLoading } = useStudentProfile(studentId);
   const { data: results, isLoading: isResultsLoading } = useStudentResults(studentId);
   const { data: graphState, isLoading: isGraphLoading } = useMyKnowledgeState(studentId);
+  const { data: fullGraph, isLoading: isFullGraphLoading } = useStudentKnowledgeGraph(studentId);
   const { path, tiers, isLoading: isPathLoading } = useLearningPathProgress(studentId);
 
   const aiInsight = buildAiInsight(graphState?.nodes, results);
@@ -105,6 +108,10 @@ export default function StudentInsights() {
 
         <div className="lg:col-span-1">
           <KnowledgeMasteryMap nodes={graphState?.nodes} isLoading={isGraphLoading} />
+        </div>
+
+        <div className="lg:col-span-3">
+          <KnowledgeGraphExplorer graph={fullGraph} isLoading={isFullGraphLoading} />
         </div>
 
         <div className="lg:col-span-3">
