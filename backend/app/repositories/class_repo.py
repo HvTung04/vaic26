@@ -107,7 +107,7 @@ async def list_by_teacher_paginated(
     result = await db.execute(query)
     rows = result.all()
 
-    return [row[0] for row in rows], total
+    return list(rows), total
 
 
 async def student_counts_by_classes(

@@ -18,6 +18,7 @@ from app.schemas.tests import (
     TestCreateResponse,
     TestDetailResponse,
     TestListItem,
+    TestListResponse,
     TestQuestionTeacherView,
 )
 
@@ -92,9 +93,29 @@ def _completion_status(assigned_count: int, submitted_count: int) -> TestComplet
     return "in_progress"
 
 
-@router.get("", response_model=list[TestListItem])
-async def list_tests(class_id: Annotated[str, Query()], current_user: CurrentUser, db: DbSession) -> list[TestListItem]:
-    tests = await test_repo.list_tests_by_class(db, class_id)
+@router.get("")
+async def list_tests(
+    class_id: Annotated[str, Query()],
+    current_user: CurrentUser,
+    db: DbSession,
+    page: int | None = Query(None, ge=1, description="Page number (omit for all)"),
+    page_size: int = Query(20, ge=1, le=100),
+    search: str | None = Query(None, min_length=1, max_length=100),
+    type: str | None = Query(None, description="Filter by type: weekly, revision, practice"),
+):
+    """List tests for a class.
+
+    Without `page` param: returns a flat list (backward-compatible).
+    With `page` param: returns paginated response with search/type filter.
+    """
+    if page is not None:
+        tests, total = await test_repo.list_tests_by_class_paginated(
+            db, class_id, search=search, type_=type, page=page, page_size=page_size
+        )
+    else:
+        tests = await test_repo.list_tests_by_class(db, class_id)
+        total = len(tests)
+
     submitted_counts = await submission_repo.count_submitted_students_by_test(db, [t.id for t in tests])
     items = []
     for t in tests:
@@ -112,6 +133,9 @@ async def list_tests(class_id: Annotated[str, Query()], current_user: CurrentUse
                 submitted_count=submitted_count,
             )
         )
+
+    if page is not None:
+        return TestListResponse(items=items, total=total, page=page, page_size=page_size)
     return items
 
 

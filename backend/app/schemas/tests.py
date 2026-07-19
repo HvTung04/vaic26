@@ -66,6 +66,13 @@ class TestListItem(BaseModel):
     submitted_count: int = 0
 
 
+class TestListResponse(BaseModel):
+    items: list[TestListItem]
+    total: int
+    page: int
+    page_size: int
+
+
 class TestAssignRequest(BaseModel):
     class_id: str | None = None
     student_ids: list[str] | None = None

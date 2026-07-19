@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -46,6 +46,41 @@ async def list_tests_by_class(db: AsyncSession, class_id: str | uuid.UUID) -> li
         .order_by(Test.created_at.desc())
     )
     return list(result.scalars().all())
+
+
+async def list_tests_by_class_paginated(
+    db: AsyncSession,
+    class_id: str | uuid.UUID,
+    *,
+    search: str | None = None,
+    type_: str | None = None,
+    page: int = 1,
+    page_size: int = 20,
+) -> tuple[list[Test], int]:
+    """List tests for a class with search, type filter, and pagination.
+
+    Returns (tests, total_count).
+    """
+    base = select(Test).where(Test.class_id == class_id)
+
+    if search:
+        base = base.where(Test.title.ilike(f"%{search}%"))
+    if type_:
+        base = base.where(Test.type == type_)
+
+    # Count total
+    count_q = select(func.count()).select_from(base.subquery())
+    total = (await db.execute(count_q)).scalar_one()
+
+    # Fetch page with assignments eager-loaded
+    query = (
+        base.options(selectinload(Test.assignments))
+        .order_by(Test.created_at.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    )
+    result = await db.execute(query)
+    return list(result.scalars().all()), total
 
 
 async def create_assignments(

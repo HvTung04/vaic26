@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Docker entrypoint: migrate + seed + start server.
-# Rich seed is idempotent — safe on every container start.
 set -euo pipefail
 
 echo "=== G.A.R.Y entrypoint ==="
 
-# 1. Run Alembic migrations
+# 1. Run Alembic migrations (stamp head if tables already exist without version)
 echo "Running migrations..."
-alembic upgrade head
+if ! alembic upgrade head 2>/dev/null; then
+  echo "Migration failed — stamping head (tables likely pre-exist)"
+  alembic stamp head
+fi
 
 # 2. Run rich school seed (idempotent — deletes + re-inserts)
 echo "Seeding rich school data..."

@@ -15,6 +15,21 @@ export interface TestListItem {
   submittedCount: number;
 }
 
+export interface TestListResult {
+  items: TestListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface TestListParams {
+  classId: string;
+  page: number;
+  pageSize?: number;
+  search?: string;
+  type?: TestKind;
+}
+
 export type StudentSubmissionStatus = 'submitted' | 'pending';
 
 export interface StudentResultRow {

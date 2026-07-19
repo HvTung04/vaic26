@@ -6,6 +6,8 @@ import type {
   TestCompletionStatus,
   TestDetail,
   TestListItem,
+  TestListParams,
+  TestListResult,
   TestQuestionTeacherView,
   TestResults,
 } from '../types';
@@ -131,6 +133,17 @@ export async function fetchClassTests(classId: string): Promise<TestListItem[]> 
     }),
   );
   return enriched.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+}
+
+/** Paginated test list with search/type filter. Uses server-computed status. */
+export async function fetchClassTestsPaginated(params: TestListParams): Promise<TestListResult> {
+  const searchParams = new URLSearchParams();
+  searchParams.set('class_id', params.classId);
+  searchParams.set('page', String(params.page));
+  if (params.pageSize) searchParams.set('page_size', String(params.pageSize));
+  if (params.search) searchParams.set('search', params.search);
+  if (params.type) searchParams.set('type', params.type);
+  return http.get<TestListResult>(`/tests?${searchParams.toString()}`);
 }
 
 /**
