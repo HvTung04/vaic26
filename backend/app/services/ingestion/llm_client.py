@@ -4,20 +4,21 @@
 
 from __future__ import annotations
 
-import os
-
 from openai import OpenAI
+
+from app.core.config import get_settings
 
 
 def get_client() -> OpenAI:
+    s = get_settings()
     return OpenAI(
-        api_key=os.environ.get("OPENAI_API_KEY", "sk-placeholder"),
-        base_url=os.environ.get("OPENAI_BASE_URL"),  # None -> official OpenAI
+        api_key=s.openai_api_key or "sk-placeholder",
+        base_url=s.openai_base_url,
     )
 
 
 def get_model() -> str:
-    return os.environ.get("GARY_LLM_MODEL", "gpt-4o")
+    return get_settings().gary_llm_model
 
 
 def structured_completion(

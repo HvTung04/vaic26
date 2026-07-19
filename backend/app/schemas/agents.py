@@ -86,3 +86,20 @@ class DashboardInsightResponse(BaseModel):
     class_gap_nodes: list[ClassGapNode]
     interventions: list[InterventionSuggestion]
     generated_at: datetime
+
+
+# ── Chat ──────────────────────────────────────────────────────────────────────
+
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+
+class ChatRequest(BaseModel):
+    class_id: str
+    message: str
+    history: list[ChatMessage] = []
+
+
+class ChatResponse(BaseModel):
+    reply: str

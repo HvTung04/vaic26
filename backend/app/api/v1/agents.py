@@ -9,13 +9,15 @@ from app.api.deps import MongoDB
 from app.core.security import CurrentUser
 from app.db.postgres import get_db
 from app.schemas.agents import (
+    ChatRequest,
+    ChatResponse,
     DashboardInsightResponse,
     LearningPathRequest,
     LearningPathResponse,
     RevisionTestRequest,
     RevisionTestResponse,
 )
-from app.services import agent_service
+from app.services import agent_service, chat_service
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 
@@ -54,3 +56,14 @@ async def dashboard_insights(
 ) -> DashboardInsightResponse:
     result = await agent_service.generate_dashboard_insights(db, mongo_db, class_id=class_id)
     return DashboardInsightResponse(**result)
+
+
+@router.post("/chat", response_model=ChatResponse)
+async def chat(
+    payload: ChatRequest, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
+) -> ChatResponse:
+    history = [{"role": m.role, "content": m.content} for m in payload.history]
+    reply = await chat_service.chat(
+        db, mongo_db, class_id=payload.class_id, message=payload.message, history=history
+    )
+    return ChatResponse(reply=reply)

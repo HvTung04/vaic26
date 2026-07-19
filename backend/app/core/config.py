@@ -10,7 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str = "postgresql+asyncpg://gaplens:gaplens@localhost:5432/gaplens"
+    database_url: str = "postgresql+asyncpg://gaplens:gaplens@localhost:5433/gaplens"
     mongo_url: str = "mongodb://gary:gary@localhost:27017"
     mongo_db: str = "gary"
 
@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:5173"
 
     upload_dir: str = "uploads"
+
+    openai_api_key: str = ""
+    openai_base_url: str | None = None
+    gary_llm_model: str = "gpt-4o"
 
     @property
     def cors_origin_list(self) -> list[str]:

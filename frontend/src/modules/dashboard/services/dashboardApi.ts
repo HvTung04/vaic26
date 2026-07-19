@@ -517,6 +517,27 @@ export async function fetchDashboardInsights(classId: string): Promise<unknown> 
   return http.get('/agents/dashboard-insights', { class_id: classId });
 }
 
+// ── Chat ──────────────────────────────────────────────────────────────────────
+
+export interface ChatHistoryMsg {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+/** POST /agents/chat — send a message with class context */
+export async function fetchChat(
+  classId: string,
+  message: string,
+  history: ChatHistoryMsg[],
+): Promise<string> {
+  const res = await http.post<{ reply: string }>('/agents/chat', {
+    class_id: classId,
+    message,
+    history,
+  });
+  return res.reply;
+}
+
 // ── Heatmap endpoint ──────────────────────────────────────────────────────────
 
 export interface HeatmapCellBE {

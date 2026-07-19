@@ -126,6 +126,7 @@ export default function TeacherDashboard() {
         className="mb-8"
       >
         <ClassKnowledgeGaps
+          classId={classId}
           topics={knowledgeTopics}
           isLoading={isLoading}
         />

@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ResponsiveContainer, Tooltip, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Bot, Send, AlertTriangle, Eye, CheckCircle2 } from 'lucide-react';
+import { Bot, Send, AlertTriangle, Eye, CheckCircle2, Loader2 } from 'lucide-react';
+import { fetchChat, type ChatHistoryMsg } from '../services/dashboardApi';
 import type { KnowledgeGapTopic, GapSeverity } from '../types';
 
 const SEVERITY_CONFIG: Record<GapSeverity, { color: string; label: string; icon: typeof AlertTriangle }> = {
@@ -93,13 +94,57 @@ function TopicBarTooltip({ active, payload }: BarTooltipProps) {
 }
 
 export interface ClassKnowledgeGapsProps {
+  classId: string;
   topics?: KnowledgeGapTopic[];
   moreCount?: number;
   isLoading?: boolean;
 }
 
-export function ClassKnowledgeGaps({ topics, moreCount = 0, isLoading }: ClassKnowledgeGapsProps) {
+interface ChatMsg {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export function ClassKnowledgeGaps({ classId, topics, moreCount = 0, isLoading }: ClassKnowledgeGapsProps) {
   const [input, setInput] = useState('');
+  const [chatMessages, setChatMessages] = useState<ChatMsg[]>([]);
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  const handleSend = useCallback(async () => {
+    const text = input.trim();
+    if (!text || isChatLoading) return;
+
+    const userMsg: ChatMsg = { role: 'user', content: text };
+    setChatMessages((prev) => [...prev, userMsg]);
+    setInput('');
+    setIsChatLoading(true);
+
+    try {
+      const history: ChatHistoryMsg[] = chatMessages.map((m) => ({ role: m.role, content: m.content }));
+      const reply = await fetchChat(classId, text, history);
+      setChatMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
+    } catch {
+      setChatMessages((prev) => [...prev, { role: 'assistant', content: 'Xin lỗi, em gặp lỗi khi xử lý. Thầy cô thử lại sau.' }]);
+    } finally {
+      setIsChatLoading(false);
+      setTimeout(scrollToBottom, 50);
+    }
+  }, [input, isChatLoading, classId, chatMessages, scrollToBottom]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    },
+    [handleSend],
+  );
 
   const { pieData, weakTopics, severityCounts, avgPassRate } = useMemo(() => {
     const list = topics ?? [];
@@ -245,8 +290,8 @@ export function ClassKnowledgeGaps({ topics, moreCount = 0, isLoading }: ClassKn
               </div>
 
               {/* Chat messages */}
-              <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 scrollbar-thin min-h-[200px]">
-                {/* AI welcome message */}
+              <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 scrollbar-thin min-h-[200px] max-h-[400px]">
+                {/* AI welcome message — hardcoded */}
                 <div className="flex gap-3">
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-lavender text-[#6B3FCB] shadow-sm">
                     <Bot className="h-3.5 w-3.5" />
@@ -259,6 +304,43 @@ export function ClassKnowledgeGaps({ topics, moreCount = 0, isLoading }: ClassKn
                     ))}
                   </div>
                 </div>
+
+                {/* Conversation messages */}
+                {chatMessages.map((msg, i) => (
+                  <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
+                    {msg.role === 'assistant' && (
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-lavender text-[#6B3FCB] shadow-sm">
+                        <Bot className="h-3.5 w-3.5" />
+                      </div>
+                    )}
+                    <div className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm border ${
+                      msg.role === 'user'
+                        ? 'rounded-tr-md bg-[#6B3FCB] text-white border-[#6B3FCB]'
+                        : 'rounded-tl-md bg-white border-white/60 text-ink'
+                    }`}>
+                      {msg.content.split('\n').map((line, j) => (
+                        <p key={j} className="text-[13px] leading-relaxed whitespace-pre-wrap">
+                          {line.replace(/\*\*(.*?)\*\*/g, '$1')}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Loading indicator */}
+                {isChatLoading && (
+                  <div className="flex gap-3">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-lavender text-[#6B3FCB] shadow-sm">
+                      <Bot className="h-3.5 w-3.5" />
+                    </div>
+                    <div className="flex items-center gap-2 rounded-2xl rounded-tl-md bg-white px-4 py-3 shadow-sm border border-white/60">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-lavender" />
+                      <span className="text-[13px] text-ink-faint">Đang suy nghĩ...</span>
+                    </div>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
               </div>
 
               {/* Chat input */}
@@ -267,14 +349,18 @@ export function ClassKnowledgeGaps({ topics, moreCount = 0, isLoading }: ClassKn
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   placeholder="Nhập tin nhắn cho G.A.R.Y AI..."
-                  className="flex-1 rounded-full border border-hairline/60 bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-lavender/60 focus:outline-none focus:ring-2 focus:ring-lavender/20"
+                  disabled={isChatLoading}
+                  className="flex-1 rounded-full border border-hairline/60 bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-lavender/60 focus:outline-none focus:ring-2 focus:ring-lavender/20 disabled:opacity-50"
                 />
                 <button
                   type="button"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6B3FCB] text-white shadow-md transition-all hover:bg-[#5B33C4] hover:shadow-lg"
+                  onClick={handleSend}
+                  disabled={!input.trim() || isChatLoading}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6B3FCB] text-white shadow-md transition-all hover:bg-[#5B33C4] hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <Send className="h-4 w-4" />
+                  {isChatLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 </button>
               </div>
             </div>
