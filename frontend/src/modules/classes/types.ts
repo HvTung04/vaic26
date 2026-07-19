@@ -11,6 +11,9 @@ export interface ClassStudent {
   id: string;
   fullName: string;
   username: string;
+  avgMastery: number | null;
+  band: string;
+  foundationGap: boolean;
 }
 
 export interface ClassStudentsResult {
