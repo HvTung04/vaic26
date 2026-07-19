@@ -21,3 +21,10 @@ class ClassStudentItem(BaseModel):
 class ClassStudentsResponse(BaseModel):
     items: list[ClassStudentItem]
     total: int
+
+
+class ClassListResponse(BaseModel):
+    items: list[ClassDetail]
+    total: int
+    page: int
+    page_size: int

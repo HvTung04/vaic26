@@ -1,5 +1,5 @@
 import { http } from '@/services/httpClient';
-import type { ClassStudentsResult, ClassSummary } from '../types';
+import type { ClassListParams, ClassListResult, ClassStudentsResult, ClassSummary } from '../types';
 
 /**
  * Real API bindings for the Classes domain.
@@ -7,9 +7,19 @@ import type { ClassStudentsResult, ClassSummary } from '../types';
  * (`teacher_id`, `student_count`, `full_name`) already lands on the FE types.
  */
 
-/** GET /classes — classes owned (teacher) or joined (student) by the current user. */
+/** GET /classes — all classes for the current user (used by sidebar picker). */
 export async function fetchClasses(): Promise<ClassSummary[]> {
   return http.get<ClassSummary[]>('/classes');
+}
+
+/** GET /classes — paginated with search/filter. */
+export async function fetchClassesPaginated(params: ClassListParams): Promise<ClassListResult> {
+  const searchParams = new URLSearchParams();
+  searchParams.set('page', String(params.page));
+  if (params.pageSize) searchParams.set('page_size', String(params.pageSize));
+  if (params.search) searchParams.set('search', params.search);
+  if (params.grade) searchParams.set('grade', String(params.grade));
+  return http.get<ClassListResult>(`/classes?${searchParams.toString()}`);
 }
 
 /** GET /classes/{id} */
