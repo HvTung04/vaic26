@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Calendar, Plus } from "lucide-react";
@@ -9,10 +9,13 @@ import { useSelectedClass } from "@/modules/classes/SelectedClassContext";
 import { useGapRadar } from "@/modules/dashboard/hooks/queries/useGapRadar";
 import { usePriorityQueue } from "@/modules/dashboard/hooks/queries/usePriorityQueue";
 import { useHeatmap } from "@/modules/dashboard/hooks/queries/useHeatmap";
+import { useSchedule } from "@/modules/dashboard/hooks/queries/useSchedule";
+import { useScheduleDates } from "@/modules/dashboard/hooks/queries/useScheduleDates";
 import {
   gapRadarToTopics,
   priorityToAlerts,
   heatmapToFrontend,
+  scheduleToLessons,
 } from "@/modules/dashboard/services/dashboardApi";
 import { ClassKnowledgeGaps } from "@/modules/dashboard/components/ClassKnowledgeGaps";
 import { ClassLeaderboard } from "@/modules/dashboard/components/ClassLeaderboard";
@@ -20,7 +23,14 @@ import { TopicStudentGroups } from "@/modules/dashboard/components/TopicStudentG
 import { ClassDiagnosticStats } from "@/modules/dashboard/components/ClassDiagnosticStats";
 import { DayLessonsCard } from "@/modules/dashboard/components/DayLessonsCard";
 import { MiniCalendar } from "@/modules/dashboard/components/MiniCalendar";
-import { getLessonsForDate } from "@/modules/dashboard/data/calendarSchedule";
+
+function formatDateKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function formatMonthKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -32,7 +42,17 @@ export default function TeacherDashboard() {
   const { data: priorityQueue, isLoading: pqLoading } = usePriorityQueue(classId);
   const { data: heatmapResponse, isLoading: hmLoading } = useHeatmap(classId);
 
-  const isLoading = gapLoading || pqLoading || hmLoading;
+  const [hoveredStudentId, setHoveredStudentId] = useState<string | null>(null);
+  const [highlightedGroupIds, setHighlightedGroupIds] = useState<string[] | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
+
+  // Schedule data
+  const selectedDateKey = useMemo(() => formatDateKey(selectedDate), [selectedDate]);
+  const monthKey = useMemo(() => formatMonthKey(selectedDate), [selectedDate]);
+  const { data: scheduleEvents, isLoading: schedLoading } = useSchedule(classId, selectedDateKey);
+  const { data: scheduleDates } = useScheduleDates(classId, monthKey);
+
+  const isLoading = gapLoading || pqLoading || hmLoading || schedLoading;
   const totalStudents = priorityQueue?.length ?? 0;
 
   // Derived data for each component
@@ -41,12 +61,9 @@ export default function TeacherDashboard() {
   const { topics: heatmapTopics, heatmap } = heatmapToFrontend(
     heatmapResponse ?? { topics: [], students: [] },
   );
+  const dayLessons = scheduleToLessons(scheduleEvents ?? []);
 
   const needSupport = alerts.urgentCount;
-  const [hoveredStudentId, setHoveredStudentId] = useState<string | null>(null);
-  const [highlightedGroupIds, setHighlightedGroupIds] = useState<string[] | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
-  const selectedDayLessons = getLessonsForDate(selectedDate);
 
   return (
     <div className="flex flex-col gap-8">
@@ -66,7 +83,7 @@ export default function TeacherDashboard() {
               className="gap-1.5 px-3 py-2 text-xs normal-case tracking-normal"
             >
               <Calendar className="h-3.5 w-3.5" />{" "}
-              Học kỳ hiện tại
+              Học kỳ I 2026-2027
             </Badge>
             <Button
               variant="primary"
@@ -91,10 +108,14 @@ export default function TeacherDashboard() {
         </div>
 
         {/* Lịch dạy của ngày đang chọn — nhiều lớp/tiết trong cùng một ngày */}
-        <DayLessonsCard date={selectedDate} lessons={selectedDayLessons} isLoading={isLoading} />
+        <DayLessonsCard date={selectedDate} lessons={dayLessons} isLoading={schedLoading} />
 
         {/* Calendar */}
-        <MiniCalendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+        <MiniCalendar
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+          eventDates={scheduleDates}
+        />
       </motion.div>
 
       {/* Knowledge gaps - full width */}

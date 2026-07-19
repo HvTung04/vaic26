@@ -18,8 +18,9 @@ async def create_test(
     type_: TestType,
     created_by: str | uuid.UUID,
     question_ids: list[str | uuid.UUID],
+    scheduled_at: datetime | None = None,
 ) -> Test:
-    test = Test(title=title, class_id=class_id, type=type_, created_by=created_by)
+    test = Test(title=title, class_id=class_id, type=type_, created_by=created_by, scheduled_at=scheduled_at)
     db.add(test)
     await db.flush()
     for order, qid in enumerate(question_ids):

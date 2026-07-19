@@ -548,6 +548,45 @@ export async function fetchHeatmap(classId: string): Promise<HeatmapResponse> {
   return http.get<HeatmapResponse>(`/teacher/classes/${classId}/heatmap`);
 }
 
+// ── Schedule endpoints ─────────────────────────────────────────────────────────
+
+export interface ScheduleEventBE {
+  id: string;
+  classLabel: string;
+  subject: string;
+  topic: string;
+  period: string;
+  time: string;
+  studentCount: number;
+  kind: string;
+}
+
+export interface ScheduleResponse {
+  events: ScheduleEventBE[];
+}
+
+export interface ScheduleDatesResponse {
+  dates: string[];
+}
+
+/** GET /teacher/classes/{classId}/schedule?date=YYYY-MM-DD */
+export async function fetchSchedule(classId: string, date: string): Promise<ScheduleEventBE[]> {
+  const res = await http.get<ScheduleResponse>(
+    `/teacher/classes/${classId}/schedule`,
+    { date },
+  );
+  return res.events;
+}
+
+/** GET /teacher/classes/{classId}/schedule/dates?month=YYYY-MM */
+export async function fetchScheduleDates(classId: string, month: string): Promise<string[]> {
+  const res = await http.get<ScheduleDatesResponse>(
+    `/teacher/classes/${classId}/schedule/dates`,
+    { month },
+  );
+  return res.dates;
+}
+
 export interface UserProfile {
   id: string;
   username: string;
@@ -631,4 +670,43 @@ export function heatmapToFrontend(
     };
   });
   return { topics, heatmap };
+}
+
+/** ScheduleEventBE[] → ScheduledLesson[] (for DayLessonsCard) */
+export function scheduleToLessons(
+  events: ScheduleEventBE[],
+): import("../data/calendarSchedule").ScheduledLesson[] {
+  return events.map((e) => ({
+    id: e.id,
+    classLabel: e.classLabel,
+    subject: e.subject,
+    topic: e.topic,
+    book: "Chân trời sáng tạo",
+    topicKey: e.id,
+    period: e.period,
+    time: e.time,
+    studentCount: e.studentCount,
+  }));
+}
+
+/** ScheduleEventBE[] → CalendarEvent[] (for MiniCalendar dots) */
+export function scheduleToCalendarEvents(
+  events: ScheduleEventBE[],
+): import("../data/calendarSchedule").CalendarEvent[] {
+  return events.map((e) => ({
+    id: e.id,
+    kind: e.kind === "exam" ? "exam" : "lesson",
+    dot: e.kind === "exam" ? "bg-primary" : "bg-[#1C5AAE]",
+    lesson: e.kind !== "exam" ? {
+      id: e.id,
+      classLabel: e.classLabel,
+      subject: e.subject,
+      topic: e.topic,
+      book: "Chân trời sáng tạo",
+      topicKey: e.id,
+      period: e.period,
+      time: e.time,
+      studentCount: e.studentCount,
+    } : undefined,
+  }));
 }

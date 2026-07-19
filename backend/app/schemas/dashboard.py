@@ -140,3 +140,22 @@ class HeatmapStudentRowBE(BaseModel):
 class HeatmapResponse(BaseModel):
     topics: list[HeatmapTopicBE]
     students: list[HeatmapStudentRowBE]
+
+
+class ScheduleEvent(BaseModel):
+    id: str
+    class_label: str
+    subject: str
+    topic: str
+    period: str
+    time: str
+    student_count: int
+    kind: str  # "exam" | "lesson"
+
+
+class ScheduleResponse(BaseModel):
+    events: list[ScheduleEvent]
+
+
+class ScheduleDatesResponse(BaseModel):
+    dates: list[str]

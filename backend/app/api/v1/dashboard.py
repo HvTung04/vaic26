@@ -32,6 +32,9 @@ from app.schemas.dashboard import (
     PriorityQueueItem,
     PriorityQueueResponse,
     ScoreDistributionBucket,
+    ScheduleDatesResponse,
+    ScheduleEvent,
+    ScheduleResponse,
     StudentResultRow,
     StudentResultsResponse,
 )
@@ -308,3 +311,122 @@ async def get_class_progress_timeline(
         for period, b in sorted(buckets.items())
     ]
     return ClassProgressTimelineResponse(class_id=class_id, timeline=timeline)
+
+
+# ── Schedule endpoints (tests as calendar events) ──────────────────────────────
+
+from datetime import date, datetime, timezone
+from sqlalchemy import and_
+
+from app.models.test import Test
+from app.repositories import test_repo
+
+
+def _period_label(idx: int) -> str:
+    """Map 0-based index to Vietnamese period label."""
+    labels = ["Tiết 1", "Tiết 2", "Tiết 3", "Tiết 4", "Tiết 5", "Tiết 6"]
+    return labels[idx] if idx < len(labels) else f"Tiết {idx + 1}"
+
+
+def _time_label(idx: int) -> str:
+    """Map 0-based index to time range."""
+    times = [
+        "07:00 - 07:45",
+        "07:50 - 08:35",
+        "08:45 - 09:30",
+        "09:40 - 10:25",
+        "13:00 - 13:45",
+        "13:55 - 14:40",
+    ]
+    return times[idx] if idx < len(times) else f"Tiết {idx + 1}"
+
+
+@router.get("/classes/{class_id}/schedule", response_model=ScheduleResponse)
+async def get_schedule(
+    class_id: str,
+    current_user: CurrentUser,
+    db: DbSession,
+    target_date: Annotated[str, Query(alias="date")],
+) -> ScheduleResponse:
+    """Tests scheduled on a specific date for a class."""
+    # Parse the date string
+    try:
+        dt = datetime.fromisoformat(target_date)
+        day_start = dt.replace(hour=0, minute=0, second=0, tzinfo=timezone.utc)
+        day_end = dt.replace(hour=23, minute=59, second=59, tzinfo=timezone.utc)
+    except ValueError:
+        raise api_error(400, "invalid_date", f"Invalid date format: {target_date}")
+
+    # Query tests scheduled on this date for this class
+    result = await db.execute(
+        select(Test).where(
+            and_(
+                Test.class_id == class_id,
+                Test.scheduled_at >= day_start,
+                Test.scheduled_at <= day_end,
+            )
+        ).options(
+            selectinload(Test.questions),
+            selectinload(Test.assignments),
+        )
+    )
+    tests = list(result.scalars().all())
+
+    # Get student count for the class
+    student_count = await class_repo.student_count(db, class_id)
+
+    # Get class name
+    cls = await class_repo.get_by_id(db, class_id)
+    class_label = cls.name if cls else "Lớp"
+
+    events = []
+    for idx, t in enumerate(tests):
+        events.append(ScheduleEvent(
+            id=str(t.id),
+            class_label=class_label,
+            subject="Toán",
+            topic=t.title,
+            period=_period_label(idx),
+            time=_time_label(idx),
+            student_count=student_count,
+            kind="exam",
+        ))
+
+    return ScheduleResponse(events=events)
+
+
+@router.get("/classes/{class_id}/schedule/dates", response_model=ScheduleDatesResponse)
+async def get_schedule_dates(
+    class_id: str,
+    current_user: CurrentUser,
+    db: DbSession,
+    month: Annotated[str, Query()],
+) -> ScheduleDatesResponse:
+    """Dates that have scheduled tests in a given month (YYYY-MM)."""
+    try:
+        year, mon = map(int, month.split("-"))
+        month_start = datetime(year, mon, 1, tzinfo=timezone.utc)
+        if mon == 12:
+            month_end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+        else:
+            month_end = datetime(year, mon + 1, 1, tzinfo=timezone.utc)
+    except (ValueError, IndexError):
+        raise api_error(400, "invalid_month", f"Invalid month format: {month}")
+
+    result = await db.execute(
+        select(Test.scheduled_at).where(
+            and_(
+                Test.class_id == class_id,
+                Test.scheduled_at >= month_start,
+                Test.scheduled_at < month_end,
+                Test.scheduled_at.isnot(None),
+            )
+        )
+    )
+    dates = sorted(set(
+        row[0].strftime("%Y-%m-%d")
+        for row in result.all()
+        if row[0] is not None
+    ))
+
+    return ScheduleDatesResponse(dates=dates)
