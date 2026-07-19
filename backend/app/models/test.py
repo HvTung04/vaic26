@@ -31,6 +31,7 @@ class Test(Base):
     class_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("classes.id"), nullable=False)
     type: Mapped[TestType] = mapped_column(Enum(TestType, native_enum=False, length=16), nullable=False)
     created_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    scheduled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = created_at_col()
 
     questions: Mapped[list["TestQuestion"]] = relationship(

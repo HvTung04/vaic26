@@ -22,12 +22,19 @@ from app.schemas.dashboard import (
     GapRadarResponse,
     GroupItem,
     GroupsResponse,
+    HeatmapCell,
+    HeatmapResponse,
+    HeatmapStudentRowBE,
+    HeatmapTopicBE,
     InterventionItem,
     InterventionsResponse,
     NodeAccuracy,
     PriorityQueueItem,
     PriorityQueueResponse,
     ScoreDistributionBucket,
+    ScheduleDatesResponse,
+    ScheduleEvent,
+    ScheduleResponse,
     StudentResultRow,
     StudentResultsResponse,
 )
@@ -109,6 +116,63 @@ async def get_gap_radar(class_id: str, current_user: CurrentUser, db: DbSession,
             for g in gaps
         ]
     )
+
+
+@router.get("/classes/{class_id}/heatmap", response_model=HeatmapResponse)
+async def get_heatmap(
+    class_id: str, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
+) -> HeatmapResponse:
+    """Per-student per-node mastery heatmap for the class."""
+    student_dicts, mastery_data = await _students_and_mastery(db, mongo_db, class_id)
+    graph = await kg_service.load_graph(mongo_db)
+
+    # Collect all node IDs that appear in any student's mastery data
+    all_node_ids: set[str] = set()
+    for mastery in mastery_data.values():
+        all_node_ids.update(mastery.keys())
+
+    # Build topic list sorted by grade then topic
+    topics: list[HeatmapTopicBE] = []
+    for nid in sorted(all_node_ids):
+        node = graph.nodes.get(nid)
+        topics.append(HeatmapTopicBE(
+            key=nid,
+            label=node.topic_name if node else nid,
+            grade=node.grade if node else 0,
+        ))
+
+    # Build student rows
+    students: list[HeatmapStudentRowBE] = []
+    for s in student_dicts:
+        sid = s["id"]
+        mastery = mastery_data.get(sid, {})
+        cells: list[HeatmapCell] = []
+        tested_levels: list[float] = []
+        foundation_gap = False
+
+        for t in topics:
+            rec = mastery.get(t.key)
+            if rec:
+                cells.append(HeatmapCell(node_id=t.key, mastery=round(rec.mastery_level, 3)))
+                tested_levels.append(rec.mastery_level)
+                if t.grade < 8 and rec.mastery_level < 0.4:
+                    foundation_gap = True
+            else:
+                cells.append(HeatmapCell(node_id=t.key, mastery=None))
+
+        avg = sum(tested_levels) / len(tested_levels) if tested_levels else 0.0
+        students.append(HeatmapStudentRowBE(
+            student_id=sid,
+            full_name=s["name"],
+            avg_mastery=round(avg, 3),
+            foundation_gap=foundation_gap,
+            cells=cells,
+        ))
+
+    # Sort by avgMastery descending (best first)
+    students.sort(key=lambda s: -s.avg_mastery)
+
+    return HeatmapResponse(topics=topics, students=students)
 
 
 @router.get("/classes/{class_id}/interventions", response_model=InterventionsResponse)
@@ -247,3 +311,122 @@ async def get_class_progress_timeline(
         for period, b in sorted(buckets.items())
     ]
     return ClassProgressTimelineResponse(class_id=class_id, timeline=timeline)
+
+
+# ── Schedule endpoints (tests as calendar events) ──────────────────────────────
+
+from datetime import date, datetime, timezone
+from sqlalchemy import and_
+
+from app.models.test import Test
+from app.repositories import test_repo
+
+
+def _period_label(idx: int) -> str:
+    """Map 0-based index to Vietnamese period label."""
+    labels = ["Tiết 1", "Tiết 2", "Tiết 3", "Tiết 4", "Tiết 5", "Tiết 6"]
+    return labels[idx] if idx < len(labels) else f"Tiết {idx + 1}"
+
+
+def _time_label(idx: int) -> str:
+    """Map 0-based index to time range."""
+    times = [
+        "07:00 - 07:45",
+        "07:50 - 08:35",
+        "08:45 - 09:30",
+        "09:40 - 10:25",
+        "13:00 - 13:45",
+        "13:55 - 14:40",
+    ]
+    return times[idx] if idx < len(times) else f"Tiết {idx + 1}"
+
+
+@router.get("/classes/{class_id}/schedule", response_model=ScheduleResponse)
+async def get_schedule(
+    class_id: str,
+    current_user: CurrentUser,
+    db: DbSession,
+    target_date: Annotated[str, Query(alias="date")],
+) -> ScheduleResponse:
+    """Tests scheduled on a specific date for a class."""
+    # Parse the date string
+    try:
+        dt = datetime.fromisoformat(target_date)
+        day_start = dt.replace(hour=0, minute=0, second=0, tzinfo=timezone.utc)
+        day_end = dt.replace(hour=23, minute=59, second=59, tzinfo=timezone.utc)
+    except ValueError:
+        raise api_error(400, "invalid_date", f"Invalid date format: {target_date}")
+
+    # Query tests scheduled on this date for this class
+    result = await db.execute(
+        select(Test).where(
+            and_(
+                Test.class_id == class_id,
+                Test.scheduled_at >= day_start,
+                Test.scheduled_at <= day_end,
+            )
+        ).options(
+            selectinload(Test.questions),
+            selectinload(Test.assignments),
+        )
+    )
+    tests = list(result.scalars().all())
+
+    # Get student count for the class
+    student_count = await class_repo.student_count(db, class_id)
+
+    # Get class name
+    cls = await class_repo.get_by_id(db, class_id)
+    class_label = cls.name if cls else "Lớp"
+
+    events = []
+    for idx, t in enumerate(tests):
+        events.append(ScheduleEvent(
+            id=str(t.id),
+            class_label=class_label,
+            subject="Toán",
+            topic=t.title,
+            period=_period_label(idx),
+            time=_time_label(idx),
+            student_count=student_count,
+            kind="exam",
+        ))
+
+    return ScheduleResponse(events=events)
+
+
+@router.get("/classes/{class_id}/schedule/dates", response_model=ScheduleDatesResponse)
+async def get_schedule_dates(
+    class_id: str,
+    current_user: CurrentUser,
+    db: DbSession,
+    month: Annotated[str, Query()],
+) -> ScheduleDatesResponse:
+    """Dates that have scheduled tests in a given month (YYYY-MM)."""
+    try:
+        year, mon = map(int, month.split("-"))
+        month_start = datetime(year, mon, 1, tzinfo=timezone.utc)
+        if mon == 12:
+            month_end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+        else:
+            month_end = datetime(year, mon + 1, 1, tzinfo=timezone.utc)
+    except (ValueError, IndexError):
+        raise api_error(400, "invalid_month", f"Invalid month format: {month}")
+
+    result = await db.execute(
+        select(Test.scheduled_at).where(
+            and_(
+                Test.class_id == class_id,
+                Test.scheduled_at >= month_start,
+                Test.scheduled_at < month_end,
+                Test.scheduled_at.isnot(None),
+            )
+        )
+    )
+    dates = sorted(set(
+        row[0].strftime("%Y-%m-%d")
+        for row in result.all()
+        if row[0] is not None
+    ))
+
+    return ScheduleDatesResponse(dates=dates)

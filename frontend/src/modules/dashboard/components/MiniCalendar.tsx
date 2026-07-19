@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
-import { getEventsForDate } from '../data/calendarSchedule';
 
 const MONTHS = ['Th 1', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7', 'Th 8', 'Th 9', 'Th 10', 'Th 11', 'Th 12'];
 const DAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -23,15 +22,23 @@ export interface MiniCalendarProps {
   /** Ngày đang được chọn — thông tin của ngày này sẽ hiển thị ở tab bên trái. */
   selectedDate: Date;
   onSelectDate: (date: Date) => void;
+  /** Optional: dates that have events (YYYY-MM-DD strings). If provided, only these show dots. */
+  eventDates?: string[];
 }
 
-export function MiniCalendar({ selectedDate, onSelectDate }: MiniCalendarProps) {
+export function MiniCalendar({ selectedDate, onSelectDate, eventDates }: MiniCalendarProps) {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
   const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
 
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
+
+  // Build a Set of date keys that have events for fast lookup
+  const eventDateSet = useMemo(() => {
+    if (!eventDates) return null;
+    return new Set(eventDates);
+  }, [eventDates]);
 
   const prevMonth = () => {
     if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear(currentYear - 1); }
@@ -81,9 +88,9 @@ export function MiniCalendar({ selectedDate, onSelectDate }: MiniCalendarProps) 
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
             const cellDate = new Date(currentYear, currentMonth, day);
-            // Chỉ hiện chấm cho ngày có tiết dạy thật (khớp với danh sách bên DayLessonsCard).
-            const lessons = getEventsForDate(cellDate).filter((e) => e.kind === 'lesson');
-            const hasEvents = lessons.length > 0;
+            const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            // If eventDates provided, use it; otherwise show no dots
+            const hasEvents = eventDateSet ? eventDateSet.has(dateKey) : false;
             const isToday = isSameDay(today, day, currentMonth, currentYear);
             const isSelected = isSameDay(selectedDate, day, currentMonth, currentYear);
 
@@ -103,12 +110,9 @@ export function MiniCalendar({ selectedDate, onSelectDate }: MiniCalendarProps) 
                 {day}
                 {hasEvents && (
                   <span className="absolute bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-0.5">
-                    {lessons.slice(0, 3).map((e, idx) => (
-                      <span
-                        key={idx}
-                        className={cn('h-1.5 w-1.5 rounded-full', isSelected || isToday ? 'bg-cream/80' : e.dot)}
-                      />
-                    ))}
+                    <span
+                      className={cn('h-1.5 w-1.5 rounded-full', isSelected || isToday ? 'bg-cream/80' : 'bg-primary')}
+                    />
                   </span>
                 )}
               </button>

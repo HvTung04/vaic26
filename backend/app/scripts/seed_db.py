@@ -240,8 +240,10 @@ async def seed_student_activity(
     including multiple time buckets for the #28/#29 range filters — out of the
     box.
     """
+    now = datetime.now(timezone.utc)
     for i, student in enumerate(students[:3]):
         for week_num, (days_ago, correct) in enumerate(WEEKLY_HISTORY[i], start=1):
+            scheduled = now - timedelta(days=days_ago)
             weekly_test = await test_repo.create_test(
                 db,
                 title=f"Kiểm tra tuần {week_num} — Phân số",
@@ -249,6 +251,7 @@ async def seed_student_activity(
                 type_=TestType.WEEKLY,
                 created_by=teacher.id,
                 question_ids=[q.id for q in questions],
+                scheduled_at=scheduled,
             )
             await test_repo.create_assignments(db, test_id=weekly_test.id, student_ids=[student.id], due_at=None)
             await _submit_and_grade(db, weekly_test, student, questions, correct, days_ago=days_ago)
@@ -260,6 +263,7 @@ async def seed_student_activity(
             type_=TestType.REVISION,
             created_by=teacher.id,
             question_ids=[q.id for q in questions],
+            scheduled_at=now,
         )
         await test_repo.create_assignments(db, test_id=revision_test.id, student_ids=[student.id], due_at=None)
         await _submit_and_grade(db, revision_test, student, questions, REVISION_CORRECT[i])
@@ -269,6 +273,13 @@ async def seed_student_activity(
 
 async def main() -> None:
     await init_models()
+
+    # Ensure scheduled_at column exists on tests table (for existing DBs)
+    async with async_session_factory() as db:
+        await db.execute(text(
+            "ALTER TABLE tests ADD COLUMN IF NOT EXISTS scheduled_at TIMESTAMPTZ"
+        ))
+        await db.commit()
 
     mongo_db = get_database()
     meta = await kg_service.seed_graph(mongo_db)

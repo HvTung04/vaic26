@@ -8,6 +8,9 @@ import type {
   HeatmapStudentRow,
   TopicMasteryBar,
   NeedGroup,
+  KnowledgeGapTopic,
+  PriorityAlerts,
+  PriorityAlertStudent,
 } from "../types";
 
 // ── Bản đồ thành thạo (mock deterministic) ──────────────────────────────────
@@ -514,6 +517,76 @@ export async function fetchDashboardInsights(classId: string): Promise<unknown> 
   return http.get('/agents/dashboard-insights', { class_id: classId });
 }
 
+// ── Heatmap endpoint ──────────────────────────────────────────────────────────
+
+export interface HeatmapCellBE {
+  nodeId: string;
+  mastery: number | null;
+}
+
+export interface HeatmapTopicBE {
+  key: string;
+  label: string;
+  grade: number;
+}
+
+export interface HeatmapStudentRowBE {
+  studentId: string;
+  fullName: string;
+  avgMastery: number;
+  foundationGap: boolean;
+  cells: HeatmapCellBE[];
+}
+
+export interface HeatmapResponse {
+  topics: HeatmapTopicBE[];
+  students: HeatmapStudentRowBE[];
+}
+
+/** GET /teacher/classes/{classId}/heatmap */
+export async function fetchHeatmap(classId: string): Promise<HeatmapResponse> {
+  return http.get<HeatmapResponse>(`/teacher/classes/${classId}/heatmap`);
+}
+
+// ── Schedule endpoints ─────────────────────────────────────────────────────────
+
+export interface ScheduleEventBE {
+  id: string;
+  classLabel: string;
+  subject: string;
+  topic: string;
+  period: string;
+  time: string;
+  studentCount: number;
+  kind: string;
+}
+
+export interface ScheduleResponse {
+  events: ScheduleEventBE[];
+}
+
+export interface ScheduleDatesResponse {
+  dates: string[];
+}
+
+/** GET /teacher/classes/{classId}/schedule?date=YYYY-MM-DD */
+export async function fetchSchedule(classId: string, date: string): Promise<ScheduleEventBE[]> {
+  const res = await http.get<ScheduleResponse>(
+    `/teacher/classes/${classId}/schedule`,
+    { date },
+  );
+  return res.events;
+}
+
+/** GET /teacher/classes/{classId}/schedule/dates?month=YYYY-MM */
+export async function fetchScheduleDates(classId: string, month: string): Promise<string[]> {
+  const res = await http.get<ScheduleDatesResponse>(
+    `/teacher/classes/${classId}/schedule/dates`,
+    { month },
+  );
+  return res.dates;
+}
+
 export interface UserProfile {
   id: string;
   username: string;
@@ -524,4 +597,116 @@ export interface UserProfile {
 /** GET /users/{user_id} — used by the teacher's student-detail page for the header. */
 export async function fetchUserProfile(userId: string): Promise<UserProfile> {
   return http.get<UserProfile>(`/users/${userId}`);
+}
+
+// ── Adapter functions: transform backend shapes → frontend component types ─────
+
+/** GapRadarItem[] → KnowledgeGapTopic[] */
+export function gapRadarToTopics(
+  items: GapRadarItem[],
+  totalStudents: number,
+): KnowledgeGapTopic[] {
+  return items.map((item) => {
+    const passRate = Math.round((1 - item.weakRatio) * 100);
+    const studentsAffected = Math.round(item.weakRatio * totalStudents);
+    let severity: "critical" | "watch" | "onTrack";
+    if (item.weakRatio > 0.6) severity = "critical";
+    else if (item.weakRatio > 0.3) severity = "watch";
+    else severity = "onTrack";
+    return { id: item.nodeId, label: item.nodeName, passRate, severity, studentsAffected };
+  });
+}
+
+/** PriorityQueueItem[] → PriorityAlerts */
+export function priorityToAlerts(items: PriorityQueueItem[]): PriorityAlerts {
+  const ability: PriorityAlertStudent[] = [];
+  const engagement: PriorityAlertStudent[] = [];
+  for (const item of items) {
+    if (item.urgency < 0.5) continue;
+    const severity = item.urgency > 0.7 ? "critical" : "watch";
+    const cat: PriorityAlertStudent = {
+      id: item.studentId,
+      name: item.fullName,
+      category: "ability",
+      reason: item.reason,
+      severity,
+    };
+    if (item.reason.toLowerCase().includes("nghỉ")) {
+      cat.category = "engagement";
+      engagement.push(cat);
+    } else {
+      ability.push(cat);
+    }
+  }
+  return { urgentCount: ability.length + engagement.length, ability, engagement };
+}
+
+/** HeatmapResponse → frontend { topics, heatmap } */
+export function heatmapToFrontend(
+  response: HeatmapResponse,
+): { topics: HeatmapTopic[]; heatmap: HeatmapStudentRow[] } {
+  const topics: HeatmapTopic[] = response.topics.map((t) => ({
+    key: t.key,
+    label: t.label,
+    grade: t.grade,
+  }));
+  const heatmap: HeatmapStudentRow[] = response.students.map((s) => {
+    const cells: Record<string, number | null> = {};
+    for (const c of s.cells) {
+      cells[c.nodeId] = c.mastery;
+    }
+    const band =
+      s.avgMastery >= 0.7 ? "Vững" :
+      s.avgMastery >= 0.55 ? "Khá" :
+      s.avgMastery >= 0.4 ? "Cần hỗ trợ" :
+      "Nguy cơ";
+    return {
+      id: s.studentId,
+      name: s.fullName,
+      band,
+      avgMastery: s.avgMastery,
+      foundationGap: s.foundationGap,
+      cells,
+    };
+  });
+  return { topics, heatmap };
+}
+
+/** ScheduleEventBE[] → ScheduledLesson[] (for DayLessonsCard) */
+export function scheduleToLessons(
+  events: ScheduleEventBE[],
+): import("../data/calendarSchedule").ScheduledLesson[] {
+  return events.map((e) => ({
+    id: e.id,
+    classLabel: e.classLabel,
+    subject: e.subject,
+    topic: e.topic,
+    book: "Chân trời sáng tạo",
+    topicKey: e.id,
+    period: e.period,
+    time: e.time,
+    studentCount: e.studentCount,
+  }));
+}
+
+/** ScheduleEventBE[] → CalendarEvent[] (for MiniCalendar dots) */
+export function scheduleToCalendarEvents(
+  events: ScheduleEventBE[],
+): import("../data/calendarSchedule").CalendarEvent[] {
+  return events.map((e) => ({
+    id: e.id,
+    kind: e.kind === "exam" ? "exam" : "lesson",
+    dot: e.kind === "exam" ? "bg-primary" : "bg-[#1C5AAE]",
+    lesson: e.kind !== "exam" ? {
+      id: e.id,
+      classLabel: e.classLabel,
+      subject: e.subject,
+      topic: e.topic,
+      book: "Chân trời sáng tạo",
+      topicKey: e.id,
+      period: e.period,
+      time: e.time,
+      studentCount: e.studentCount,
+    } : undefined,
+  }));
 }

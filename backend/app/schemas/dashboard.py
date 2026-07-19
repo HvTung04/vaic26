@@ -116,3 +116,46 @@ class ClassProgressPoint(BaseModel):
 class ClassProgressTimelineResponse(BaseModel):
     class_id: str
     timeline: list[ClassProgressPoint]
+
+
+class HeatmapCell(BaseModel):
+    node_id: str
+    mastery: float | None = None  # null = untested
+
+
+class HeatmapTopicBE(BaseModel):
+    key: str       # node_id
+    label: str     # topic_name from graph
+    grade: int     # grade from graph
+
+
+class HeatmapStudentRowBE(BaseModel):
+    student_id: str
+    full_name: str
+    avg_mastery: float
+    foundation_gap: bool  # any grade<8 node with mastery < 0.4
+    cells: list[HeatmapCell]
+
+
+class HeatmapResponse(BaseModel):
+    topics: list[HeatmapTopicBE]
+    students: list[HeatmapStudentRowBE]
+
+
+class ScheduleEvent(BaseModel):
+    id: str
+    class_label: str
+    subject: str
+    topic: str
+    period: str
+    time: str
+    student_count: int
+    kind: str  # "exam" | "lesson"
+
+
+class ScheduleResponse(BaseModel):
+    events: list[ScheduleEvent]
+
+
+class ScheduleDatesResponse(BaseModel):
+    dates: list[str]
