@@ -34,7 +34,7 @@ export function ScoreTrendChart({ history, height = 190 }: ScoreTrendChartProps)
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <AreaChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+      <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="scoreTrendFill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#FF4F12" stopOpacity={0.28} />

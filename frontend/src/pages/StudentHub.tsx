@@ -8,6 +8,8 @@ import { ResultHistoryList } from "@/modules/testTaking/components/ResultHistory
 import { ScoreTrendChart } from "@/modules/testTaking/components/ScoreTrendChart";
 import { useMyKnowledgeState } from "@/modules/knowledgeGraph/hooks/useMyKnowledgeState";
 import { KnowledgeMasteryMap } from "@/modules/knowledgeGraph/components/KnowledgeMasteryMap";
+import { useStudentKnowledgeGraph } from "@/modules/knowledgeGraph/hooks/useStudentKnowledgeGraph";
+import { KnowledgeGraphExplorer } from "@/modules/knowledgeGraph/components/KnowledgeGraphExplorer";
 import { useLearningPathProgress } from "@/modules/learningPath/hooks/useLearningPathProgress";
 import { LearningPathPractice } from "@/modules/learningPath/components/LearningPathPractice";
 import { RevisionCta } from "@/modules/revision/components/RevisionCta";
@@ -17,6 +19,7 @@ export default function StudentHub() {
     useStudentTests("pending");
   const { data: results, isLoading: isResultsLoading } = useStudentResults();
   const { data: graphState, isLoading: isGraphLoading } = useMyKnowledgeState();
+  const { data: fullGraph, isLoading: isFullGraphLoading } = useStudentKnowledgeGraph();
   const { tiers, path, isLoading: isPathLoading } = useLearningPathProgress();
 
   return (
@@ -82,6 +85,10 @@ export default function StudentHub() {
             nodes={graphState?.nodes}
             isLoading={isGraphLoading}
           />
+        </div>
+
+        <div className="order-6 lg:col-span-3">
+          <KnowledgeGraphExplorer graph={fullGraph} isLoading={isFullGraphLoading} />
         </div>
       </div>
     </div>

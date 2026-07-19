@@ -26,11 +26,7 @@ export function Sidebar() {
       <div>
         <div className="mb-6 px-1">
           <div className="flex items-center gap-2.5">
-            <div className="relative h-7 w-7">
-              <div className="absolute inset-0 rounded-full bg-ink" />
-              <div className="absolute inset-[5px] rounded-full border-2 border-lime" />
-              <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-ember" />
-            </div>
+            <img src="/favicon.svg" alt="Logo" className="h-7 w-7 object-contain" />
             <p className="font-display text-xl font-semibold leading-tight text-ink">
               G.A.R.Y
             </p>

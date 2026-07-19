@@ -4,7 +4,15 @@ from fastapi import APIRouter
 
 from app.api.deps import MongoDB
 from app.core.security import CurrentUser, ensure_self_or_teacher
-from app.schemas.graph import GraphStateResponse, MasteryHistoryItem, NodeHistoryResponse, NodeState
+from app.schemas.graph import (
+    FullNode,
+    GraphEdge,
+    GraphFullResponse,
+    GraphStateResponse,
+    MasteryHistoryItem,
+    NodeHistoryResponse,
+    NodeState,
+)
 from app.services import kg_service
 
 router = APIRouter(prefix="/graph", tags=["graph"])
@@ -34,6 +42,57 @@ async def get_student_state(student_id: str, current_user: CurrentUser, mongo_db
             )
         )
     return GraphStateResponse(student_id=student_id, nodes=nodes)
+
+
+@router.get("/students/{student_id}/full", response_model=GraphFullResponse)
+async def get_student_full_graph(student_id: str, current_user: CurrentUser, mongo_db: MongoDB) -> GraphFullResponse:
+    """Full curriculum graph (all nodes + prerequisite edges) with this
+    student's mastery overlaid — powers the node/edge graph visualization on
+    the student dashboard and the teacher's student-detail page. Unlike
+    `/state`, unattempted nodes are included (with null mastery) so the graph
+    structure itself is never partial.
+    """
+    ensure_self_or_teacher(current_user, student_id)
+    graph = await kg_service.load_graph(mongo_db)
+    mastery_docs = await kg_service.get_mastery_docs(mongo_db, student_id)
+
+    nodes = []
+    for node_id, node in graph.nodes.items():
+        doc = mastery_docs.get(node_id)
+        if doc is None:
+            nodes.append(
+                FullNode(
+                    node_id=node_id,
+                    node_name=node.topic_name,
+                    grade=node.grade,
+                    mach=node.mach,
+                    topic_id=node.topic_id,
+                    description=node.noi_dung_cu_the,
+                )
+            )
+            continue
+        record = kg_service.record_from_doc(doc)
+        nodes.append(
+            FullNode(
+                node_id=node_id,
+                node_name=node.topic_name,
+                grade=node.grade,
+                mach=node.mach,
+                topic_id=node.topic_id,
+                description=node.noi_dung_cu_the,
+                mastery=record.mastery_level,
+                confidence=kg_service.node_confidence(record.answer_count),
+                attempts=record.answer_count,
+                needs_review=kg_service.needs_review(record),
+                last_updated=doc["last_updated"],
+            )
+        )
+
+    edges = [
+        GraphEdge(id=e.id, from_node=e.from_node, to_node=e.to_node, kind=e.kind, cross_grade=e.cross_grade)
+        for e in graph.edges
+    ]
+    return GraphFullResponse(student_id=student_id, nodes=nodes, edges=edges)
 
 
 @router.get("/students/{student_id}/nodes/{node_id}/history", response_model=NodeHistoryResponse)

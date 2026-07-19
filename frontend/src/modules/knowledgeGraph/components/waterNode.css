@@ -1,0 +1,36 @@
+.kg-water-level {
+  transition: transform 0.6s ease;
+}
+
+.kg-wave-a {
+  animation: kg-wave-scroll-a 3.4s linear infinite;
+}
+
+.kg-wave-b {
+  animation: kg-wave-scroll-b 2.4s linear infinite;
+}
+
+@keyframes kg-wave-scroll-a {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-17px);
+  }
+}
+
+@keyframes kg-wave-scroll-b {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(13px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kg-wave-a,
+  .kg-wave-b {
+    animation: none;
+  }
+}
