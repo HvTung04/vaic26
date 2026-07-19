@@ -22,6 +22,10 @@ from app.schemas.dashboard import (
     GapRadarResponse,
     GroupItem,
     GroupsResponse,
+    HeatmapCell,
+    HeatmapResponse,
+    HeatmapStudentRowBE,
+    HeatmapTopicBE,
     InterventionItem,
     InterventionsResponse,
     NodeAccuracy,
@@ -109,6 +113,63 @@ async def get_gap_radar(class_id: str, current_user: CurrentUser, db: DbSession,
             for g in gaps
         ]
     )
+
+
+@router.get("/classes/{class_id}/heatmap", response_model=HeatmapResponse)
+async def get_heatmap(
+    class_id: str, current_user: CurrentUser, db: DbSession, mongo_db: MongoDB
+) -> HeatmapResponse:
+    """Per-student per-node mastery heatmap for the class."""
+    student_dicts, mastery_data = await _students_and_mastery(db, mongo_db, class_id)
+    graph = await kg_service.load_graph(mongo_db)
+
+    # Collect all node IDs that appear in any student's mastery data
+    all_node_ids: set[str] = set()
+    for mastery in mastery_data.values():
+        all_node_ids.update(mastery.keys())
+
+    # Build topic list sorted by grade then topic
+    topics: list[HeatmapTopicBE] = []
+    for nid in sorted(all_node_ids):
+        node = graph.nodes.get(nid)
+        topics.append(HeatmapTopicBE(
+            key=nid,
+            label=node.topic_name if node else nid,
+            grade=node.grade if node else 0,
+        ))
+
+    # Build student rows
+    students: list[HeatmapStudentRowBE] = []
+    for s in student_dicts:
+        sid = s["id"]
+        mastery = mastery_data.get(sid, {})
+        cells: list[HeatmapCell] = []
+        tested_levels: list[float] = []
+        foundation_gap = False
+
+        for t in topics:
+            rec = mastery.get(t.key)
+            if rec:
+                cells.append(HeatmapCell(node_id=t.key, mastery=round(rec.mastery_level, 3)))
+                tested_levels.append(rec.mastery_level)
+                if t.grade < 8 and rec.mastery_level < 0.4:
+                    foundation_gap = True
+            else:
+                cells.append(HeatmapCell(node_id=t.key, mastery=None))
+
+        avg = sum(tested_levels) / len(tested_levels) if tested_levels else 0.0
+        students.append(HeatmapStudentRowBE(
+            student_id=sid,
+            full_name=s["name"],
+            avg_mastery=round(avg, 3),
+            foundation_gap=foundation_gap,
+            cells=cells,
+        ))
+
+    # Sort by avgMastery descending (best first)
+    students.sort(key=lambda s: -s.avg_mastery)
+
+    return HeatmapResponse(topics=topics, students=students)
 
 
 @router.get("/classes/{class_id}/interventions", response_model=InterventionsResponse)

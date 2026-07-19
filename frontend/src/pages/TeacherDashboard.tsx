@@ -5,7 +5,15 @@ import { Calendar, Plus } from "lucide-react";
 import { DashboardHeader } from "@/layouts/DashboardHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useGetClassTelemetry } from "@/modules/dashboard/hooks/queries/useGetClassTelemetry";
+import { useSelectedClass } from "@/modules/classes/SelectedClassContext";
+import { useGapRadar } from "@/modules/dashboard/hooks/queries/useGapRadar";
+import { usePriorityQueue } from "@/modules/dashboard/hooks/queries/usePriorityQueue";
+import { useHeatmap } from "@/modules/dashboard/hooks/queries/useHeatmap";
+import {
+  gapRadarToTopics,
+  priorityToAlerts,
+  heatmapToFrontend,
+} from "@/modules/dashboard/services/dashboardApi";
 import { ClassKnowledgeGaps } from "@/modules/dashboard/components/ClassKnowledgeGaps";
 import { ClassLeaderboard } from "@/modules/dashboard/components/ClassLeaderboard";
 import { TopicStudentGroups } from "@/modules/dashboard/components/TopicStudentGroups";
@@ -18,8 +26,23 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
-  const { data, isLoading } = useGetClassTelemetry();
-  const needSupport = data?.studentsNeedingSupport ?? 0;
+  const { classId } = useSelectedClass();
+
+  const { data: gapRadar, isLoading: gapLoading } = useGapRadar(classId);
+  const { data: priorityQueue, isLoading: pqLoading } = usePriorityQueue(classId);
+  const { data: heatmapResponse, isLoading: hmLoading } = useHeatmap(classId);
+
+  const isLoading = gapLoading || pqLoading || hmLoading;
+  const totalStudents = priorityQueue?.length ?? 0;
+
+  // Derived data for each component
+  const knowledgeTopics = gapRadarToTopics(gapRadar ?? [], totalStudents);
+  const alerts = priorityToAlerts(priorityQueue ?? []);
+  const { topics: heatmapTopics, heatmap } = heatmapToFrontend(
+    heatmapResponse ?? { topics: [], students: [] },
+  );
+
+  const needSupport = alerts.urgentCount;
   const [hoveredStudentId, setHoveredStudentId] = useState<string | null>(null);
   const [highlightedGroupIds, setHighlightedGroupIds] = useState<string[] | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
@@ -28,11 +51,13 @@ export default function TeacherDashboard() {
   return (
     <div className="flex flex-col gap-8">
       <DashboardHeader
-        title={`Chào buổi sáng, ${data?.teacherName ?? "..."}`}
+        title="Bảng điều khiển giáo viên"
         subtitle={
           isLoading
             ? "Đang phân tích dữ liệu lớp học..."
-            : `Hệ thống phát hiện ${needSupport} học sinh cần hỗ trợ ngay — đã sắp xếp theo độ ưu tiên.`
+            : needSupport > 0
+              ? `Hệ thống phát hiện ${needSupport} học sinh cần hỗ trợ ngay — đã sắp xếp theo độ ưu tiên.`
+              : "Lớp học đang ổn định. Không có cảnh báo ưu tiên cao."
         }
         actions={
           <>
@@ -41,7 +66,7 @@ export default function TeacherDashboard() {
               className="gap-1.5 px-3 py-2 text-xs normal-case tracking-normal"
             >
               <Calendar className="h-3.5 w-3.5" />{" "}
-              {data?.term ?? "Học kỳ I · 2024"}
+              Học kỳ hiện tại
             </Badge>
             <Button
               variant="primary"
@@ -62,7 +87,7 @@ export default function TeacherDashboard() {
       >
         {/* 4 stat tiles - 2x2 */}
         <div className="grid grid-cols-2 gap-3">
-          <ClassDiagnosticStats heatmap={data?.heatmap} alerts={data?.alerts} isLoading={isLoading} />
+          <ClassDiagnosticStats heatmap={heatmap} alerts={alerts} isLoading={isLoading} />
         </div>
 
         {/* Lịch dạy của ngày đang chọn — nhiều lớp/tiết trong cùng một ngày */}
@@ -80,8 +105,7 @@ export default function TeacherDashboard() {
         className="mb-8"
       >
         <ClassKnowledgeGaps
-          topics={data?.knowledgeGaps}
-          moreCount={data?.moreGapTopicsCount}
+          topics={knowledgeTopics}
           isLoading={isLoading}
         />
       </motion.div>
@@ -94,8 +118,8 @@ export default function TeacherDashboard() {
           transition={{ duration: 0.6, ease: EASE, delay: 0.28 }}
         >
           <ClassLeaderboard
-            heatmap={data?.heatmap}
-            topics={data?.heatmapTopics}
+            heatmap={heatmap}
+            topics={heatmapTopics}
             isLoading={isLoading}
             onSelectStudent={(id) => navigate(`/dashboard/students/${id}`)}
             onHoverStudent={setHoveredStudentId}
@@ -109,8 +133,8 @@ export default function TeacherDashboard() {
           transition={{ duration: 0.6, ease: EASE, delay: 0.34 }}
         >
           <TopicStudentGroups
-            heatmap={data?.heatmap}
-            topics={data?.heatmapTopics}
+            heatmap={heatmap}
+            topics={heatmapTopics}
             isLoading={isLoading}
             onSelectStudent={(id) => navigate(`/dashboard/students/${id}`)}
             highlightStudentId={hoveredStudentId}

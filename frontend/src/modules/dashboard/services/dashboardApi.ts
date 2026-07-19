@@ -8,6 +8,9 @@ import type {
   HeatmapStudentRow,
   TopicMasteryBar,
   NeedGroup,
+  KnowledgeGapTopic,
+  PriorityAlerts,
+  PriorityAlertStudent,
 } from "../types";
 
 // ── Bản đồ thành thạo (mock deterministic) ──────────────────────────────────
@@ -514,6 +517,37 @@ export async function fetchDashboardInsights(classId: string): Promise<unknown> 
   return http.get('/agents/dashboard-insights', { class_id: classId });
 }
 
+// ── Heatmap endpoint ──────────────────────────────────────────────────────────
+
+export interface HeatmapCellBE {
+  nodeId: string;
+  mastery: number | null;
+}
+
+export interface HeatmapTopicBE {
+  key: string;
+  label: string;
+  grade: number;
+}
+
+export interface HeatmapStudentRowBE {
+  studentId: string;
+  fullName: string;
+  avgMastery: number;
+  foundationGap: boolean;
+  cells: HeatmapCellBE[];
+}
+
+export interface HeatmapResponse {
+  topics: HeatmapTopicBE[];
+  students: HeatmapStudentRowBE[];
+}
+
+/** GET /teacher/classes/{classId}/heatmap */
+export async function fetchHeatmap(classId: string): Promise<HeatmapResponse> {
+  return http.get<HeatmapResponse>(`/teacher/classes/${classId}/heatmap`);
+}
+
 export interface UserProfile {
   id: string;
   username: string;
@@ -524,4 +558,77 @@ export interface UserProfile {
 /** GET /users/{user_id} — used by the teacher's student-detail page for the header. */
 export async function fetchUserProfile(userId: string): Promise<UserProfile> {
   return http.get<UserProfile>(`/users/${userId}`);
+}
+
+// ── Adapter functions: transform backend shapes → frontend component types ─────
+
+/** GapRadarItem[] → KnowledgeGapTopic[] */
+export function gapRadarToTopics(
+  items: GapRadarItem[],
+  totalStudents: number,
+): KnowledgeGapTopic[] {
+  return items.map((item) => {
+    const passRate = Math.round((1 - item.weakRatio) * 100);
+    const studentsAffected = Math.round(item.weakRatio * totalStudents);
+    let severity: "critical" | "watch" | "onTrack";
+    if (item.weakRatio > 0.6) severity = "critical";
+    else if (item.weakRatio > 0.3) severity = "watch";
+    else severity = "onTrack";
+    return { id: item.nodeId, label: item.nodeName, passRate, severity, studentsAffected };
+  });
+}
+
+/** PriorityQueueItem[] → PriorityAlerts */
+export function priorityToAlerts(items: PriorityQueueItem[]): PriorityAlerts {
+  const ability: PriorityAlertStudent[] = [];
+  const engagement: PriorityAlertStudent[] = [];
+  for (const item of items) {
+    if (item.urgency < 0.5) continue;
+    const severity = item.urgency > 0.7 ? "critical" : "watch";
+    const cat: PriorityAlertStudent = {
+      id: item.studentId,
+      name: item.fullName,
+      category: "ability",
+      reason: item.reason,
+      severity,
+    };
+    if (item.reason.toLowerCase().includes("nghỉ")) {
+      cat.category = "engagement";
+      engagement.push(cat);
+    } else {
+      ability.push(cat);
+    }
+  }
+  return { urgentCount: ability.length + engagement.length, ability, engagement };
+}
+
+/** HeatmapResponse → frontend { topics, heatmap } */
+export function heatmapToFrontend(
+  response: HeatmapResponse,
+): { topics: HeatmapTopic[]; heatmap: HeatmapStudentRow[] } {
+  const topics: HeatmapTopic[] = response.topics.map((t) => ({
+    key: t.key,
+    label: t.label,
+    grade: t.grade,
+  }));
+  const heatmap: HeatmapStudentRow[] = response.students.map((s) => {
+    const cells: Record<string, number | null> = {};
+    for (const c of s.cells) {
+      cells[c.nodeId] = c.mastery;
+    }
+    const band =
+      s.avgMastery >= 0.7 ? "Vững" :
+      s.avgMastery >= 0.55 ? "Khá" :
+      s.avgMastery >= 0.4 ? "Cần hỗ trợ" :
+      "Nguy cơ";
+    return {
+      id: s.studentId,
+      name: s.fullName,
+      band,
+      avgMastery: s.avgMastery,
+      foundationGap: s.foundationGap,
+      cells,
+    };
+  });
+  return { topics, heatmap };
 }
