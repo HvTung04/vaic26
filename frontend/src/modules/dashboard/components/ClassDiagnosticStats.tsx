@@ -7,7 +7,8 @@ interface DiagnosticStats {
   dangerStudents: { count: number; names: string[] };
   prereqGaps: number;
   polarization: { topAvg: number; bottomAvg: number; gap: number };
-  growthRate: number;
+  classAvgMastery: number;
+  dangerThreshold: number;
 }
 
 function buildDiagnosticStats(heatmap: HeatmapStudentRow[] | undefined, alerts: PriorityAlerts | undefined): DiagnosticStats {
@@ -16,30 +17,39 @@ function buildDiagnosticStats(heatmap: HeatmapStudentRow[] | undefined, alerts: 
       dangerStudents: { count: 0, names: [] },
       prereqGaps: 0,
       polarization: { topAvg: 0, bottomAvg: 0, gap: 0 },
-      growthRate: 0,
+      classAvgMastery: 0,
+      dangerThreshold: 0,
     };
   }
 
-  const allAlerts = [...(alerts?.ability ?? []), ...(alerts?.engagement ?? [])];
-  const dangerNames = allAlerts.filter((a) => a.severity === 'critical').map((a) => a.name);
   const prereqGaps = heatmap.filter((s) => s.foundationGap).length;
 
+  // Danger zone: students with avgMastery < 0.3 — actually struggling
+  const dangerThreshold = 0.3;
+  const dangerStudents = heatmap.filter((s) => s.avgMastery < dangerThreshold);
+
+  // Polarization: top 20% vs bottom 20% avg mastery
   const sorted = [...heatmap].sort((a, b) => b.avgMastery - a.avgMastery);
   const chunk = Math.max(1, Math.floor(sorted.length * 0.2));
   const topAvg = sorted.slice(0, chunk).reduce((a, s) => a + s.avgMastery, 0) / chunk;
   const bottomAvg = sorted.slice(-chunk).reduce((a, s) => a + s.avgMastery, 0) / chunk;
 
-  const lowAbility = heatmap.filter((s) => s.avgMastery < 0.4);
-  const highAbility = heatmap.filter((s) => s.avgMastery >= 0.7);
-  const lowAvg = lowAbility.length ? lowAbility.reduce((a, s) => a + s.avgMastery, 0) / lowAbility.length : 0;
-  const highAvg = highAbility.length ? highAbility.reduce((a, s) => a + s.avgMastery, 0) / highAbility.length : 0;
-  const growth = Math.round(((highAvg - lowAvg) / Math.max(lowAvg, 0.01)) * 100);
+  // Class average mastery
+  const classAvgMastery = heatmap.reduce((a, s) => a + s.avgMastery, 0) / heatmap.length;
 
   return {
-    dangerStudents: { count: dangerNames.length, names: dangerNames },
+    dangerStudents: {
+      count: dangerStudents.length,
+      names: dangerStudents.map((s) => s.name),
+    },
     prereqGaps,
-    polarization: { topAvg: Math.round(topAvg * 100), bottomAvg: Math.round(bottomAvg * 100), gap: Math.round((topAvg - bottomAvg) * 100) },
-    growthRate: growth,
+    polarization: {
+      topAvg: Math.round(topAvg * 100),
+      bottomAvg: Math.round(bottomAvg * 100),
+      gap: Math.round((topAvg - bottomAvg) * 100),
+    },
+    classAvgMastery: Math.round(classAvgMastery * 100),
+    dangerThreshold,
   };
 }
 
@@ -58,7 +68,7 @@ export function ClassDiagnosticStats({ heatmap, alerts, isLoading }: ClassDiagno
         icon={AlertTriangle}
         label="Vùng nguy hiểm"
         value={stats.dangerStudents.count}
-        detail={stats.dangerStudents.names.slice(0, 2).join(', ') || 'An toàn'}
+        detail={stats.dangerStudents.count > 0 ? `${stats.dangerStudents.count} bạn cần hỗ trợ` : 'An toàn'}
         iconBg="bg-primary/10"
         iconColor="text-primary"
         borderAccent="border-primary/30"
@@ -80,7 +90,7 @@ export function ClassDiagnosticStats({ heatmap, alerts, isLoading }: ClassDiagno
         icon={Layers}
         label="Phân cực"
         value={`${stats.polarization.gap}%`}
-        detail={`Giỏi ${stats.polarization.topAvg}% · Yếu ${stats.polarization.bottomAvg}%`}
+        detail={`Top ${stats.polarization.topAvg}% · Bottom ${stats.polarization.bottomAvg}%`}
         iconBg="bg-lavender-soft"
         iconColor="text-lavender"
         borderAccent="border-lavender/30"
@@ -89,9 +99,9 @@ export function ClassDiagnosticStats({ heatmap, alerts, isLoading }: ClassDiagno
 
       <StatTile
         icon={TrendingUp}
-        label="Tăng trưởng"
-        value={stats.growthRate > 0 ? `+${stats.growthRate}%` : `${stats.growthRate}%`}
-        detail={stats.growthRate > 20 ? 'Phân hóa mạnh' : 'Ổn định'}
+        label="TB thành thạo"
+        value={`${stats.classAvgMastery}%`}
+        detail={stats.classAvgMastery >= 70 ? 'Khá tốt' : stats.classAvgMastery >= 50 ? 'Trung bình' : 'Cần cải thiện'}
         iconBg="bg-lime-soft"
         iconColor="text-forest"
         borderAccent="border-forest/30"
