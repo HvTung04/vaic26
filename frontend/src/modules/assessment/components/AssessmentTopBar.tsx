@@ -16,7 +16,8 @@ export function AssessmentTopBar({
 }: AssessmentTopBarProps) {
   return (
     <header className="mb-8 flex items-center justify-between">
-      <div className="flex items-baseline gap-3">
+      <div className="flex items-center gap-2.5">
+        <img src="/favicon.svg" alt="Logo" className="h-7 w-7 object-contain" />
         <p className="font-serif text-2xl font-bold text-ember">G.A.R.Y</p>
         <span className="text-xs font-semibold uppercase tracking-widest text-ink-faint">
           Phiên: #{sessionCode}

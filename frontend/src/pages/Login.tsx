@@ -43,11 +43,7 @@ export default function Login() {
     <div className="min-h-[100dvh] flex items-center justify-center bg-cream px-4">
       <div className="w-full max-w-sm rounded-bento border border-hairline bg-white p-8 shadow-sm">
         <Link to="/" className="mb-6 flex items-center gap-2.5">
-          <div className="relative h-7 w-7">
-            <div className="absolute inset-0 rounded-full bg-ink" />
-            <div className="absolute inset-[5px] rounded-full border-2 border-lime" />
-            <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-ember" />
-          </div>
+          <img src="/favicon.svg" alt="Logo" className="h-7 w-7 object-contain" />
           <span className="font-display text-lg font-semibold tracking-tight text-ink">G.A.R.Y</span>
         </Link>
         <h1 className="font-display text-xl font-semibold text-ink">Đăng nhập</h1>
