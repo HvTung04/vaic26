@@ -316,7 +316,8 @@ async def get_class_progress_timeline(
 # ── Schedule endpoints (tests as calendar events) ──────────────────────────────
 
 from datetime import date, datetime, timezone
-from sqlalchemy import and_
+from sqlalchemy import and_, select
+from sqlalchemy.orm import selectinload
 
 from app.models.test import Test
 from app.repositories import test_repo
